@@ -3,18 +3,28 @@ import Ticker from './components/Ticker';
 import InventoryTable from './components/InventoryTable';
 import ProductModal from './components/ProductModal';
 import { INVENTORY } from './constants';
-import { Product } from './types';
+import { Product, Category } from './types';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBrand, setFilterBrand] = useState('ALL');
+  const [filterCategory, setFilterCategory] = useState<Category>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const brands: string[] = useMemo(() => {
     const allBrands = INVENTORY.map(p => p.brand);
-    // Unique list, alphabetical except for 'ALL'
     const uniqueBrands = Array.from(new Set(allBrands)).sort();
     return ['ALL', ...uniqueBrands];
+  }, []);
+
+  const categories: Category[] = ['All', 'Fragrance', 'Skincare'];
+
+  const stats = useMemo(() => {
+    return {
+      models: INVENTORY.length,
+      fragrance: INVENTORY.filter(p => p.category === 'Fragrance').length,
+      skincare: INVENTORY.filter(p => p.category === 'Skincare').length
+    };
   }, []);
 
   const filteredProducts = useMemo(() => {
@@ -25,10 +35,11 @@ const App: React.FC = () => {
         product.ids.some(id => id.toLowerCase().includes(searchTerm.toLowerCase()));
       
       const matchesBrand = filterBrand === 'ALL' || product.brand === filterBrand;
+      const matchesCategory = filterCategory === 'All' || product.category === filterCategory;
 
-      return matchesSearch && matchesBrand;
+      return matchesSearch && matchesBrand && matchesCategory;
     });
-  }, [searchTerm, filterBrand]);
+  }, [searchTerm, filterBrand, filterCategory]);
 
   const handleInquire = () => {
     window.open('https://instagram.com/661ro_resellz', '_blank');
@@ -40,21 +51,28 @@ const App: React.FC = () => {
         <Ticker />
         <div className="px-6 md:px-12 py-8 flex flex-col items-center gap-12 max-w-[1800px] mx-auto w-full">
           
-          {/* Logo Area */}
           <div className="text-center group cursor-default">
             <h1 className="text-5xl md:text-8xl serif italic tracking-tighter text-white leading-none">
               The Plug<span className="text-v-red">.</span>
             </h1>
-            <div className="flex items-center justify-center gap-6 mt-4 opacity-40 group-hover:opacity-100 transition-opacity duration-700">
-               <span className="h-[1px] w-8 bg-white"></span>
-               <span className="text-[10px] tracking-[0.6em] uppercase font-bold">Couture Manifest 2025</span>
-               <span className="h-[1px] w-8 bg-white"></span>
+            <div className="flex flex-col items-center gap-4 mt-4">
+              <div className="flex items-center justify-center gap-6 opacity-40 group-hover:opacity-100 transition-opacity duration-700">
+                 <span className="h-[1px] w-8 bg-white"></span>
+                 <span className="text-[10px] tracking-[0.6em] uppercase font-bold">Couture Manifest 2025</span>
+                 <span className="h-[1px] w-8 bg-white"></span>
+              </div>
+              
+              <div className="text-[9px] tracking-[0.3em] uppercase text-white/30 font-medium flex gap-4">
+                <span>Unique Models: {stats.models}</span>
+                <span>//</span>
+                <span className={stats.fragrance > 0 ? 'text-v-red' : ''}>Fragrance: {stats.fragrance}</span>
+                <span>//</span>
+                <span className={stats.skincare > 0 ? 'text-v-red' : ''}>Skincare: {stats.skincare}</span>
+              </div>
             </div>
           </div>
 
-          {/* Luxury Filter Bar */}
           <div className="w-full max-w-5xl flex flex-col gap-10 items-center">
-            {/* Search Input */}
             <div className="relative w-full max-w-2xl group">
                <input 
                 type="text" 
@@ -65,8 +83,22 @@ const App: React.FC = () => {
               />
               <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-v-red transition-all duration-700 group-focus-within:w-full"></div>
             </div>
+
+            <div className="flex gap-10 border-b border-white/5 pb-4 w-full justify-center">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setFilterCategory(cat)}
+                  className={`text-[10px] tracking-[0.5em] uppercase transition-all duration-500 pb-2 relative ${
+                    filterCategory === cat ? 'text-white font-bold' : 'text-white/20 hover:text-white/60'
+                  }`}
+                >
+                  {cat} Collections
+                  {filterCategory === cat && <span className="absolute bottom-[-1px] left-0 w-full h-[1px] bg-v-red"></span>}
+                </button>
+              ))}
+            </div>
             
-            {/* Brand Filter List - Show All Unique Brands */}
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 max-w-5xl">
               {brands.map(brand => (
                 <button

@@ -39,10 +39,10 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
           <div className="absolute bottom-12 left-12">
             <span className="text-v-red text-xs font-bold tracking-[0.5em] uppercase block mb-4">Master Manifest 2025</span>
             <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 inline-block">
-               <p className="text-[10px] text-white/40 uppercase mb-2">Authenticated Batch</p>
-               <div className="flex flex-col gap-1">
+               <p className="text-[10px] text-white/40 uppercase mb-2">Authenticated Archive SKUs</p>
+               <div className="flex flex-wrap gap-2 max-w-xs">
                  {product.ids.map(id => (
-                   <span key={id} className="font-mono text-[9px] text-white/60 tracking-tighter">{id}</span>
+                   <span key={id} className="font-mono text-[9px] text-white/60 tracking-tighter bg-black/40 px-2 py-1 border border-white/5">{id}</span>
                  ))}
                </div>
             </div>
@@ -106,6 +106,10 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
                     <div className="flex justify-between border-b border-white/5 pb-2">
                       <span className="text-[10px] text-white/30 uppercase tracking-widest">Authenticity</span>
                       <span className="serif italic text-lg text-white/80">{product.details.serialStatus}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/5 pb-2">
+                      <span className="text-[10px] text-white/30 uppercase tracking-widest">Coverage</span>
+                      <span className="serif italic text-lg text-white/80">{product.details.coverage}</span>
                     </div>
                   </div>
                 )}

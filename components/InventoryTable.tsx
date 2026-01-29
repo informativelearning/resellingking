@@ -25,6 +25,14 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
                 alt={product.name} 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100"
               />
+              
+              {/* Category Vertical Tag */}
+              <div className="absolute top-0 left-0 h-full w-8 bg-v-black/40 backdrop-blur-sm flex items-center justify-center border-r border-white/5 pointer-events-none">
+                <span className="whitespace-nowrap -rotate-90 text-[8px] tracking-[0.4em] uppercase text-white/40 font-bold">
+                  {product.category}
+                </span>
+              </div>
+
               <div className="absolute top-4 right-4 text-xs font-bold tracking-widest bg-v-red text-white px-2 py-1">
                 ${product.price}
               </div>
@@ -34,7 +42,7 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
             </div>
 
             {/* Product Meta */}
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col space-y-1 pl-4">
               <span className="text-[10px] tracking-[0.4em] uppercase text-v-red font-bold">
                 {product.brand}
               </span>
