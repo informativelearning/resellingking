@@ -40,80 +40,210 @@ const DEFAULT_DETAILS = (brand: string, name: string): ProductDetails => {
   };
 };
 
-// FULL MANIFEST Pages 1-14
+// COMPREHENSIVE MANIFEST - All SKUs from Premium + Standard Lists
 const rawData: [string, string, string, string][] = [
-  // --- PAGE 1 (Chanel) ---
-  ["123-FENVAP100", "Chanel", "Coco Mademoiselle", "100ml"],
+  // ========== CHANEL ==========
+  // Coco Mademoiselle 100ml
   ["053-FENCOVAPG", "Chanel", "Coco Mademoiselle", "100ml"],
+  ["071-FUCOIN", "Chanel", "Coco Mademoiselle", "100ml"],
+  ["123-FENVAP100", "Chanel", "Coco Mademoiselle", "100ml"],
   ["098-PTDAFUCO", "Chanel", "Coco Mademoiselle", "100ml"],
   ["099-PTNIGHCO", "Chanel", "Coco Mademoiselle", "100ml"],
-  ["109-COHEIPT", "Chanel", "Coco Noir", "100ml"],
-  ["097-HEICOVAP", "Chanel", "Coco Noir", "100ml"],
+  
+  // Coco Mademoiselle 30ml
+  ["296-COCO30ML", "Chanel", "Coco Mademoiselle Travel Spray", "30ml"],
+  
+  // Coco Noir 100ml
+  ["054-CONIGHTG", "Chanel", "Coco Noir", "100ml"],
   ["126-GVAPCOHEI", "Chanel", "Coco Noir", "100ml"],
   ["028-COHEITOP", "Chanel", "Coco Noir", "100ml"],
-  ["054-CONIGHTG", "Chanel", "Coco Noir", "100ml"],
+  ["109-COHEIPT", "Chanel", "Coco Noir", "100ml"],
+  ["097-HEICOVAP", "Chanel", "Coco Noir", "100ml"],
+  
+  // Allure Homme Sport 100ml
+  ["445-ALSPG", "Chanel", "Allure Homme Sport", "100ml"],
+  ["659-SUPE", "Chanel", "Allure Homme Sport Superleggera", "100ml"],
+  ["660-EXTR", "Chanel", "Allure Homme Sport Eau Extreme", "100ml"],
   ["223-ALLCO", "Chanel", "Allure Homme Sport", "100ml"],
   ["115-SPOREDT", "Chanel", "Allure Homme Sport", "100ml"],
+  
+  // Allure Homme 100ml
+  ["221-ALLHOME", "Chanel", "Allure Homme", "100ml"],
   ["454-ALHO", "Chanel", "Allure Homme", "100ml"],
+  
+  // Allure 100ml
+  ["077-ALLUH", "Chanel", "Allure", "100ml"],
+  
+  // Bleu de Chanel 100ml
+  ["062-EDTBLUG", "Chanel", "Bleu de Chanel", "100ml"],
+  ["013-BLUTOPJIN", "Chanel", "Bleu de Chanel", "100ml"],
+  ["094-TOPBLUE", "Chanel", "Bleu de Chanel", "100ml"],
+  ["624-LEBLU", "Chanel", "Bleu de Chanel", "100ml"],
   ["012-PTJINBL", "Chanel", "Bleu de Chanel", "100ml"],
   ["018-PTBLUEDP", "Chanel", "Bleu de Chanel", "100ml"],
   ["067-PTBLUE", "Chanel", "Bleu de Chanel", "100ml"],
-  ["104-PTXHHUANG", "Chanel", "Chance (Yellow/EDT)", "100ml"],
+  
+  // Bleu de Chanel 30ml
+  ["284-BLU30ML", "Chanel", "Bleu de Chanel Travel Spray", "30ml"],
+  
+  // Chance Eau Tendre (Pink) 100ml
+  ["596-XHDPH", "Chanel", "Chance Eau Tendre (Pink)", "100ml"],
+  ["042-DANFENG", "Chanel", "Chance (Pink)", "100ml"],
+  ["052-XHNONGG", "Chanel", "Chance (Pink)", "100ml"],
   ["035-CHXHDAN", "Chanel", "Chance Eau Tendre (Pink)", "100ml"],
-  ["472-HON5", "Chanel", "N°5 Red Edition", "100ml"],
+  
+  // Chance (Purple) 100ml
+  ["467-XHZI", "Chanel", "Chance (Purple)", "100ml"],
+  
+  // Chance Eau Fraiche (Green) 100ml
+  ["456-XHLVEDP", "Chanel", "Chance Eau Fraiche (Green)", "100ml"],
+  ["046-LVXHG", "Chanel", "Chance Eau Fraiche", "100ml"],
   ["105-LVPTXH", "Chanel", "Chance Eau Fraiche (Green)", "100ml"],
+  
+  // Chance (Yellow/EDT) 100ml
+  ["104-PTXHHUANG", "Chanel", "Chance (Yellow/EDT)", "100ml"],
+  
+  // N°5 100ml
+  ["116-TOPN5H", "Chanel", "N°5", "100ml"],
+  ["049-N5BAIG", "Chanel", "N°5 L'Eau", "100ml"],
+  ["472-HON5", "Chanel", "N°5 Red Edition", "100ml"],
   ["120-N5HPT", "Chanel", "N°5 L'Eau", "100ml"],
   ["308-PTBAIN5", "Chanel", "N°5", "100ml"],
+  
+  // Gabrielle 100ml
+  ["311-ESSE", "Chanel", "Gabrielle Essence", "100ml"],
   ["627-ESSPT", "Chanel", "Gabrielle", "100ml"],
 
-  // --- PAGE 2 (Valentino) ---
-  ["271-PTVAYELL", "Valentino", "Uomo Born in Roma Yellow Dream", "100ml"],
-  ["294-PTVAGOLD", "Valentino", "Uomo Born in Roma Yellow Dream", "100ml"],
-  ["269-PTDONNA", "Valentino", "Donna Born in Roma", "100ml"],
-  ["136-PTINETVA", "Valentino", "Uomo Born in Roma", "100ml"],
-  ["130-INETVA", "Valentino", "Uomo Born in Roma", "100ml"],
-  ["484-VABOPT", "Valentino", "Uomo Born in Roma", "100ml"],
-  ["399-PTVAUO", "Valentino", "Uomo Born in Roma", "100ml"],
-  ["558-PTVAEX", "Valentino", "Uomo Born in Roma", "100ml"],
-  ["614-VAEXPT", "Valentino", "Uomo Born in Roma", "100ml"],
-  ["137--PTVALEHON", "Valentino", "Voce Viva", "100ml"],
-  ["485-PTVACOR", "Valentino", "Uomo Born in Roma Coral Fantasy", "100ml"],
-  ["205-PTCORAVA", "Valentino", "Donna Born in Roma Coral Fantasy", "100ml"],
-  ["342-PTVAPIN", "Valentino", "Donna Born in Roma Pink PP", "100ml"],
-  ["407-PTDRE", "Valentino", "Donna Born in Roma Green Stravaganza", "100ml"],
-  ["559-PTVAST", "Valentino", "Uomo Born in Roma Green Stravaganza", "100ml"],
-  ["268-PTGREEVA", "Valentino", "Donna Born in Roma Green Stravaganza", "100ml"],
-  ["584-UOINPT", "Valentino", "Uomo Intense", "100ml"],
-  ["037-ROCK", "Valentino", "Uomo Born in Roma Rockstud Noir", "100ml"],
-  ["219-UOIVPT", "Valentino", "Donna Born in Roma Yellow Dream", "100ml"],
-  ["241-VIOPT", "Valentino", "Voce Viva Intensa", "100ml"],
+  // ========== DIOR ==========
+  // Sauvage 100ml
+  ["043-TOPKUANG", "Dior", "Sauvage", "100ml"],
+  ["374-SAPAR", "Dior", "Sauvage Parfum", "100ml"],
+  ["114-EDPSAU", "Dior", "Sauvage", "100ml"],
+  ["589-EDPSA", "Dior", "Sauvage", "100ml"],
+  ["314-PTKUANG", "Dior", "Sauvage", "100ml"],
+  
+  // Sauvage Elixir 60ml
+  ["029-SAELG", "Dior", "Sauvage Elixir", "60ml"],
+  ["588-ELISA", "Dior", "Sauvage Elixir", "60ml"],
+  
+  // Dior Homme
+  ["201-DAHOMM", "Dior", "Homme", "100ml"],
+  ["206-HOPAR", "Dior", "Homme Parfum", "100ml"],
+  ["540-HOMT", "Dior", "Homme Sport", "125ml"],
+  
+  // J'adore & Miss Dior
+  ["112-JAWATE", "Dior", "J'adore L'eau", "100ml"],
+  ["044-JADOEDP", "Dior", "J'adore", "100ml"],
+  ["239-MISABS", "Miss Dior", "Miss Dior", "100ml"],
+  ["051-MISSBLO", "Miss Dior", "Blooming Bouquet", "100ml"],
+  ["237-MISEDP", "Miss Dior", "Eau de Parfum", "100ml"],
+  ["631-DIES", "Miss Dior", "Gift Set", "Gift Set"],
+  ["654-MIPA", "Miss Dior", "Parfum", "100ml"],
 
-  // --- PAGE 3 (YSL & MFK) ---
-  ["306-HOPIUPT", "YSL", "Black Opium", "90ml"],
-  ["117-OPIU", "YSL", "Black Opium", "90ml"],
-  ["587-LANOP", "YSL", "Black Opium Intense", "90ml"],
+  // ========== YSL ==========
+  // Y Collection 100ml
+  ["191-YLELI", "YSL", "Y Le Parfum", "100ml"],
+  ["133-GLEPAR", "YSL", "Y Eau de Parfum", "100ml"],
+  ["531-YSEAU", "YSL", "Y Eau de Toilette", "100ml"],
+  ["121-GYSEAU", "YSL", "Y", "100ml"],
   ["019-LEPARYS", "YSL", "Y Men Eau de Parfum", "100ml"],
   ["567-YSINT", "YSL", "Y Men Le Parfum", "100ml"],
   ["020-EAUFRAYS", "YSL", "Y Eau Fraiche", "100ml"],
   ["021-YSEAUDE", "YSL", "Y Men", "100ml"],
   ["228-YSEDT", "YSL", "Y Men EDT", "100ml"],
-  ["315-PTMON", "YSL", "Mon Paris", "90ml"],
+  
+  // Libre 90ml
+  ["193-TOPLIBRE", "YSL", "Libre", "90ml"],
+  ["248-EDPLIB", "YSL", "Libre Eau de Parfum", "90ml"],
+  ["198-LIBLEP", "YSL", "Libre Le Parfum", "90ml"],
+  ["194-LIBFLOW", "YSL", "Libre Flowers & Flames", "90ml"],
+  ["459-LIBLE", "YSL", "Libre L'Absolu Platine", "90ml"],
+  ["697-LIVA", "YSL", "Libre", "90ml"],
   ["118-LIBRE", "YSL", "Libre", "90ml"],
   ["677-YVEAU", "YSL", "Libre", "90ml"],
   ["687-LILE", "YSL", "Libre", "90ml"],
+  
+  // MYSLF 100ml
+  ["230-MYSLE", "YSL", "MYSLF", "100ml"],
+  ["107-MYSLF", "YSL", "MYSLF Refillable", "100ml"],
+  ["565-MYLA", "YSL", "MYSLF Le Parfum", "100ml"],
   ["369-PTMYSLE", "YSL", "MYSLF", "100ml"],
   ["361-PTMYSL", "YSL", "MYSLF", "100ml"],
+  
+  // Black Opium 90ml
+  ["217-GOPIU", "YSL", "Black Opium Over Red", "90ml"],
+  ["673-OPEX", "YSL", "Black Opium Extreme", "90ml"],
+  ["674-OPRE", "YSL", "Black Opium Over Red", "90ml"],
+  ["675-OPGL", "YSL", "Black Opium Illicit Green", "90ml"],
+  ["306-HOPIUPT", "YSL", "Black Opium", "90ml"],
+  ["117-OPIU", "YSL", "Black Opium", "90ml"],
+  ["587-LANOP", "YSL", "Black Opium Intense", "90ml"],
+  
+  // Mon Paris 90ml
+  ["227-MONPAR", "YSL", "Mon Paris", "90ml"],
+  ["661-SEME", "YSL", "Mon Paris", "90ml"],
+  ["315-PTMON", "YSL", "Mon Paris", "90ml"],
+  
+  // Other YSL
+  ["612-BOUQ", "YSL", "Wild Leather", "125ml"],
   ["427-YSMAN", "YSL", "Manifesto", "90ml"],
-  ["511-MFPTH", "MFK", "Baccarat Rouge 540 Extrait (Red)", "70ml"],
-  ["512-MFBPT", "MFK", "Baccarat Rouge 540 (White)", "70ml"],
 
-  // --- PAGE 4 (MFK, Dior, CH) ---
+  // ========== MFK (MAISON FRANCIS KURKDJIAN) ==========
+  // Baccarat Rouge 540 Extrait 70ml
+  ["186-XINDA540HONG", "MFK", "Baccarat Rouge 540 Extrait", "70ml"],
+  ["511-MFPTH", "MFK", "Baccarat Rouge 540 Extrait (Red)", "70ml"],
   ["147-MFKfanghong", "MFK", "Baccarat Rouge 540 Extrait (Red)", "70ml"],
+  
+  // Baccarat Rouge 540 70ml
+  ["293-DABAIma", "MFK", "Baccarat Rouge 540", "70ml"],
+  ["512-MFBPT", "MFK", "Baccarat Rouge 540 (White)", "70ml"],
   ["262-fangbai540", "MFK", "Baccarat Rouge 540 (White)", "70ml"],
+  
+  // Oud Collection 70ml
+  ["184-OUDlanDA", "MFK", "Oud Satin Mood", "70ml"],
+  ["207-DAOUDJIN", "MFK", "Oud Silk Mood", "70ml"],
   ["548-OUDPT", "MFK", "Oud Satin Mood", "70ml"],
-  ["589-EDPSA", "Dior", "Sauvage", "100ml"],
-  ["314-PTKUANG", "Dior", "Sauvage", "100ml"],
-  ["588-ELISA", "Dior", "Sauvage Elixir", "60ml"],
+  
+  // Other MFK 70ml
+  ["453-MFKALA", "MFK", "À la rose", "70ml"],
+  ["152-APOM", "MFK", "APOM", "70ml"],
+  ["509-AQMFK", "MFK", "Aqua Universalis", "70ml"],
+  ["655-GENT", "MFK", "Gentle Fluidity Silver", "70ml"],
+  ["680-BEAU", "MFK", "Le Beau Parfum", "70ml"],
+  
+  // MFK Gift Sets
+  ["392-LEBEZI", "MFK", "724", "Gift Set"],
+  ["231-MFK4PC", "MFK", "Miniature Set", "4 x 5ml"],
+
+  // ========== PRADA ==========
+  // Paradoxe 90ml
+  ["245-PARVIR", "Prada", "Paradoxe Virtual Flower", "90ml"],
+  ["058-PARADO", "Prada", "Paradoxe", "90ml"],
+  ["623-PRDI", "Prada", "Paradoxe Intense", "90ml"],
+  ["181-INTEPRADA", "Prada", "Paradoxe Intense", "90ml"],
+  ["276-PTPARADO", "Prada", "Paradoxe", "90ml"],
+  
+  // Luna Rossa 100ml
+  ["108-LUNA", "Prada", "Luna Rossa Ocean", "100ml"],
+  ["711-PBLA", "Prada", "Luna Rossa Black", "100ml"],
+  ["712-OCEA", "Prada", "Luna Rossa Ocean", "100ml"],
+  
+  // Infusion 100ml
+  ["409-PRADI", "Prada", "Infusion d'Iris", "100ml"],
+  ["628-DIGM", "Prada", "Les Infusions", "100ml"],
+
+  // ========== CAROLINA HERRERA ==========
+  // Good Girl 80ml
+  ["075-GOBLUS", "Carolina Herrera", "Good Girl Blush", "80ml"],
+  ["093-ITSGO", "Carolina Herrera", "Good Girl Velvet Fatale", "80ml"],
+  ["091-GOGL", "Carolina Herrera", "Good Girl", "80ml"],
+  ["111-GODAZZ", "Carolina Herrera", "Good Girl Gold Fantasy", "80ml"],
+  ["089-CARHEI", "Carolina Herrera", "Good Girl", "80ml"],
+  ["657-VERY", "Carolina Herrera", "Very Good Girl", "80ml"],
+  ["694-BOWT", "Carolina Herrera", "Good Girl", "80ml"],
+  ["695-FENBO", "Carolina Herrera", "Good Girl Blush Elixir", "80ml"],
+  ["658-GOSP", "Carolina Herrera", "Good Girl", "80ml"],
+  ["664-GIRL", "Carolina Herrera", "Good Girl", "80ml"],
   ["425-GOBAI", "Carolina Herrera", "Good Girl (White/Gold)", "80ml"],
   ["323-PTCARHEI", "Carolina Herrera", "Good Girl (Black)", "80ml"],
   ["313-PTGODAZI", "Carolina Herrera", "Good Girl Dazzling Garden", "80ml"],
@@ -124,20 +254,46 @@ const rawData: [string, string, string, string][] = [
   ["302-PTGOFAN", "Carolina Herrera", "Good Girl (Light Blue/Glitter)", "80ml"],
   ["176-BLUS", "Carolina Herrera", "Good Girl Blush", "80ml"],
   ["153-ITSS", "Carolina Herrera", "Very Good Girl (Red)", "80ml"],
+  
+  // Bad Boy 100ml
+  ["682-HREE", "Carolina Herrera", "Bad Boy", "100ml"],
+  ["683-COBA", "Carolina Herrera", "Bad Boy Cobalt", "100ml"],
+  
+  // 212 Collection
   ["431-HEROH", "Carolina Herrera", "212 Heroes (Pink Skateboard)", "90ml"],
   ["432-HERHY", "Carolina Herrera", "212 Heroes (Silver Skateboard)", "90ml"],
-
-  // --- PAGE 5 (CH & JPG) ---
   ["299-WILDPT", "Carolina Herrera", "212 VIP Rosé", "80ml"],
+
+  // ========== LOUIS VUITTON ==========
+  ["581-PACLV", "Louis Vuitton", "Pacific Chill", "100ml"],
+  ["580-IMALV", "Louis Vuitton", "Imagination", "100ml"],
+  ["582-CALLV", "Louis Vuitton", "California Dream", "100ml"],
+  ["579-AFTLV", "Louis Vuitton", "Afternoon Swim", "100ml"],
+  ["637-LIMM", "Louis Vuitton", "L'Immensité", "100ml"],
+  ["632-OMBR", "Louis Vuitton", "Ombre Nomade", "100ml"],
+  ["633-SUN", "Louis Vuitton", "Sun Song", "100ml"],
+  ["634-LOERS", "Louis Vuitton", "Lovers", "100ml"],
+  ["662-PURA", "Louis Vuitton", "Pur Oud", "100ml"],
+
+  // ========== JEAN PAUL GAULTIER ==========
+  // Divine & Scandal (Women) 80-100ml
+  ["371-GJINT", "Jean Paul Gaultier", "Divine", "100ml"],
+  ["639-JEAB", "Jean Paul Gaultier", "Scandal Absolu", "80ml"],
+  ["640-JEIN", "Jean Paul Gaultier", "Scandal", "80ml"],
+  ["642-JELE", "Jean Paul Gaultier", "Scandal Le Parfum", "80ml"],
   ["321-HUALABE", "Jean Paul Gaultier", "La Belle", "100ml"],
   ["387-JPPAR", "Jean Paul Gaultier", "La Belle Le Parfum", "100ml"],
+  
+  // Scandal Pour Homme 100ml
+  ["643-SCLE", "Jean Paul Gaultier", "Scandal Pour Homme Le Parfum", "100ml"],
+  ["644-SCAB", "Jean Paul Gaultier", "Scandal Pour Homme Absolu", "100ml"],
+  ["645-SCIN", "Jean Paul Gaultier", "Scandal Pour Homme", "100ml"],
   ["533-GAUPT", "Jean Paul Gaultier", "Scandal Pour Homme", "100ml"],
+  
+  // Le Male Collection 125ml
   ["238-LEPATONG", "Jean Paul Gaultier", "Le Male Le Parfum", "125ml"],
   ["151-LEPAZHI", "Jean Paul Gaultier", "Le Male Le Parfum", "125ml"],
   ["259-LEMAhei125zi", "Jean Paul Gaultier", "Le Male Le Parfum", "125ml"],
-  ["337-LEHUA", "Jean Paul Gaultier", "Le Beau", "125ml"],
-  ["167-LELOE", "Jean Paul Gaultier", "Le Beau", "125ml"],
-  ["368-LEBEA", "Jean Paul Gaultier", "Le Beau Paradise Garden", "125ml"],
   ["242-JINTONG", "Jean Paul Gaultier", "Le Male Elixir", "125ml"],
   ["257-JINLEMAZI", "Jean Paul Gaultier", "Le Male Elixir", "125ml"],
   ["159-HEITONG", "Jean Paul Gaultier", "Le Male (Black)", "125ml"],
@@ -146,116 +302,146 @@ const rawData: [string, string, string, string][] = [
   ["286-LEMAlvzi", "Jean Paul Gaultier", "Le Male (Green)", "125ml"],
   ["165-LEMAZI", "Jean Paul Gaultier", "Le Male (Teal)", "125ml"],
   ["590-LEY", "Jean Paul Gaultier", "Le Male Pride Edition", "125ml"],
+  
+  // Le Beau 125ml
+  ["337-LEHUA", "Jean Paul Gaultier", "Le Beau", "125ml"],
+  ["167-LELOE", "Jean Paul Gaultier", "Le Beau", "125ml"],
+  ["368-LEBEA", "Jean Paul Gaultier", "Le Beau Paradise Garden", "125ml"],
 
-  // --- PAGE 6 (Gucci, Prada, Armani) ---
-  ["685-ONLY", "Dolce & Gabbana", "The Only One", "100ml"],
+  // ========== XERJOFF ==========
+  ["439-XERH", "Xerjoff", "Erba Pura", "100ml"],
+  ["440-LXER", "Xerjoff", "Naxos", "100ml"],
+  ["541-XERHE", "Xerjoff", "Alexandria II", "100ml"],
+  ["569-XEAC", "Xerjoff", "Accento", "100ml"],
+  ["577-ZIXER", "Xerjoff", "Purple Accento", "100ml"],
+  ["578-ZOXER", "Xerjoff", "Opera", "100ml"],
+  ["570-MUXE", "Xerjoff", "Muse", "100ml"],
+  ["573-EXWA", "Xerjoff", "Wardasina", "100ml"],
+  ["571-JOFF", "Xerjoff", "Erba Gold", "100ml"],
+  ["636-XER", "Xerjoff", "Various", "100ml"],
+
+  // ========== INITIO ==========
+  ["602-INSID", "Initio", "Side Effect", "90ml"],
+  ["611-MUSK", "Initio", "Musk Therapy", "90ml"],
+  ["603-INOUD", "Initio", "Oud for Greatness", "90ml"],
+  ["493-ABINI", "Initio", "Oud for Happiness", "Gift Set"],
+  ["692-INPA", "Initio", "Paragon", "90ml"],
+  ["693-INEDP", "Initio", "Oud for Happiness", "90ml"],
+  ["710-ATOM", "Initio", "Atomic Rose", "90ml"],
+
+  // ========== PARFUMS DE MARLY ==========
+  // Women's Collection 75ml
+  ["192-EXCLFEN", "Parfums de Marly", "Delina Exclusif", "75ml"],
+  ["161-MALFEN", "Parfums de Marly", "Delina", "75ml"],
+  ["215-GhongfenMAL", "Parfums de Marly", "Oriana", "75ml"],
+  ["352-VALAYA", "Parfums de Marly", "Valaya", "75ml"],
+  ["487-VALEX", "Parfums de Marly", "Valaya", "75ml"],
+  ["334-MALrose", "Parfums de Marly", "Delina La Rosée", "75ml"],
+  ["277-PALA", "Parfums de Marly", "Palatine", "75ml"],
+  ["210-SAFAN", "Parfums de Marly", "Safanad", "75ml"],
+  ["005-MELI", "Parfums de Marly", "Meliora", "75ml"],
+  
+  // Men's Collection 125ml
+  ["218-MALYcheng75", "Parfums de Marly", "Althaïr", "125ml"],
+  ["254-ALTH125", "Parfums de Marly", "Althaïr", "125ml"],
+  ["613-LAEDP", "Parfums de Marly", "Layton", "125ml"],
+  ["142-TOPLAYTON", "Parfums de Marly", "Layton", "125ml"],
+  ["148-TOPPEGASU", "Parfums de Marly", "Pegasus", "125ml"],
+  ["164-TOPKALAN", "Parfums de Marly", "Kalan", "125ml"],
+  ["146-EXCLUS", "Parfums de Marly", "Pegasus Exclusif", "125ml"],
+  ["600-HERO", "Parfums de Marly", "Herod", "125ml"],
+  ["209-GREE", "Parfums de Marly", "Greenley", "125ml"],
+  ["208-LAEXC", "Parfums de Marly", "Layton Exclusif", "125ml"],
+  ["598-CAST", "Parfums de Marly", "Carlisle", "125ml"],
+  ["266-TOPMAjin", "Parfums de Marly", "Haltane", "125ml"],
+  ["145-HALTAN125", "Parfums de Marly", "Haltane", "125ml"],
+  ["630-PERS", "Parfums de Marly", "Perseus", "125ml"],
+
+  // ========== LATTAFA ==========
+  ["526-YAHO", "Lattafa", "Yara", "100ml"],
+  ["479-HEAS", "Lattafa", "Asad", "100ml"],
+  ["480-YABAI", "Lattafa", "Yara Moi", "100ml"],
+  ["481-CHEYA", "Lattafa", "Fakhar Gold", "100ml"],
+  ["478-ASLAN", "Lattafa", "Asad Zanzibar", "100ml"],
+  ["477-ASAD", "Lattafa", "Asad", "100ml"],
+  ["476-YAFEN", "Lattafa", "Yara Pink", "100ml"],
+  ["521-LATPR", "Lattafa", "Pride", "Gift Set"],
+
+  // ========== MARC JACOBS ==========
+  ["124-LVTIBAO", "Marc Jacobs", "Decadence", "100ml"],
+
+  // ========== GUCCI ==========
+  // Flora Collection 100ml
+  ["024-ZIGUCC", "Gucci", "Flora Gardenia", "100ml"],
+  ["040-FENGUCC", "Gucci", "Flora Gardenia", "100ml"],
+  ["106-GUCLV", "Gucci", "Flora Jasmine", "100ml"],
+  ["510-GUCH", "Gucci", "Flora Magnolia", "100ml"],
+  ["656-FLIN", "Gucci", "Flora", "100ml"],
   ["437-GUCH", "Gucci", "Flora Gorgeous Gardenia", "100ml"],
-  ["438-GUPO", "Gucci", "Guilty Pour Homme", "90ml"],
   ["471-GUBLV", "Gucci", "Flora Gorgeous Jasmine", "100ml"],
+  
+  // Bloom 100ml
+  ["047-BLOMREDG", "Gucci", "Bloom Ambrosia", "100ml"],
+  ["690-BLOO", "Gucci", "Bloom", "100ml"],
+  
+  // Guilty 90ml
+  ["063-GUILTY", "Gucci", "Guilty", "90ml"],
+  ["438-GUPO", "Gucci", "Guilty Pour Homme", "90ml"],
   ["586-GUILPT", "Gucci", "Guilty Gold", "90ml"],
   ["615-GULOV", "Gucci", "Guilty Love Edition", "90ml"],
   ["618-HABGU", "Gucci", "Guilty Red", "90ml"],
   ["617-LOHGU", "Gucci", "Guilty Pour Femme (Purple)", "90ml"],
   ["616-ABGU", "Gucci", "Guilty Absolute", "90ml"],
+  
+  // Alchemist's Garden 100ml
   ["688-AMBR", "Gucci", "The Alchemist's Garden (A Gloaming Night)", "100ml"],
   ["689-BLPA", "Gucci", "The Alchemist's Garden (The Voice of the Snake)", "100ml"],
-  ["690-BLOO", "Gucci", "Bloom", "100ml"],
-  ["276-PTPARADO", "Prada", "Paradoxe", "90ml"],
-  ["031-GIOLAN100", "Armani", "Acqua di Gio Profondo", "100ml"],
-  ["041-HEIGIO", "Armani", "Acqua di Gio Profumo", "125ml"],
-  ["183-BAIGIO", "Armani", "Acqua di Gio", "100ml"],
-  ["346-DAHUGIO", "Armani", "Acqua di Gio Absolu", "125ml"],
 
-  // --- PAGE 7 (Armani & Versace) ---
+  // ========== ARMANI ==========
+  // Acqua di Gio 100ml
+  ["076-GIOABSG", "Armani", "Acqua di Gio Profondo", "100ml"],
+  ["418-GPRO", "Armani", "Acqua di Gio Profondo", "100ml"],
+  ["031-GIOLAN100", "Armani", "Acqua di Gio Profondo", "100ml"],
+  ["179-BAIGIOG", "Armani", "Acqua di Gio", "100ml"],
+  ["183-BAIGIO", "Armani", "Acqua di Gio", "100ml"],
+  ["197-GIOPAR", "Armani", "Acqua di Gio Parfum", "100ml"],
+  
+  // Acqua di Gio 125ml
+  ["033-GIOHEI125G", "Armani", "Acqua di Gio Profumo", "125ml"],
+  ["041-HEIGIO", "Armani", "Acqua di Gio Profumo", "125ml"],
+  ["346-DAHUGIO", "Armani", "Acqua di Gio Absolu", "125ml"],
+  
+  // Stronger With You 100ml
+  ["344-YOUABSG", "Armani", "Stronger With You Absolutely", "100ml"],
+  ["389-YOUTO", "Armani", "Stronger With You Tobacco", "100ml"],
+  ["610-YOPAR", "Armani", "Stronger With You Intensely", "100ml"],
+  ["532-STRIN", "Armani", "Stronger With You Intensely", "100ml"],
   ["348-PTYOUAB", "Armani", "Stronger With You", "100ml"],
   ["003-STAR", "Armani", "Stronger With You", "100ml"],
   ["338-PTYOPA", "Armani", "Stronger With You Intensely", "100ml"],
   ["090-YAMB", "Armani", "Stronger With You Amber", "100ml"],
   ["267-PTYOUBE", "Armani", "Stronger With You Freeze", "100ml"],
   ["629-FREE", "Armani", "Stronger With You Freeze", "100ml"],
-  ["002-INLOVE", "Armani", "In Love With You", "100ml"],
-  ["448-ACQU", "Armani", "Acqua di Gioia", "100ml"],
-  ["055-MYWAY", "Armani", "My Way", "90ml"],
+  
+  // Armani Code 125ml
+  ["247-ARCODE", "Armani", "Code", "125ml"],
   ["381-CODEDP", "Armani", "Code", "125ml"],
   ["175-ARCODE", "Armani", "Code Parfum", "125ml"],
-  ["155-HONGVERS", "Versace", "Eros Flame", "100ml"],
-  ["384-VERNAJ", "Versace", "Eros Flame", "100ml"],
-  ["160-VERSLAN", "Versace", "Eros", "100ml"],
-  ["256-PTVERPAR", "Versace", "Eros", "100ml"],
-  ["258-EDPPTVELA", "Versace", "Dylan Blue", "100ml"],
-  ["287-ZUANZI", "Versace", "Crystal Noir", "90ml"],
-  ["274-PTVERHUA", "Versace", "Bright Crystal", "90ml"],
-  ["264-PTHUANGZ", "Versace", "Yellow Diamond", "90ml"],
+  
+  // Women's Collection
+  ["092-WAYPAR", "Armani", "My Way Parfum", "90ml"],
+  ["082-WAYGAO", "Armani", "My Way Nectar", "90ml"],
+  ["055-MYWAY", "Armani", "My Way", "90ml"],
+  ["113-ZT4GIO", "Armani", "Si Passione", "100ml"],
+  ["702-SIHO", "Armani", "Si", "100ml"],
+  ["002-INLOVE", "Armani", "In Love With You", "100ml"],
+  ["448-ACQU", "Armani", "Acqua di Gioia", "100ml"],
 
-  // --- PAGE 8 (Versace, Azzaro, Creed) ---
-  ["312-VEMANPT", "Versace", "Man Eau Fraiche", "100ml"],
-  ["518-VEBRPT", "Versace", "Bright Crystal", "90ml"],
-  ["434-ABVER", "Versace", "Bright Crystal Absolu", "90ml"],
-  ["263-PTFENZ", "Versace", "Bright Crystal", "90ml"],
-  ["297-DYLA", "Versace", "Dylan Blue", "100ml"],
-  ["309-POHVEPT", "Versace", "Pour Homme", "100ml"],
-  ["534-WAELI", "Azzaro", "Wanted", "100ml"],
-  ["169-WBY", "Azzaro", "Wanted", "100ml"],
-  ["473-WAEDT", "Azzaro", "Wanted", "100ml"],
-  ["354-INTWAT", "Azzaro", "The Most Wanted", "100ml"],
-  ["156-MOSTWAT", "Azzaro", "The Most Wanted (Black)", "100ml"],
-  ["189-WAT100", "Azzaro", "Wanted By Night", "100ml"],
-  ["537-WAEDP", "Azzaro", "Chrome", "100ml"],
-  ["036-PTABS", "Creed", "Aventus (Black Label)", "100ml"],
-  ["291-PTCRHEI100", "Creed", "Aventus (Black Label)", "100ml"],
-  ["460-CRWINPT", "Creed", "Aventus For Her", "75ml"],
-  ["397-PTQUCR", "Creed", "Aventus (White/Silver Label)", "100ml"],
-  ["405-PTDEL", "Creed", "Viking (Red)", "100ml"],
-
-  // --- PAGE 9 (Creed, Tom Ford, Le Labo) ---
-  ["403-PTCEN", "Creed", "Aventus (10th Anniversary Red)", "100ml"],
-  ["335-CRBA10", "Creed", "Silver Mountain Water", "100ml"],
-  ["341-CRwhite", "Creed", "Silver Mountain Water", "100ml"],
-  ["211-CRblack120", "Creed", "Aventus", "100ml"],
-  ["135-CRROY", "Creed", "Millesime Imperial", "100ml"],
-  ["251-Crquanjin", "Creed", "Millesime Imperial", "100ml"],
-  ["345-CRquanhei", "Creed", "Green Irish Tweed", "100ml"],
-  ["282-CRNV100", "Creed", "Aventus (White Label)", "100ml"],
-  ["252-PTSPRING", "Creed", "Spring Flower", "75ml"],
-  ["522-CRHUA", "Creed", "Spring Flower (Pink)", "75ml"],
-  ["517-PTCRH", "Creed", "Viking", "100ml"],
-  ["045-CAR", "Creed", "Carmina", "75ml"],
-  ["546-PTTFPE", "Tom Ford", "Bitter Peach", "50ml"],
-  ["316-VANTFPT", "Tom Ford", "Tobacco Vanille", "100ml"],
-  ["560-SOTF", "Tom Ford", "Soleil Blanc", "50ml"],
-  ["404-PTSOL", "Tom Ford", "Soleil Blanc", "50ml"],
-  ["317-OUDHUIPT", "Tom Ford", "Oud Wood", "100ml"],
-  ["329-PTROSET", "Tom Ford", "Rose Prick", "50ml"],
-  ["034-NOIR29IN", "Le Labo", "The Noir 29", "100ml"],
-  ["330-TFEBRPT", "Tom Ford", "Ebene Fume", "50ml"],
-
-  // --- PAGE 10 (Tom Ford & Boss) ---
-  ["125-TFORCHEI", "Tom Ford", "Black Orchid", "100ml"],
-  ["122-TFNOIR", "Tom Ford", "Noir Extreme", "100ml"],
-  ["222-NEIPT", "Tom Ford", "White Suede", "50ml"],
-  ["289-PTTFVEZI", "Tom Ford", "Velvet Orchid", "100ml"],
-  ["343-PTSEXTF", "Tom Ford", "Vanilla Sex (Gold Label)", "50ml"],
-  ["406-CAFEPT", "Tom Ford", "Cafe Rose", "50ml"],
-  ["402-PTWHI", "Tom Ford", "White Patchouli", "100ml"],
-  ["324-TFOMBPT", "Tom Ford", "Ombre Leather", "100ml"],
-  ["050-DOMB", "Tom Ford", "Ombre Leather", "100ml"],
-  ["429-PTWH", "Tom Ford", "Black Orchid Style", "100ml"],
-  ["328-PTSOLTF", "Tom Ford", "Soleil Brulant", "50ml"],
-  ["486-PTLOST", "Tom Ford", "Lost Cherry", "50ml"],
-  ["524-FABPT", "Tom Ford", "Fucking Fabulous", "50ml"],
-  ["626-JASPT", "Tom Ford", "Jasmin Rouge", "50ml"],
-  ["679-POUR", "Tom Ford", "Noir", "100ml"],
-  ["608-BOTT", "Hugo Boss", "Bottled", "100ml"],
-  ["607-OUDS", "Hugo Boss", "Bottled Oud", "100ml"],
-  ["605-ABSO", "Hugo Boss", "The Scent Absolute", "100ml"],
-  ["609-TONIC", "Hugo Boss", "Bottled Tonic", "100ml"],
-
-  // --- PAGE 11 (Boss, Polo, Paco) ---
-  ["604-BOLD", "Hugo Boss", "Bottled", "100ml"],
-  ["625-BOEDT", "Hugo Boss", "Boss", "100ml"],
-  ["678-TTLE", "Hugo Boss", "Bottled", "100ml"],
-  ["536-PORE", "Ralph Lauren", "Polo Red", "125ml"],
-  ["545-POBU", "Ralph Lauren", "Polo Blue", "125ml"],
+  // ========== PACO RABANNE ==========
+  // 1 Million 100ml
+  ["563-MIGO", "Paco Rabanne", "1 Million Gold", "100ml"],
+  ["665-LUCK", "Paco Rabanne", "1 Million Lucky", "100ml"],
+  ["666-RABA", "Paco Rabanne", "1 Million", "100ml"],
   ["396-MILEL", "Paco Rabanne", "1 Million Elixir", "100ml"],
   ["433-MILRO", "Paco Rabanne", "1 Million Royal", "100ml"],
   ["428-PACO", "Paco Rabanne", "1 Million", "100ml"],
@@ -265,57 +451,403 @@ const rawData: [string, string, string, string][] = [
   ["025-YINMIL", "Paco Rabanne", "1 Million", "100ml"],
   ["278-MIBLAC", "Paco Rabanne", "1 Million Prive", "100ml"],
   ["281-MILPAR", "Paco Rabanne", "1 Million Parfum", "100ml"],
+  
+  // Invictus 100ml
+  ["670-INPA", "Paco Rabanne", "Invictus", "100ml"],
+  ["671-INEX", "Paco Rabanne", "Invictus Victory", "100ml"],
+  ["672-ININT", "Paco Rabanne", "Invictus Victory Elixir", "100ml"],
+  
+  // Women's Collection
   ["372-OLYM", "Paco Rabanne", "Olympea", "80ml"],
+  ["435-PTFAME", "Paco Rabanne", "Fame", "80ml"],
+  
+  // Phantom 100ml
   ["436-PHAPT", "Paco Rabanne", "Phantom", "100ml"],
   ["182-PHANT100", "Paco Rabanne", "Phantom", "100ml"],
   ["457-PHPA", "Paco Rabanne", "Phantom (Black)", "100ml"],
-  ["435-PTFAME", "Paco Rabanne", "Fame", "80ml"],
 
-  // --- PAGE 12 (Lancome, Burberry, D&G, VS) ---
+  // ========== CREED ==========
+  // Aventus 100ml (Various Editions)
+  ["144-TOPCRZT444", "Creed", "Aventus Gift Set", "3 x 30ml"],
+  ["149-CRABS", "Creed", "Aventus Absolu", "75ml"],
+  ["220-TOPCRhei100", "Creed", "Aventus Anniversary", "100ml"],
+  ["450-TOPbaCR", "Creed", "Aventus (White)", "100ml"],
+  ["244-CRCENT", "Creed", "Aventus (Centaurus)", "100ml"],
+  ["336-TOPHUICR", "Creed", "Aventus (Grey/Titanium)", "100ml"],
+  ["232-CRVI R", "Creed", "Aventus (Silver/White)", "100ml"],
+  ["174-TOPCRNV", "Creed", "Aventus (10th Anniversary Silver)", "100ml"],
+  ["411-CRBL", "Creed", "Aventus (Black)", "100ml"],
+  ["416-CRLOB", "Creed", "Aventus (Black/Silver Cap)", "100ml"],
+  ["015-ABSO", "Creed", "Aventus Absolu", "75ml"],
+  ["036-PTABS", "Creed", "Aventus (Black Label)", "100ml"],
+  ["291-PTCRHEI100", "Creed", "Aventus (Black Label)", "100ml"],
+  ["397-PTQUCR", "Creed", "Aventus (White/Silver Label)", "100ml"],
+  ["403-PTCEN", "Creed", "Aventus (10th Anniversary Red)", "100ml"],
+  ["211-CRblack120", "Creed", "Aventus", "100ml"],
+  ["282-CRNV100", "Creed", "Aventus (White Label)", "100ml"],
+  
+  // Aventus 30ml
+  ["253-CR30ML", "Creed", "Aventus Travel Spray", "30ml"],
+  
+  // Aventus For Her 75ml
+  ["460-CRWINPT", "Creed", "Aventus For Her", "75ml"],
+  
+  // Millesime Imperial 100ml
+  ["177-CRMIL1849", "Creed", "Millesime 1849", "75ml"],
+  ["163-TOPCRjin100", "Creed", "Millesime Imperial (Gold)", "100ml"],
+  ["135-CRROY", "Creed", "Millesime Imperial", "100ml"],
+  ["251-Crquanjin", "Creed", "Millesime Imperial", "100ml"],
+  
+  // Viking 100ml
+  ["349-TOPCRHONG", "Creed", "Viking (Red)", "100ml"],
+  ["405-PTDEL", "Creed", "Viking (Red)", "100ml"],
+  ["517-PTCRH", "Creed", "Viking", "100ml"],
+  
+  // Other Creed Classics
+  ["243-CRDEL", "Creed", "Delphinus", "100ml"],
+  ["362-TOPCRIRI", "Creed", "Green Irish Tweed", "100ml"],
+  ["345-CRquanhei", "Creed", "Green Irish Tweed", "100ml"],
+  ["358-CRMAYG", "Creed", "Erolfa", "100ml"],
+  ["423-ORIG", "Creed", "Original Vetiver", "100ml"],
+  ["444-TOPCRyin", "Creed", "Himalaya", "100ml"],
+  ["335-CRBA10", "Creed", "Silver Mountain Water", "100ml"],
+  ["341-CRwhite", "Creed", "Silver Mountain Water", "100ml"],
+  
+  // Women's Collection 75ml
+  ["359-CARMCR", "Creed", "Carmina", "75ml"],
+  ["045-CAR", "Creed", "Carmina", "75ml"],
+  ["171-QUEENCR", "Creed", "Queen of Silk", "75ml"],
+  ["363-TOPCRSP", "Creed", "Spring Flower (Pink)", "75ml"],
+  ["252-PTSPRING", "Creed", "Spring Flower", "75ml"],
+  ["522-CRHUA", "Creed", "Spring Flower (Pink)", "75ml"],
+  ["373-CRLOVIN", "Creed", "Love in White", "75ml"],
+  ["441-ELACR", "Creed", "Love in White", "75ml"],
+  ["417-LOWCR", "Creed", "Love in White", "75ml"],
+  ["419-FARG", "Creed", "Fleurs de Gardenia", "75ml"],
+  ["420-ACQU", "Creed", "Acqua Fiorentina", "75ml"],
+  ["421-FLEU", "Creed", "Floralie", "75ml"],
+  ["422-ROYA", "Creed", "Royal Princess Oud", "75ml"],
+  ["621-CRWH", "Creed", "White Flowers", "75ml"],
+  ["622-CRFUL", "Creed", "Jardin d'Amalfi", "75ml"],
+
+  // ========== TOM FORD ==========
+  // Private Blend 50ml
+  ["087-FUCKI", "Tom Ford", "Fucking Fabulous", "50ml"],
+  ["039-LOST100G", "Tom Ford", "Lost Cherry", "50ml"],
+  ["447-ROEX", "Tom Ford", "Rose Prick", "50ml"],
+  ["119-PEACHTF", "Tom Ford", "Bitter Peach", "50ml"],
+  ["332-SEXTF", "Tom Ford", "Vanilla Sex", "50ml"],
+  ["060-TFJASM", "Tom Ford", "Jasmin Rouge", "50ml"],
+  ["530-TFNER", "Tom Ford", "Neroli Portofino", "50ml"],
+  ["009-EBETF", "Tom Ford", "Ebene Fume", "50ml"],
+  ["595-TFNEG", "Tom Ford", "Neroli Portofino", "50ml"],
+  ["647-FUPA", "Tom Ford", "Fucking Fabulous", "50ml"],
+  ["648-OUPA", "Tom Ford", "Oud Wood", "50ml"],
+  ["443-WHSU", "Tom Ford", "White Suede", "50ml"],
+  ["451-TFROS", "Tom Ford", "Rose Prick", "50ml"],
+  ["446-OUDPA", "Tom Ford", "Oud Wood", "50ml"],
+  ["681-RESE", "Tom Ford", "Reserve", "50ml"],
+  ["691-BOIS", "Tom Ford", "Bois Marocain", "50ml"],
+  ["340-NEIG", "Tom Ford", "Soleil Neige", "50ml"],
+  ["546-PTTFPE", "Tom Ford", "Bitter Peach", "50ml"],
+  ["560-SOTF", "Tom Ford", "Soleil Blanc", "50ml"],
+  ["404-PTSOL", "Tom Ford", "Soleil Blanc", "50ml"],
+  ["329-PTROSET", "Tom Ford", "Rose Prick", "50ml"],
+  ["330-TFEBRPT", "Tom Ford", "Ebene Fume", "50ml"],
+  ["222-NEIPT", "Tom Ford", "White Suede", "50ml"],
+  ["343-PTSEXTF", "Tom Ford", "Vanilla Sex (Gold Label)", "50ml"],
+  ["406-CAFEPT", "Tom Ford", "Cafe Rose", "50ml"],
+  ["328-PTSOLTF", "Tom Ford", "Soleil Brulant", "50ml"],
+  ["486-PTLOST", "Tom Ford", "Lost Cherry", "50ml"],
+  ["524-FABPT", "Tom Ford", "Fucking Fabulous", "50ml"],
+  ["626-JASPT", "Tom Ford", "Jasmin Rouge", "50ml"],
+  
+  // Signature Collection 100ml
+  ["333-FATATF", "Tom Ford", "Tobacco Vanille", "100ml"],
+  ["073-FABUTF", "Tom Ford", "Fucking Fabulous", "100ml"],
+  ["190-HUITFOUD", "Tom Ford", "Oud Wood", "100ml"],
+  ["030-VANIG", "Tom Ford", "Tobacco Vanille", "100ml"],
+  ["366-TFBAC", "Tom Ford", "Tobacco Oud", "100ml"],
+  ["240-VANI", "Tom Ford", "Vanilla Sex", "100ml"],
+  ["649-OMPA", "Tom Ford", "Ombré Leather", "100ml"],
+  ["650-DOMB", "Tom Ford", "Ombré Leather Parfum", "100ml"],
+  ["127-TFOMBRE", "Tom Ford", "Ombré Leather", "100ml"],
+  ["283-OUDMINTF", "Tom Ford", "Oud Minérale", "100ml"],
+  ["188-GAOORC", "Tom Ford", "Black Orchid", "100ml"],
+  ["068-TFCAFE", "Tom Ford", "Café Rose", "100ml"],
+  ["132-VOYA", "Tom Ford", "Velvet Orchid", "100ml"],
+  ["696-COST", "Tom Ford", "Costa Azzurra", "100ml"],
+  ["316-VANTFPT", "Tom Ford", "Tobacco Vanille", "100ml"],
+  ["317-OUDHUIPT", "Tom Ford", "Oud Wood", "100ml"],
+  ["125-TFORCHEI", "Tom Ford", "Black Orchid", "100ml"],
+  ["122-TFNOIR", "Tom Ford", "Noir Extreme", "100ml"],
+  ["289-PTTFVEZI", "Tom Ford", "Velvet Orchid", "100ml"],
+  ["402-PTWHI", "Tom Ford", "White Patchouli", "100ml"],
+  ["324-TFOMBPT", "Tom Ford", "Ombre Leather", "100ml"],
+  ["050-DOMB", "Tom Ford", "Ombre Leather", "100ml"],
+  ["429-PTWH", "Tom Ford", "Black Orchid Style", "100ml"],
+  ["679-POUR", "Tom Ford", "Noir", "100ml"],
+
+  // ========== LE LABO ==========
+  ["027-TOP29SANM", "Le Labo", "Santal 33", "100ml"],
+  ["529-ROS31", "Le Labo", "Rose 31", "100ml"],
+  ["214-TOPSANT33", "Le Labo", "Santal 33", "100ml"],
+  ["026-ANOT13M", "Le Labo", "Another 13", "100ml"],
+  ["034-NOIR29IN", "Le Labo", "The Noir 29", "100ml"],
+  ["229-IRIS", "Le Labo", "Iris 39", "100ml"],
+  ["430-VETI", "Le Labo", "Vetiver 46", "100ml"],
+
+  // ========== LANCÔME ==========
+  // La Vie Est Belle 100ml
+  ["288-LAVAN", "Lancôme", "La Vie Est Belle", "100ml"],
+  ["065-LAVITOP", "Lancôme", "La Vie Est Belle", "100ml"],
+  ["413-LAV", "Lancôme", "La Vie Est Belle", "100ml"],
+  ["597-LALEX", "Lancôme", "La Vie Est Belle L'Extrait", "100ml"],
   ["606-FLOW", "Lancôme", "La Vie Est Belle", "100ml"],
   ["426-PTLA", "Lancôme", "La Vie Est Belle", "100ml"],
   ["017-LAVIPT", "Lancôme", "La Vie Est Belle", "100ml"],
+  
+  // Idôle 75ml
+  ["061-GAOWUYE", "Lancôme", "Idôle", "75ml"],
+  ["424-IDOG", "Lancôme", "Idôle", "75ml"],
+  ["064-TOPIDOLE", "Lancôme", "Idôle Aura", "75ml"],
   ["461-DOLP", "Lancôme", "Idole", "75ml"],
   ["549-IDNE", "Lancôme", "Idole Nectar", "75ml"],
+  
+  // Miracle 100ml
   ["307-MIRAPT", "Lancôme", "Miracle", "100ml"],
+
+  // ========== BYREDO ==========
+  ["138-BALDA", "Byredo", "Bal d'Afrique", "100ml"],
+  ["103-GYPSY", "Byredo", "Gypsy Water", "100ml"],
+  ["273-BIBLI", "Byredo", "Bibliothèque", "100ml"],
+  ["102-MOJAV", "Byredo", "Mojave Ghost", "100ml"],
+  ["516-SUPE", "Byredo", "Super Cedar", "100ml"],
+  ["676-ALTO", "Byredo", "Alto Astral", "100ml"],
+
+  // ========== VALENTINO ==========
+  // Uomo Born in Roma 100ml
+  ["130-INETVA", "Valentino", "Uomo Born in Roma", "100ml"],
+  ["131-CORAVA", "Valentino", "Uomo Born in Roma Coral Fantasy", "100ml"],
+  ["128-VAYELL", "Valentino", "Uomo Born in Roma Yellow Dream", "100ml"],
+  ["376-VAEXT", "Valentino", "Uomo Born in Roma Rockstud Noir", "100ml"],
+  ["202-UOMOINT", "Valentino", "Uomo Born in Roma Intense", "100ml"],
+  ["168-VABORNINT", "Valentino", "Uomo Born in Roma Intense", "100ml"],
+  ["162-VACORAL", "Valentino", "Uomo Born in Roma Coral Fantasy", "100ml"],
+  ["141-FENUOMO", "Valentino", "Uomo", "100ml"],
+  ["140-UOMOHEI", "Valentino", "Uomo (Black)", "100ml"],
+  ["271-PTVAYELL", "Valentino", "Uomo Born in Roma Yellow Dream", "100ml"],
+  ["294-PTVAGOLD", "Valentino", "Uomo Born in Roma Yellow Dream", "100ml"],
+  ["136-PTINETVA", "Valentino", "Uomo Born in Roma", "100ml"],
+  ["484-VABOPT", "Valentino", "Uomo Born in Roma", "100ml"],
+  ["399-PTVAUO", "Valentino", "Uomo Born in Roma", "100ml"],
+  ["558-PTVAEX", "Valentino", "Uomo Born in Roma", "100ml"],
+  ["614-VAEXPT", "Valentino", "Uomo Born in Roma", "100ml"],
+  ["485-PTVACOR", "Valentino", "Uomo Born in Roma Coral Fantasy", "100ml"],
+  ["559-PTVAST", "Valentino", "Uomo Born in Roma Green Stravaganza", "100ml"],
+  ["528-VAYEDR", "Valentino", "Yellow Dream", "100ml"],
+  ["508-VATHE", "Valentino", "The Gold", "100ml"],
+  ["037-ROCK", "Valentino", "Uomo Born in Roma Rockstud Noir", "100ml"],
+  ["527-VABOGR", "Valentino", "Born in Roma Green Stravaganza", "100ml"],
+  
+  // Donna Born in Roma 100ml
+  ["154-VALEHONG", "Valentino", "Donna Born in Roma", "100ml"],
+  ["195-VAGOLD", "Valentino", "Donna Born in Roma Yellow Dream", "100ml"],
+  ["199-GREEVA", "Valentino", "Donna Born in Roma Green Stravaganza", "100ml"],
+  ["233-DONNA", "Valentino", "Donna Born in Roma", "100ml"],
+  ["331-VAPIN", "Valentino", "Donna Born in Roma Pink PP", "100ml"],
+  ["379-VADOEX", "Valentino", "Donna Born in Roma Intense", "100ml"],
+  ["269-PTDONNA", "Valentino", "Donna Born in Roma", "100ml"],
+  ["205-PTCORAVA", "Valentino", "Donna Born in Roma Coral Fantasy", "100ml"],
+  ["342-PTVAPIN", "Valentino", "Donna Born in Roma Pink PP", "100ml"],
+  ["407-PTDRE", "Valentino", "Donna Born in Roma Green Stravaganza", "100ml"],
+  ["268-PTGREEVA", "Valentino", "Donna Born in Roma Green Stravaganza", "100ml"],
+  ["219-UOIVPT", "Valentino", "Donna Born in Roma Yellow Dream", "100ml"],
+  
+  // Voce Viva 100ml
+  ["280-DONIV", "Valentino", "Voce Viva", "100ml"],
+  ["137--PTVALEHON", "Valentino", "Voce Viva", "100ml"],
+  ["241-VIOPT", "Valentino", "Voce Viva Intensa", "100ml"],
+  
+  // Uomo Intense 100ml
+  ["255-UOIV", "Valentino", "Uomo Intense", "100ml"],
+  ["584-UOINPT", "Valentino", "Uomo Intense", "100ml"],
+
+  // ========== KILIAN ==========
+  ["170-KIDO22", "Kilian", "Love, Don't Be Shy", "50ml"],
+  ["599-KIGO", "Kilian", "Good Girl Gone Bad", "50ml"],
+  ["185-SHARE", "Kilian", "Angels' Share", "50ml"],
+  ["300-INLOV", "Kilian", "Rolling in Love", "50ml"],
+  ["641-SHPAR", "Kilian", "Angels' Share (Icon)", "50ml"],
+
+  // ========== VERSACE ==========
+  // Eros 100ml
+  ["172-VERLANEDP", "Versace", "Eros", "100ml"],
+  ["572-VEREX", "Versace", "Eros Parfum", "100ml"],
+  ["070-LANVERG", "Versace", "Eros", "100ml"],
+  ["213-VERPAR", "Versace", "Eros Parfum", "100ml"],
+  ["684-EMER", "Versace", "Eros", "100ml"],
+  ["160-VERSLAN", "Versace", "Eros", "100ml"],
+  ["256-PTVERPAR", "Versace", "Eros", "100ml"],
+  
+  // Eros 30ml
+  ["261-VELAN30ML", "Versace", "Eros Travel Spray", "30ml"],
+  
+  // Eros Flame 100ml
+  ["081-REDVER", "Versace", "Eros Flame", "100ml"],
+  ["155-HONGVERS", "Versace", "Eros Flame", "100ml"],
+  ["384-VERNAJ", "Versace", "Eros Flame", "100ml"],
+  
+  // Eros Flame 30ml
+  ["272-VEHON30ML", "Versace", "Eros Flame Travel Spray", "30ml"],
+  
+  // Dylan Blue 100ml
+  ["059-DYLAN", "Versace", "Dylan Blue", "100ml"],
+  ["669-FEMM", "Versace", "Dylan Purple", "100ml"],
+  ["258-EDPPTVELA", "Versace", "Dylan Blue", "100ml"],
+  ["297-DYLA", "Versace", "Dylan Blue", "100ml"],
+  
+  // Pour Homme 100ml
+  ["236-VERPOU", "Versace", "Pour Homme", "100ml"],
+  ["574-VERMA", "Versace", "Man Eau Fraiche", "100ml"],
+  ["309-POHVEPT", "Versace", "Pour Homme", "100ml"],
+  ["312-VEMANPT", "Versace", "Man Eau Fraiche", "100ml"],
+  
+  // Women's Collection 90ml
+  ["249-VERYEL", "Versace", "Yellow Diamond", "90ml"],
+  ["287-ZUANZI", "Versace", "Crystal Noir", "90ml"],
+  ["274-PTVERHUA", "Versace", "Bright Crystal", "90ml"],
+  ["264-PTHUANGZ", "Versace", "Yellow Diamond", "90ml"],
+  ["518-VEBRPT", "Versace", "Bright Crystal", "90ml"],
+  ["434-ABVER", "Versace", "Bright Crystal Absolu", "90ml"],
+  ["263-PTFENZ", "Versace", "Bright Crystal", "90ml"],
+
+  // ========== BVLGARI ==========
+  ["056-BVLDJLG", "Bvlgari", "Omnia", "65ml"],
+  ["069-MANGLA", "Bvlgari", "Man Glacial Essence", "100ml"],
+  ["007-BVLPO", "Bvlgari", "Pour Homme", "100ml"],
+
+  // ========== BILLIE EILISH ==========
+  ["557-BENN3", "Billie Eilish", "No. 3 (Red)", "100ml"],
+  ["555-BEN1", "Billie Eilish", "No. 1 (Gold)", "100ml"],
+  ["556-BILL2", "Billie Eilish", "No. 2 (Black)", "100ml"],
+
+  // ========== BURBERRY ==========
+  ["412-HERBI", "Burberry", "Her", "100ml"],
+  ["414-HEDEPG", "Burberry", "Her Elixir", "100ml"],
+  ["449-BUGO", "Burberry", "Goddess", "100ml"],
+  ["723-BUHE", "Burberry", "Hero", "100ml"],
   ["620-MENTO", "Burberry", "Mr. Burberry", "100ml"],
   ["619-TOWO", "Burberry", "My Burberry", "90ml"],
   ["326-HERDEP", "Burberry", "Her", "100ml"],
   ["079-ROSEDA", "Burberry", "Classic", "100ml"],
-  ["455-DOLC", "Dolce & Gabbana", "K", "100ml"],
-  ["561-DOGAH", "Dolce & Gabbana", "Q", "100ml"],
+
+  // ========== ROJA ==========
+  ["216-ROVETI", "Roja", "Elysium", "100ml"],
+  ["554-ELYS", "Roja", "Elysium", "100ml"],
+  ["686-ELNO", "Roja", "Elysium", "100ml"],
+
+  // ========== BOND NO. 9 ==========
+  ["388-NYCLV", "Bond No. 9", "Greenwich Village", "100ml"],
+  ["391-NYCBAI", "Bond No. 9", "Gold", "100ml"],
+  ["279-LAFA", "Bond No. 9", "Lafayette Street", "100ml"],
+  ["638-SCEN", "Bond No. 9", "Scent of Peace", "100ml"],
+  ["741-NEWY", "Bond No. 9", "New York Nights", "100ml"],
+  ["740-MADI", "Bond No. 9", "Madison Avenue", "100ml"],
+  ["742-HARR", "Bond No. 9", "Harrods", "100ml"],
+
+  // ========== DIPTYQUE ==========
+  ["203-SENS", "Diptyque", "Eau des Sens", "100ml"],
+  ["204-FLEUR", "Diptyque", "Fleur de Peau", "100ml"],
+
+  // ========== HERMÈS ==========
+  ["006-TERR", "Hermès", "Terre d'Hermès", "100ml"],
+  ["646-TERIN", "Hermès", "Terre d'Hermès Eau Intense", "100ml"],
+  ["110-DHER", "Hermès", "Terre d'Hermès", "100ml"],
+  ["699-LENIL", "Hermès", "Un Jardin Sur Le Nil", "100ml"],
+  ["700-DEMO", "Hermès", "Le Jardin de Monsieur Li", "100ml"],
+  ["701-TOIT", "Hermès", "Un Jardin Sur Le Toit", "100ml"],
+
+  // ========== MIU MIU ==========
+  ["078-MIULAN", "Miu Miu", "L'Eau Bleue", "100ml"],
+
+  // ========== AFNAN ==========
+  ["519-AFN9", "Afnan", "9pm", "100ml"],
+
+  // ========== MUGLER ==========
+  ["542-ANNO", "Mugler", "Angel Nova", "100ml"],
+  ["543-ANMU", "Mugler", "Angel", "100ml"],
+  ["544-ANEAU", "Mugler", "Angel Elixir", "100ml"],
   ["564-ANG", "Mugler", "Angel", "100ml"],
   ["535-ALIE", "Mugler", "Alien", "90ml"],
-  ["593-HOVI", "Victoria's Secret", "Very Sexy (Red)", "100ml"],
-  ["594-LANVI", "Victoria's Secret", "Very Sexy (Teal)", "100ml"],
-  ["591-VIHE", "Victoria's Secret", "Very Sexy (Black)", "100ml"],
-  ["007-BVLPO", "Bvlgari", "Pour Homme", "100ml"],
 
-  // --- PAGE 13 (Guerlain, V&R, Hermes, Le Labo) ---
+  // ========== KAYALI ==========
+  ["703-VAN28", "Kayali", "Vanilla 28", "100ml"],
+  ["704-YUM81", "Kayali", "Yum Pistachio", "100ml"],
+  ["705-DENE01", "Kayali", "Deja Vu White Flower", "100ml"],
+  ["706-DEJ57", "Kayali", "Deja Vu White Flower", "100ml"],
+  ["707-PIS33", "Kayali", "Yum Pistachio", "100ml"],
+  ["708-ROS31", "Kayali", "Pink Pepper", "100ml"],
+  ["709-ROCK42", "Kayali", "Sparkling Lychee", "100ml"],
+  ["719-LEMO14", "Kayali", "Burning Cherry", "100ml"],
+
+  // ========== DOLCE & GABBANA ==========
+  ["685-ONLY", "Dolce & Gabbana", "The Only One", "100ml"],
+  ["455-DOLC", "Dolce & Gabbana", "K", "100ml"],
+  ["561-DOGAH", "Dolce & Gabbana", "Q", "100ml"],
+
+  // ========== AZZARO ==========
+  ["534-WAELI", "Azzaro", "Wanted", "100ml"],
+  ["169-WBY", "Azzaro", "Wanted", "100ml"],
+  ["473-WAEDT", "Azzaro", "Wanted", "100ml"],
+  ["354-INTWAT", "Azzaro", "The Most Wanted", "100ml"],
+  ["156-MOSTWAT", "Azzaro", "The Most Wanted (Black)", "100ml"],
+  ["189-WAT100", "Azzaro", "Wanted By Night", "100ml"],
+  ["537-WAEDP", "Azzaro", "Chrome", "100ml"],
+
+  // ========== HUGO BOSS ==========
+  ["651-HUPA", "Hugo Boss", "The Scent", "100ml"],
+  ["652-ABSOL", "Hugo Boss", "The Scent Absolute", "100ml"],
+  ["653-CITR", "Hugo Boss", "Bottled", "100ml"],
+  ["635-BOINF", "Hugo Boss", "Bottled Infinite", "100ml"],
+  ["608-BOTT", "Hugo Boss", "Bottled", "100ml"],
+  ["607-OUDS", "Hugo Boss", "Bottled Oud", "100ml"],
+  ["605-ABSO", "Hugo Boss", "The Scent Absolute", "100ml"],
+  ["609-TONIC", "Hugo Boss", "Bottled Tonic", "100ml"],
+  ["604-BOLD", "Hugo Boss", "Bottled", "100ml"],
+  ["625-BOEDT", "Hugo Boss", "Boss", "100ml"],
+  ["678-TTLE", "Hugo Boss", "Bottled", "100ml"],
+
+  // ========== RALPH LAUREN ==========
+  ["536-PORE", "Ralph Lauren", "Polo Red", "125ml"],
+  ["545-POBU", "Ralph Lauren", "Polo Blue", "125ml"],
+
+  // ========== GUERLAIN ==========
   ["290-BASI", "Guerlain", "Aqua Allegoria", "125ml"],
+
+  // ========== VIKTOR & ROLF ==========
   ["466-HOVIK", "Viktor&Rolf", "Spicebomb Infrared", "90ml"],
   ["465-VKYIN", "Viktor&Rolf", "Spicebomb Night Vision", "90ml"],
   ["468-LVVIK", "Viktor&Rolf", "Spicebomb Night Vision", "90ml"],
   ["464-VIKJ", "Viktor&Rolf", "Spicebomb", "90ml"],
   ["667-VIDA", "Viktor&Rolf", "Spicebomb", "90ml"],
   ["668-VIME", "Viktor&Rolf", "Spicebomb (Silver)", "90ml"],
-  ["110-DHER", "Hermès", "Terre d'Hermès", "100ml"],
-  ["699-LENIL", "Hermès", "Un Jardin Sur Le Nil", "100ml"],
-  ["700-DEMO", "Hermès", "Le Jardin de Monsieur Li", "100ml"],
-  ["701-TOIT", "Hermès", "Un Jardin Sur Le Toit", "100ml"],
-  ["229-IRIS", "Le Labo", "Iris 39", "100ml"],
-  ["430-VETI", "Le Labo", "Vetiver 46", "100ml"],
 
-  // --- PAGE 13-14 (30ML TRAVEL ARCHIVE) ---
-  ["253-CR30ML", "Creed", "Aventus Travel Spray", "30ml"],
-  ["284-BLU30ML", "Chanel", "Bleu de Chanel Travel Spray", "30ml"],
-  ["272-VEHON30ML", "Versace", "Eros Flame Travel Spray", "30ml"],
-  ["296-COCO30ML", "Chanel", "Coco Mademoiselle Travel Spray", "30ml"],
-  ["261-VELAN30ML", "Versace", "Eros Travel Spray", "30ml"],
+  // ========== VICTORIA'S SECRET ==========
+  ["593-HOVI", "Victoria's Secret", "Very Sexy (Red)", "100ml"],
+  ["594-LANVI", "Victoria's Secret", "Very Sexy (Teal)", "100ml"],
+  ["591-VIHE", "Victoria's Secret", "Very Sexy (Black)", "100ml"],
 
-  // --- SKINCARE ARCHIVE (Supplemental) ---
+  // ========== SKINCARE ==========
+  // Skinceuticals 30ml
   ["583-BLEM", "Skinceuticals", "Blemish + Age", "30ml"],
   ["066-CEFE", "Skinceuticals", "C E Ferulic", "30ml"],
+  ["085-DEFE", "Skinceuticals", "Discoloration Defense", "30ml"],
+  ["084-PHLOR", "Skinceuticals", "Phloretin CF", "30ml"],
+  ["083-PHYT", "Skinceuticals", "Phyto Corrective", "30ml"],
+  ["576-HAIN", "Skinceuticals", "HA Intensifier", "30ml"],
+  
+  // La Mer
   ["095-LAJIN30", "La Mer", "The Concentrate", "30ml"],
   ["096-LAMER60", "La Mer", "Soft Cream", "60ml"],
   ["101-MER30ML", "La Mer", "Crème de la Mer", "30ml"],
