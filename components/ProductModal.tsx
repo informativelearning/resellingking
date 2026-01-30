@@ -121,7 +121,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
                 onClick={onInquire}
                 className="w-full bg-v-red text-white py-6 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black transition-all duration-500 border border-v-red"
               >
-                Inquire via Atelier
+                DM for Availability
               </button>
               <p className="text-center text-[9px] text-white/20 uppercase tracking-[0.4em] mt-6 italic">Verified Stock // Est. 2025</p>
             </div>

@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import Ticker from './components/Ticker';
 import InventoryTable from './components/InventoryTable';
@@ -53,7 +54,7 @@ const App: React.FC = () => {
           
           <div className="text-center group cursor-default">
             <h1 className="text-5xl md:text-8xl serif italic tracking-tighter text-white leading-none">
-              The Plug<span className="text-v-red">.</span>
+              Wings of Fortune<span className="text-v-red">.</span>
             </h1>
             <div className="flex flex-col items-center gap-4 mt-4">
               <div className="flex items-center justify-center gap-6 opacity-40 group-hover:opacity-100 transition-opacity duration-700">

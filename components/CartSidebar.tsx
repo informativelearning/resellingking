@@ -56,7 +56,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
         <div className="flex-1 overflow-y-auto p-6 font-mono text-sm relative bg-white">
             
             <div className="text-center mb-8 pb-4 border-b-2 border-dashed border-black">
-              <h3 className="font-black text-xl uppercase italic">THE PLUG STORE</h3>
+              <h3 className="font-black text-xl uppercase italic">WINGS OF FORTUNE STORE</h3>
               <p>LOS ANGELES, CA</p>
               <p>{new Date().toLocaleDateString()}</p>
             </div>

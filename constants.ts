@@ -1,3 +1,4 @@
+
 import { Product, Category, ProductDetails } from './types';
 
 const IMAGES = {
@@ -608,7 +609,7 @@ const rawData: [string, string, string, string][] = [
 
 export const DISCOUNTS = [
   "LA LOCAL PICKUP: 90015",
-  "USE CODE 'PLUG25' FOR BUNDLES",
+  "USE CODE 'FORTUNE25' FOR BUNDLES",
   "NEW DROP: PARFUMS DE MARLY",
   "AUTHENTICITY VERIFIED",
   "EST. 2025 ARCHIVE"
