@@ -1,16 +1,18 @@
-
 import React, { useState, useMemo } from 'react';
 import Ticker from './components/Ticker';
 import InventoryTable from './components/InventoryTable';
 import ProductModal from './components/ProductModal';
+import CartSidebar from './components/CartSidebar';
 import { INVENTORY } from './constants';
-import { Product, Category } from './types';
+import { Product, Category, CartItem } from './types';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState<Category>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const brands: string[] = useMemo(() => {
     const allBrands = INVENTORY.map(p => p.brand);
@@ -18,13 +20,12 @@ const App: React.FC = () => {
     return ['ALL', ...uniqueBrands];
   }, []);
 
-  const categories: Category[] = ['All', 'Fragrance', 'Skincare'];
+  const categories: Category[] = ['All', 'Fragrance'];
 
   const stats = useMemo(() => {
     return {
       models: INVENTORY.length,
-      fragrance: INVENTORY.filter(p => p.category === 'Fragrance').length,
-      skincare: INVENTORY.filter(p => p.category === 'Skincare').length
+      fragrance: INVENTORY.filter(p => p.category === 'Fragrance').length
     };
   }, []);
 
@@ -46,13 +47,69 @@ const App: React.FC = () => {
     window.open('https://instagram.com/661ro_resellz', '_blank');
   };
 
+  // Cart Functions
+  const addToCart = (product: Product) => {
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.ids[0] === product.ids[0]);
+      if (existingItem) {
+        return prevCart.map(item =>
+          item.ids[0] === product.ids[0]
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+    setIsCartOpen(true);
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCart(prevCart => prevCart.filter(item => item.ids[0] !== productId));
+  };
+
+  const updateCartQuantity = (productId: string, delta: number) => {
+    setCart(prevCart => {
+      return prevCart.map(item => {
+        if (item.ids[0] === productId) {
+          const newQty = item.quantity + delta;
+          if (newQty <= 0) return null;
+          if (newQty > item.stock) return item;
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      }).filter(Boolean) as CartItem[];
+    });
+  };
+
+  const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden">
       <header className="sticky top-0 z-30 bg-v-black border-b border-white/5">
         <Ticker />
         <div className="px-6 md:px-12 py-8 flex flex-col items-center gap-12 max-w-[1800px] mx-auto w-full">
           
-          <div className="text-center group cursor-default">
+          <div className="text-center group cursor-default relative">
+            {/* Cart Icon - Top Right */}
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="absolute -top-4 right-0 flex items-center gap-3 text-white hover:text-v-red transition-colors group/cart"
+            >
+              <span className="text-[10px] tracking-[0.4em] uppercase font-bold opacity-0 group-hover/cart:opacity-100 transition-opacity">
+                BAG
+              </span>
+              <div className="relative">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                {totalCartItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-v-red text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {totalCartItems}
+                  </span>
+                )}
+              </div>
+            </button>
+
             <h1 className="text-5xl md:text-8xl serif italic tracking-tighter text-white leading-none">
               Wings of Fortune<span className="text-v-red">.</span>
             </h1>
@@ -67,8 +124,6 @@ const App: React.FC = () => {
                 <span>Unique Models: {stats.models}</span>
                 <span>//</span>
                 <span className={stats.fragrance > 0 ? 'text-v-red' : ''}>Fragrance: {stats.fragrance}</span>
-                <span>//</span>
-                <span className={stats.skincare > 0 ? 'text-v-red' : ''}>Skincare: {stats.skincare}</span>
               </div>
             </div>
           </div>
@@ -122,6 +177,7 @@ const App: React.FC = () => {
           products={filteredProducts}
           onProductClick={setSelectedProduct}
           onInquire={handleInquire}
+          onAddToCart={addToCart}
         />
         
         <footer className="mt-40 mb-20 py-20 border-t border-white/5 flex flex-col items-center gap-12">
@@ -154,8 +210,17 @@ const App: React.FC = () => {
           product={selectedProduct} 
           onClose={() => setSelectedProduct(null)} 
           onInquire={handleInquire}
+          onAddToCart={addToCart}
         />
       )}
+
+      <CartSidebar 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cart={cart}
+        onRemove={removeFromCart}
+        onUpdateQty={updateCartQuantity}
+      />
     </div>
   );
 };

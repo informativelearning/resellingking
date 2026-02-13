@@ -5,10 +5,15 @@ interface ProductModalProps {
   product: Product;
   onClose: () => void;
   onInquire: () => void;
+  onAddToCart: (product: Product) => void;
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire }) => {
+const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire, onAddToCart }) => {
   const isFragrance = product.category === 'Fragrance';
+
+  const handleAddToCart = () => {
+    onAddToCart(product);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-v-black overflow-hidden">
@@ -116,13 +121,21 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
               </div>
             </div>
 
-            <div className="pt-12">
+            <div className="pt-12 space-y-4">
+              <button 
+                onClick={handleAddToCart}
+                className="w-full bg-v-red text-white py-6 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black transition-all duration-500 border border-v-red"
+              >
+                Add to Bag
+              </button>
+              
               <button 
                 onClick={onInquire}
-                className="w-full bg-v-red text-white py-6 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black transition-all duration-500 border border-v-red"
+                className="w-full bg-transparent text-white py-6 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black transition-all duration-500 border border-white/20"
               >
                 DM for Availability
               </button>
+              
               <p className="text-center text-[9px] text-white/20 uppercase tracking-[0.4em] mt-6 italic">Verified Stock // Est. 2025</p>
             </div>
 

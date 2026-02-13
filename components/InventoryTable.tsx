@@ -5,10 +5,16 @@ interface InventoryTableProps {
   products: Product[];
   onProductClick: (product: Product) => void;
   onInquire: () => void;
+  onAddToCart: (product: Product) => void;
 }
 
-const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClick, onInquire }) => {
+const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClick, onInquire, onAddToCart }) => {
   
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    onAddToCart(product);
+  };
+
   return (
     <div className="w-full mb-20">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12">
@@ -36,8 +42,17 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
               <div className="absolute top-4 right-4 text-xs font-bold tracking-widest bg-v-red text-white px-2 py-1">
                 ${product.price}
               </div>
-              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+              
+              {/* Hover Overlay */}
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center gap-4">
                 <span className="text-[10px] tracking-[0.5em] uppercase border border-white px-6 py-2 backdrop-blur-sm">View Details</span>
+                
+                <button 
+                  onClick={(e) => handleAddToCart(e, product)}
+                  className="bg-v-red text-white px-6 py-2 text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-white hover:text-v-black transition-colors"
+                >
+                  Add to Bag
+                </button>
               </div>
             </div>
 
