@@ -11,7 +11,27 @@ const IMAGES = {
   GREEN: "https://images.unsplash.com/photo-1544467316-e97029d2bf88?auto=format&fit=crop&w=800&q=80",
   PURPLE: "https://images.unsplash.com/photo-1557170334-a7c3c4e7f9f4?auto=format&fit=crop&w=800&q=80",
   VALENTINO: "https://images.unsplash.com/photo-1594035910387-fea477942653?auto=format&fit=crop&w=800&q=80",
-  TOMFORD: "https://images.unsplash.com/photo-1523293188086-b469b979756c?auto=format&fit=crop&w=800&q=80"
+  TOMFORD: "https://images.unsplash.com/photo-1523293188086-b469b979756c?auto=format&fit=crop&w=800&q=80",
+  // Creed Products
+  CREED_ACQUA_FIORENTINA: "/images/Acqua Fiorentina.jpg",
+  CREED_AVENTUS: "/images/Aventus.jpg",
+  CREED_CARMINA: "/images/Carmina.jpg",
+  CREED_DELPHINUS: "/images/Delphinus.jpg",
+  CREED_EROLFA: "/images/Erolfa.webp",
+  CREED_FLEURS_GARDENIA: "/images/Fleurs de Gardenia.png",
+  CREED_FLORALIE: "/images/Floralie.png",
+  CREED_GREEN_IRISH: "/images/Green Irish Tweed.jpg",
+  CREED_HIMALAYA: "/images/Himalaya.jpg",
+  CREED_JARDIN_AMALFI: "/images/Jardin d'Amalfi.jpg",
+  CREED_LOVE_WHITE: "/images/Love in White.jpg",
+  CREED_MILLESIME: "/images/Millesime Imperial.jpg",
+  CREED_ORIGINAL_VETIVER: "/images/Original Vétiver.jpg",
+  CREED_QUEEN_SILK: "/images/Queen of Silk.png.jpg",
+  CREED_ROYAL_PRINCESS: "/images/Royal Princess Oud.jpg",
+  CREED_SILVER_MOUNTAIN: "/images/Silver Mountain Water.png",
+  CREED_SPRING_FLOWER: "/images/Spring Flower.png",
+  CREED_VIKING: "/images/Viking.jpg",
+  CREED_WHITE_FLOWERS: "/images/White Flowers.jpg"
 };
 
 const ARCHIVE_DB: Record<string, Partial<ProductDetails>> = {
@@ -388,7 +408,29 @@ rawData.forEach(([brand, name, volumes, ids]) => {
   
   if (b.includes('chanel')) image = IMAGES.MONO;
   else if (b.includes('valentino')) image = IMAGES.VALENTINO;
-  else if (b.includes('creed')) image = IMAGES.CLEAN;
+  else if (b.includes('creed')) {
+    // Assign specific images for Creed products
+    if (n.includes('acqua fiorentina')) image = IMAGES.CREED_ACQUA_FIORENTINA;
+    else if (n.includes('aventus')) image = IMAGES.CREED_AVENTUS;
+    else if (n.includes('carmina')) image = IMAGES.CREED_CARMINA;
+    else if (n.includes('delphinus')) image = IMAGES.CREED_DELPHINUS;
+    else if (n.includes('erolfa')) image = IMAGES.CREED_EROLFA;
+    else if (n.includes('fleurs de gardenia')) image = IMAGES.CREED_FLEURS_GARDENIA;
+    else if (n.includes('floralie')) image = IMAGES.CREED_FLORALIE;
+    else if (n.includes('green irish tweed')) image = IMAGES.CREED_GREEN_IRISH;
+    else if (n.includes('himalaya')) image = IMAGES.CREED_HIMALAYA;
+    else if (n.includes('jardin d\'amalfi')) image = IMAGES.CREED_JARDIN_AMALFI;
+    else if (n.includes('love in white')) image = IMAGES.CREED_LOVE_WHITE;
+    else if (n.includes('millesime imperial')) image = IMAGES.CREED_MILLESIME;
+    else if (n.includes('original vetiver')) image = IMAGES.CREED_ORIGINAL_VETIVER;
+    else if (n.includes('queen of silk')) image = IMAGES.CREED_QUEEN_SILK;
+    else if (n.includes('royal princess oud')) image = IMAGES.CREED_ROYAL_PRINCESS;
+    else if (n.includes('silver mountain water')) image = IMAGES.CREED_SILVER_MOUNTAIN;
+    else if (n.includes('spring flower')) image = IMAGES.CREED_SPRING_FLOWER;
+    else if (n.includes('viking')) image = IMAGES.CREED_VIKING;
+    else if (n.includes('white flowers')) image = IMAGES.CREED_WHITE_FLOWERS;
+    else image = IMAGES.CLEAN; // Default Creed fallback
+  }
   else if (b.includes('mfk')) image = n.includes('rouge') && n.includes('extrait') ? IMAGES.RED : IMAGES.MONO;
   else if (b.includes('parfums de marly')) image = IMAGES.PURPLE;
   else if (b.includes('louis vuitton')) image = IMAGES.GREEN;
