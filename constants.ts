@@ -12,6 +12,11 @@ const IMAGES = {
   PURPLE: "https://images.unsplash.com/photo-1557170334-a7c3c4e7f9f4?auto=format&fit=crop&w=800&q=80",
   VALENTINO: "https://images.unsplash.com/photo-1594035910387-fea477942653?auto=format&fit=crop&w=800&q=80",
   TOMFORD: "https://images.unsplash.com/photo-1523293188086-b469b979756c?auto=format&fit=crop&w=800&q=80",
+  // Valentino Products
+  VALENTINO_UOMO_BORN: "/images/Uomo Born in Roma.jpg",
+  VALENTINO_DONNA_BORN: "/images/Donna Born in Roma.jpg",
+  VALENTINO_VOCE_VIVA: "/images/Voce Viva.jpg",
+  VALENTINO_UOMO_INTENSE: "/images/Uomo Intense.jpg",
   // Creed Products
   CREED_ACQUA_FIORENTINA: "/images/Acqua Fiorentina.jpg",
   CREED_AVENTUS: "/images/Aventus.jpg",
