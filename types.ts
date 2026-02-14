@@ -13,15 +13,16 @@ export interface ProductDetails {
 }
 
 export interface Product {
-  ids: string[]; // Support multiple SKUs
+  ids: string[];
   brand: string;
   name: string;
   spec: string;
-  condition: 'Sealed' | 'Open Box' | 'Used' | 'Refurb' | 'Tester (No Cap)';
+  condition: string;
   stock: number;
   price: number;
   category: Category;
-  image: string;
+  image: string; // Keep for backwards compatibility
+  images?: string[]; // NEW: Array of images for carousel
   details: ProductDetails;
 }
 

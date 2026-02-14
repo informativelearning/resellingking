@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Product } from '../types';
 
 interface ProductModalProps {
@@ -10,9 +10,19 @@ interface ProductModalProps {
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire, onAddToCart }) => {
   const isFragrance = product.category === 'Fragrance';
+  const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleAddToCart = () => {
     onAddToCart(product);
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
   };
 
   return (
@@ -34,13 +44,47 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
           Close <span className="text-2xl font-light group-hover:rotate-90 transition-transform">×</span>
         </button>
 
-        {/* Left Side: Editorial Image */}
+        {/* Left Side: Editorial Image with Carousel */}
         <div className="w-full md:w-1/2 h-2/3 md:h-full relative overflow-hidden bg-v-gray">
           <img 
-            src={product.image} 
-            alt={product.name} 
+            src={productImages[currentImageIndex]} 
+            alt={`${product.name} - Image ${currentImageIndex + 1}`}
             className="w-full h-full object-cover"
           />
+
+          {/* Image Navigation (if multiple images) */}
+          {productImages.length > 1 && (
+            <>
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-v-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-v-red transition-colors text-2xl"
+              >
+                ‹
+              </button>
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-v-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-v-red transition-colors text-2xl"
+              >
+                ›
+              </button>
+
+              {/* Image Indicator Dots */}
+              <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2">
+                {productImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      idx === currentImageIndex 
+                        ? 'w-8 bg-v-red' 
+                        : 'w-2 bg-white/30 hover:bg-white/60'
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
           <div className="absolute bottom-12 left-12">
             <span className="text-v-red text-xs font-bold tracking-[0.5em] uppercase block mb-4">Master Manifest 2025</span>
             <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 inline-block">
