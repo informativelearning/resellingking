@@ -25,11 +25,11 @@ const IMAGES = {
   CREED_JARDIN_AMALFI: "/images/Jardin d'Amalfi.jpg",
   CREED_LOVE_WHITE: "/images/Love in White.jpg",
   CREED_MILLESIME: "/images/Millesime Imperial.jpg",
-  CREED_ORIGINAL_VETIVER: "/images/Original Vétiver.jpg",
-  CREED_QUEEN_SILK: "/images/Queen of Silk.png.jpg",
+  CREED_ORIGINAL_VETIVER: "/images/Original Vetiver.jpg",
+  CREED_QUEEN_SILK: "/images/Queen of Silk.jpg",
   CREED_ROYAL_PRINCESS: "/images/Royal Princess Oud.jpg",
-  CREED_SILVER_MOUNTAIN: "/images/Silver Mountain Water.png",
-  CREED_SPRING_FLOWER: "/images/Spring Flower.png",
+  CREED_SILVER_MOUNTAIN: "/images/Silver Mountain Water.jpg",
+  CREED_SPRING_FLOWER: "/images/Spring Flower.jpg",
   CREED_VIKING: "/images/Viking.jpg",
   CREED_WHITE_FLOWERS: "/images/White Flowers.jpg"
 };
