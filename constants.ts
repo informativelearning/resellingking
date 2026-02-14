@@ -412,7 +412,13 @@ rawData.forEach(([brand, name, volumes, ids]) => {
   const n = normalizedName.toLowerCase();
   
   if (b.includes('chanel')) image = IMAGES.MONO;
-  else if (b.includes('valentino')) image = IMAGES.VALENTINO;
+  else if (b.includes('valentino')) {
+    if (n.includes('uomo born') || n.includes('born in roma') && n.includes('uomo')) image = IMAGES.VALENTINO_UOMO_BORN;
+    else if (n.includes('donna born') || n.includes('born in roma') && n.includes('donna')) image = IMAGES.VALENTINO_DONNA_BORN;
+    else if (n.includes('voce viva')) image = IMAGES.VALENTINO_VOCE_VIVA;
+    else if (n.includes('uomo intense')) image = IMAGES.VALENTINO_UOMO_INTENSE;
+    else image = IMAGES.VALENTINO;
+  }
   else if (b.includes('creed')) {
     // Assign specific images for Creed products
     if (n.includes('acqua fiorentina')) image = IMAGES.CREED_ACQUA_FIORENTINA;
