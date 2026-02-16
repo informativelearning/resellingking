@@ -11,13 +11,13 @@ const DEFAULT_DETAILS = (): ProductDetails => {
   };
 };
 
-// Helper to map product names to actual image paths (returns only existing images)
+// Helper to map product names to image base filenames and extensions
 const getValentinoImagePaths = (brand: string, name: string): string[] | null => {
   if (brand !== "Valentino") return null;
   
   const n = name.toLowerCase();
   
-  // Uomo Green Stravaganza - 5 images (all PNG)
+  // Uomo Green Stravaganza - all PNG
   if (n.includes("uomo") && n.includes("green stravaganza")) {
     return [
       "/images/ValentinoUomoBorninRomaGreenStravaganzaValentino.png",
@@ -28,7 +28,7 @@ const getValentinoImagePaths = (brand: string, name: string): string[] | null =>
     ];
   }
   
-  // Extradose Donna - 5 images (mixed PNG and JPEG)
+  // Extradose Donna - mixed PNG and JPEG
   if (n.includes("extradose donna")) {
     return [
       "/images/BorninRomaExtradoseDonnaValentino.png",
@@ -39,17 +39,73 @@ const getValentinoImagePaths = (brand: string, name: string): string[] | null =>
     ];
   }
   
-  // Donna Born in Roma - 3 images (PNG and JPEG)
+  // Donna Born in Roma - PNG and JPEG
   if (n.includes("donna born") && !n.includes("green") && !n.includes("intense")) {
     return [
       "/images/ValentinoDonnaBornInRomaValentino.png",
       "/images/ValentinoDonnaBornInRomaValentino1.jpeg",
-      "/images/ValentinoDonnaBornInRomaValentino2.jpeg"
+      "/images/ValentinoDonnaBornInRomaValentino2.jpeg",
+      "/images/ValentinoDonnaBornInRomaValentino.png", // fallback
+      "/images/ValentinoDonnaBornInRomaValentino.png"  // fallback
     ];
   }
   
-  // For other Valentino products without specific image data, return null
-  // This will trigger placeholder images
+  // For other Valentino products, use generic pattern
+  if (n.includes("donna") && n.includes("green stravaganza")) {
+    const base = "ValentinoDonnaBorninRomaGreenStravaganzaValentino";
+    return [
+      `/images/${base}.png`,
+      `/images/${base}1.png`,
+      `/images/${base}2.png`,
+      `/images/${base}3.png`,
+      `/images/${base}4.png`
+    ];
+  }
+  
+  if (n.includes("uomo") && n.includes("coral fantasy")) {
+    const base = "ValentinoUomoBornInRomaCoralFantasyValentino";
+    return [
+      `/images/${base}.png`,
+      `/images/${base}1.png`,
+      `/images/${base}2.png`,
+      `/images/${base}3.png`,
+      `/images/${base}4.png`
+    ];
+  }
+  
+  if (n.includes("uomo") && n.includes("intense")) {
+    const base = "ValentinoUomoBornInRomaIntenseValentino";
+    return [
+      `/images/${base}.png`,
+      `/images/${base}1.png`,
+      `/images/${base}2.png`,
+      `/images/${base}3.png`,
+      `/images/${base}4.png`
+    ];
+  }
+  
+  if (n.includes("donna") && n.includes("intense")) {
+    const base = "ValentinoDonnaBornInRomaIntenseValentino";
+    return [
+      `/images/${base}.png`,
+      `/images/${base}1.png`,
+      `/images/${base}2.png`,
+      `/images/${base}3.png`,
+      `/images/${base}4.png`
+    ];
+  }
+  
+  if (n.includes("uomo born")) {
+    const base = "ValentinoUomoBornInRomaValentino";
+    return [
+      `/images/${base}.png`,
+      `/images/${base}1.png`,
+      `/images/${base}2.png`,
+      `/images/${base}3.png`,
+      `/images/${base}4.png`
+    ];
+  }
+  
   return null;
 };
 
