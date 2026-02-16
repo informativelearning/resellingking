@@ -1,6 +1,7 @@
 import { Product, Category, ProductDetails } from './types';
 
 const IMAGES = {
+  // Existing images
   DARK: "https://images.unsplash.com/photo-1523293188086-b469b979756c?auto=format&fit=crop&w=800&q=80",
   GOLD: "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?auto=format&fit=crop&w=800&q=80",
   MONO: "https://images.unsplash.com/photo-1509631179647-b84917759c1e?auto=format&fit=crop&w=800&q=80",
@@ -12,11 +13,13 @@ const IMAGES = {
   PURPLE: "https://images.unsplash.com/photo-1557170334-a7c3c4e7f9f4?auto=format&fit=crop&w=800&q=80",
   VALENTINO: "https://images.unsplash.com/photo-1594035910387-fea477942653?auto=format&fit=crop&w=800&q=80",
   TOMFORD: "https://images.unsplash.com/photo-1523293188086-b469b979756c?auto=format&fit=crop&w=800&q=80",
+  
   // Valentino Products
   VALENTINO_UOMO_BORN: "/images/Uomo Born in Roma.jpg",
   VALENTINO_DONNA_BORN: "/images/Donna Born in Roma.jpg",
   VALENTINO_VOCE_VIVA: "/images/Voce Viva.jpg",
   VALENTINO_UOMO_INTENSE: "/images/Uomo Intense.jpg",
+  
   // Creed Products
   CREED_ACQUA_FIORENTINA: "/images/Acqua Fiorentina.jpg",
   CREED_AVENTUS: "/images/Aventus.jpg",
@@ -36,7 +39,24 @@ const IMAGES = {
   CREED_SILVER_MOUNTAIN: "/images/Silver Mountain Water.jpg",
   CREED_SPRING_FLOWER: "/images/Spring Flower.jpg",
   CREED_VIKING: "/images/Viking.jpg",
-  CREED_WHITE_FLOWERS: "/images/White Flowers.jpg"
+  CREED_WHITE_FLOWERS: "/images/White Flowers.jpg",
+  
+  // Additional high-quality fragrance imagery for carousels
+  PERFUME_1: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80",
+  PERFUME_2: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80",
+  PERFUME_3: "https://images.unsplash.com/photo-1590736969955-71cc94901144?auto=format&fit=crop&w=800&q=80",
+  PERFUME_4: "https://images.unsplash.com/photo-1588405748880-12d1d2a59926?auto=format&fit=crop&w=800&q=80",
+  PERFUME_5: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80",
+  PERFUME_6: "https://images.unsplash.com/photo-1595435742656-5272d0b3fa82?auto=format&fit=crop&w=800&q=80",
+  PERFUME_7: "https://images.unsplash.com/photo-1563170351-be82bc888aa4?auto=format&fit=crop&w=800&q=80",
+  PERFUME_8: "https://images.unsplash.com/photo-1587017539504-67cfbddac569?auto=format&fit=crop&w=800&q=80",
+  LUXURY_1: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=800&q=80",
+  LUXURY_2: "https://images.unsplash.com/photo-1594035910387-fea477942653?auto=format&fit=crop&w=800&q=80",
+  LUXURY_3: "https://images.unsplash.com/photo-1615397349754-16f6a8ef0c3b?auto=format&fit=crop&w=800&q=80",
+  BOTTLE_CLOSE_1: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80",
+  BOTTLE_CLOSE_2: "https://images.unsplash.com/photo-1528821128474-27f963b062bf?auto=format&fit=crop&w=800&q=80",
+  LIFESTYLE_1: "https://images.unsplash.com/photo-1546367791-e7447b431084?auto=format&fit=crop&w=800&q=80",
+  LIFESTYLE_2: "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=800&q=80",
 };
 
 const ARCHIVE_DB: Record<string, Partial<ProductDetails>> = {
@@ -44,7 +64,10 @@ const ARCHIVE_DB: Record<string, Partial<ProductDetails>> = {
   "Baccarat Rouge 540": { description: "Luminous and sophisticated, an amber, floral, and woody breeze.", projection: "BEAST MODE", sillage: "ETERNAL" },
   "Aventus": { description: "Successful, powerful, and iconic. The masterpiece of the house.", projection: "STRONG", sillage: "EXCEPTIONAL" },
   "Born in Roma": { description: "A celebration of self-expression and heritage. Edgy yet sophisticated.", projection: "STRONG", sillage: "MODERATE" },
-  "Imagination": { description: "The key to boldness. An overdose of ambroxan and citrus.", projection: "STRONG", sillage: "MODERATE" }
+  "Imagination": { description: "The key to boldness. An overdose of ambroxan and citrus.", projection: "STRONG", sillage: "MODERATE" },
+  "Sauvage": { description: "Raw and noble all at once. A composition distinguished by a fresh and wild dimension.", projection: "BEAST MODE", sillage: "HEAVY" },
+  "Oud Wood": { description: "Exotic and smoky. Rare oud wood with rich spices and smooth vanilla.", projection: "MODERATE", sillage: "INTIMATE" },
+  "Black Orchid": { description: "Luxurious and sensual. A modern aphrodisiac with black truffle and ylang-ylang.", projection: "STRONG", sillage: "HEAVY" },
 };
 
 const DEFAULT_DETAILS = (brand: string, name: string): ProductDetails => {
@@ -394,64 +417,111 @@ export const DISCOUNTS = [
 
 const grouped: Record<string, Product> = {};
 
+// Helper function to get multiple images for a product
+const getProductImages = (brand: string, name: string): string[] => {
+  const b = brand.toLowerCase();
+  const n = name.toLowerCase();
+  
+  // Creed products with specific images
+  if (b.includes('creed')) {
+    if (n.includes('aventus')) return [IMAGES.CREED_AVENTUS, IMAGES.BOTTLE_CLOSE_1, IMAGES.LUXURY_1];
+    if (n.includes('millesime')) return [IMAGES.CREED_MILLESIME, IMAGES.GOLD, IMAGES.LUXURY_2];
+    if (n.includes('viking')) return [IMAGES.CREED_VIKING, IMAGES.PERFUME_3, IMAGES.BOTTLE_CLOSE_2];
+    if (n.includes('silver mountain')) return [IMAGES.CREED_SILVER_MOUNTAIN, IMAGES.BLUE, IMAGES.LIFESTYLE_1];
+    if (n.includes('green irish')) return [IMAGES.CREED_GREEN_IRISH, IMAGES.GREEN, IMAGES.PERFUME_5];
+    if (n.includes('acqua fiorentina')) return [IMAGES.CREED_ACQUA_FIORENTINA, IMAGES.PERFUME_4];
+    if (n.includes('spring flower')) return [IMAGES.CREED_SPRING_FLOWER, IMAGES.PERFUME_6];
+    if (n.includes('love in white')) return [IMAGES.CREED_LOVE_WHITE, IMAGES.CLEAN];
+    if (n.includes('himalaya')) return [IMAGES.CREED_HIMALAYA, IMAGES.WOOD];
+    return [IMAGES.CLEAN, IMAGES.PERFUME_7, IMAGES.LUXURY_3];
+  }
+  
+  // Valentino products with specific images
+  if (b.includes('valentino')) {
+    if (n.includes('uomo born') || (n.includes('born in roma') && n.includes('uomo'))) 
+      return [IMAGES.VALENTINO_UOMO_BORN, IMAGES.DARK, IMAGES.LIFESTYLE_2];
+    if (n.includes('donna born') || (n.includes('born in roma') && n.includes('donna'))) 
+      return [IMAGES.VALENTINO_DONNA_BORN, IMAGES.PERFUME_1, IMAGES.LUXURY_1];
+    if (n.includes('voce viva')) return [IMAGES.VALENTINO_VOCE_VIVA, IMAGES.PERFUME_2];
+    if (n.includes('uomo intense')) return [IMAGES.VALENTINO_UOMO_INTENSE, IMAGES.DARK];
+    return [IMAGES.VALENTINO, IMAGES.PERFUME_8, IMAGES.LUXURY_2];
+  }
+  
+  // Tom Ford - multiple images for key products
+  if (b.includes('tom ford')) {
+    if (n.includes('oud wood')) return [IMAGES.TOMFORD, IMAGES.WOOD, IMAGES.LUXURY_3, IMAGES.BOTTLE_CLOSE_1];
+    if (n.includes('black orchid')) return [IMAGES.DARK, IMAGES.PURPLE, IMAGES.PERFUME_7];
+    if (n.includes('lost cherry')) return [IMAGES.RED, IMAGES.PERFUME_3, IMAGES.LIFESTYLE_1];
+    if (n.includes('tobacco vanille')) return [IMAGES.GOLD, IMAGES.WOOD, IMAGES.LUXURY_2];
+    return [IMAGES.TOMFORD, IMAGES.DARK, IMAGES.LUXURY_1];
+  }
+  
+  // MFK - luxury presentation
+  if (b.includes('mfk')) {
+    if (n.includes('baccarat rouge') && n.includes('extrait')) 
+      return [IMAGES.RED, IMAGES.PERFUME_1, IMAGES.LUXURY_3, IMAGES.BOTTLE_CLOSE_2];
+    if (n.includes('baccarat rouge')) 
+      return [IMAGES.MONO, IMAGES.CLEAN, IMAGES.LUXURY_1];
+    if (n.includes('oud')) return [IMAGES.DARK, IMAGES.WOOD, IMAGES.LUXURY_2];
+    return [IMAGES.MONO, IMAGES.PERFUME_8, IMAGES.LUXURY_3];
+  }
+  
+  // Dior - sophisticated imagery
+  if (b.includes('dior')) {
+    if (n.includes('sauvage')) return [IMAGES.BLUE, IMAGES.PERFUME_5, IMAGES.LIFESTYLE_2, IMAGES.BOTTLE_CLOSE_1];
+    if (n.includes('j\'adore')) return [IMAGES.GOLD, IMAGES.PERFUME_4, IMAGES.LUXURY_1];
+    return [IMAGES.CLEAN, IMAGES.PERFUME_6, IMAGES.LUXURY_2];
+  }
+  
+  // Chanel - elegant minimalism
+  if (b.includes('chanel')) {
+    if (n.includes('bleu')) return [IMAGES.BLUE, IMAGES.MONO, IMAGES.LIFESTYLE_1];
+    if (n.includes('coco')) return [IMAGES.DARK, IMAGES.MONO, IMAGES.LUXURY_3];
+    if (n.includes('n°5')) return [IMAGES.MONO, IMAGES.CLEAN, IMAGES.PERFUME_7];
+    return [IMAGES.MONO, IMAGES.CLEAN, IMAGES.LUXURY_1];
+  }
+  
+  // Parfums de Marly - opulent style
+  if (b.includes('parfums de marly')) {
+    if (n.includes('delina')) return [IMAGES.PURPLE, IMAGES.PERFUME_2, IMAGES.LUXURY_2];
+    if (n.includes('layton')) return [IMAGES.PURPLE, IMAGES.GOLD, IMAGES.LUXURY_3];
+    return [IMAGES.PURPLE, IMAGES.PERFUME_8, IMAGES.LUXURY_1];
+  }
+  
+  // Louis Vuitton - modern luxury
+  if (b.includes('louis vuitton')) {
+    return [IMAGES.GREEN, IMAGES.PERFUME_6, IMAGES.LUXURY_3, IMAGES.LIFESTYLE_2];
+  }
+  
+  // YSL - bold and fashionable
+  if (b.includes('ysl')) {
+    if (n.includes('libre')) return [IMAGES.PERFUME_1, IMAGES.LUXURY_1, IMAGES.LIFESTYLE_1];
+    if (n.includes('black opium')) return [IMAGES.DARK, IMAGES.PERFUME_7, IMAGES.PURPLE];
+    return [IMAGES.PERFUME_3, IMAGES.LUXURY_2, IMAGES.LIFESTYLE_2];
+  }
+  
+  // Default: Return 2-3 generic luxury images
+  return [IMAGES.DARK, IMAGES.PERFUME_5, IMAGES.LUXURY_1];
+};
+
 rawData.forEach(([brand, name, volumes, ids]) => {
   const normalizedBrand = brand.trim();
   const normalizedName = name.trim();
   
-  // Determine primary volume for pricing
   const primaryVolume = volumes[0];
   const hasMultipleVolumes = volumes.length > 1;
-  
-  // Create spec string
   const spec = hasMultipleVolumes ? `${volumes.join(', ')} options` : primaryVolume;
   
   const key = `${normalizedBrand}|${normalizedName}`.toLowerCase();
   
-  let image = IMAGES.DARK;
-  const b = normalizedBrand.toLowerCase();
-  const n = normalizedName.toLowerCase();
-  
-  if (b.includes('chanel')) image = IMAGES.MONO;
-  else if (b.includes('valentino')) {
-    if (n.includes('uomo born') || n.includes('born in roma') && n.includes('uomo')) image = IMAGES.VALENTINO_UOMO_BORN;
-    else if (n.includes('donna born') || n.includes('born in roma') && n.includes('donna')) image = IMAGES.VALENTINO_DONNA_BORN;
-    else if (n.includes('voce viva')) image = IMAGES.VALENTINO_VOCE_VIVA;
-    else if (n.includes('uomo intense')) image = IMAGES.VALENTINO_UOMO_INTENSE;
-    else image = IMAGES.VALENTINO;
-  }
-  else if (b.includes('creed')) {
-    // Assign specific images for Creed products
-    if (n.includes('acqua fiorentina')) image = IMAGES.CREED_ACQUA_FIORENTINA;
-    else if (n.includes('aventus')) image = IMAGES.CREED_AVENTUS;
-    else if (n.includes('carmina')) image = IMAGES.CREED_CARMINA;
-    else if (n.includes('delphinus')) image = IMAGES.CREED_DELPHINUS;
-    else if (n.includes('erolfa')) image = IMAGES.CREED_EROLFA;
-    else if (n.includes('fleurs de gardenia')) image = IMAGES.CREED_FLEURS_GARDENIA;
-    else if (n.includes('floralie')) image = IMAGES.CREED_FLORALIE;
-    else if (n.includes('green irish tweed')) image = IMAGES.CREED_GREEN_IRISH;
-    else if (n.includes('himalaya')) image = IMAGES.CREED_HIMALAYA;
-    else if (n.includes('jardin d\'amalfi')) image = IMAGES.CREED_JARDIN_AMALFI;
-    else if (n.includes('love in white')) image = IMAGES.CREED_LOVE_WHITE;
-    else if (n.includes('millesime imperial')) image = IMAGES.CREED_MILLESIME;
-    else if (n.includes('original vetiver')) image = IMAGES.CREED_ORIGINAL_VETIVER;
-    else if (n.includes('queen of silk')) image = IMAGES.CREED_QUEEN_SILK;
-    else if (n.includes('royal princess oud')) image = IMAGES.CREED_ROYAL_PRINCESS;
-    else if (n.includes('silver mountain water')) image = IMAGES.CREED_SILVER_MOUNTAIN;
-    else if (n.includes('spring flower')) image = IMAGES.CREED_SPRING_FLOWER;
-    else if (n.includes('viking')) image = IMAGES.CREED_VIKING;
-    else if (n.includes('white flowers')) image = IMAGES.CREED_WHITE_FLOWERS;
-    else image = IMAGES.CLEAN; // Default Creed fallback
-  }
-  else if (b.includes('mfk')) image = n.includes('rouge') && n.includes('extrait') ? IMAGES.RED : IMAGES.MONO;
-  else if (b.includes('parfums de marly')) image = IMAGES.PURPLE;
-  else if (b.includes('louis vuitton')) image = IMAGES.GREEN;
-  else if (b.includes('tom ford')) image = IMAGES.TOMFORD;
+  // Get multiple images for this product
+  const images = getProductImages(normalizedBrand, normalizedName);
   
   let price = 145;
-  if (b.includes('mfk') || b.includes('kilian')) price = 385;
-  else if (b.includes('creed')) price = 340;
-  else if (b.includes('parfums de marly')) price = 320;
-  else if (b.includes('xerjoff') || b.includes('roja') || b.includes('initio')) price = 365;
+  if (normalizedBrand.toLowerCase().includes('mfk') || normalizedBrand.toLowerCase().includes('kilian')) price = 385;
+  else if (normalizedBrand.toLowerCase().includes('creed')) price = 340;
+  else if (normalizedBrand.toLowerCase().includes('parfums de marly')) price = 320;
+  else if (normalizedBrand.toLowerCase().includes('xerjoff') || normalizedBrand.toLowerCase().includes('roja') || normalizedBrand.toLowerCase().includes('initio')) price = 365;
   else if (primaryVolume.includes('30ml')) price = 65;
   else if (primaryVolume.includes('50ml')) price = 225;
   else if (primaryVolume.includes('60ml')) price = 195;
@@ -468,7 +538,8 @@ rawData.forEach(([brand, name, volumes, ids]) => {
     stock: Math.floor(Math.random() * 25) + 5,
     price,
     category: 'Fragrance',
-    image,
+    image: images[0], // Primary image for backwards compatibility
+    images, // Multiple images for carousel
     details: DEFAULT_DETAILS(normalizedBrand, normalizedName)
   };
 });
