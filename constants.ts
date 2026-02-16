@@ -12,13 +12,14 @@ const DEFAULT_DETAILS = (): ProductDetails => {
 };
 
 // Helper to map product names to actual image paths
-const getImagePaths = (brand: string, name: string): string[] | null => {
-  const b = brand.toLowerCase();
-  const n = name.toLowerCase();
+// FLEXIBLE: Supports any number of images in alphabetical order (0, 1, 2, 3, 5, etc.)
+const getImagePaths = (brand: string, name: string): string[] => {
+  const b = brand.toLowerCase().trim();
+  const n = name.toLowerCase().trim();
   
   // ========== VALENTINO ==========
   if (b.includes("valentino")) {
-    // Uomo Green Stravaganza - 5 images (all PNG)
+    // Uomo Green Stravaganza - 5 images (alphabetical 0-4)
     if (n.includes("uomo") && n.includes("green stravaganza")) {
       return [
         "/images/ValentinoUomoBorninRomaGreenStravaganzaValentino.png",
@@ -29,7 +30,7 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Extradose Donna - 5 images
+    // Extradose Donna - 5 images (alphabetical 0-4)
     if (n.includes("extradose")) {
       return [
         "/images/BorninRomaExtradoseDonnaValentino.png",
@@ -40,8 +41,8 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Donna Born in Roma (original) - 3 images
-    if (n.includes("donna born") && !n.includes("green") && !n.includes("intense")) {
+    // Donna Born in Roma (original) - 3 images (alphabetical 0-2)
+    if (n.includes("donna born") && !n.includes("green") && !n.includes("intense") && !n.includes("extradose")) {
       return [
         "/images/ValentinoDonnaBornInRomaValentino.png",
         "/images/ValentinoDonnaBornInRomaValentino1.jpeg",
@@ -49,7 +50,7 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Donna Green Stravaganza - 5 images (note: missing image 4, has image 5)
+    // Donna Green Stravaganza - has 0,1,2,3,5 (alphabetical, skip 4)
     if (n.includes("donna") && n.includes("green stravaganza")) {
       return [
         "/images/Valentino Donna Born in Roma Green Stravaganza Valentino.jpeg",
@@ -60,7 +61,7 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Donna Intense - 5 images
+    // Donna Intense - 5 images (alphabetical 0-4)
     if (n.includes("donna") && n.includes("intense")) {
       return [
         "/images/Valentino Donna Born In Roma Intense Valentino.jpeg",
@@ -71,7 +72,7 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Uomo Coral Fantasy - 5 images
+    // Uomo Coral Fantasy - 5 images (alphabetical 0-4)
     if (n.includes("coral fantasy")) {
       return [
         "/images/Valentino Uomo Born In Roma Coral Fantasy Valentino.jpeg",
@@ -82,7 +83,7 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Uomo Intense - 5 images
+    // Uomo Intense - 5 images (alphabetical 0-4)
     if (n.includes("uomo") && n.includes("intense")) {
       return [
         "/images/Valentino Uomo Born In Roma Intense Valentino.jpeg",
@@ -93,8 +94,8 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Uomo Born in Roma (original) - 5 images
-    if (n.includes("uomo born")) {
+    // Uomo Born in Roma (original) - 5 images (alphabetical 0-4)
+    if (n.includes("uomo born") && !n.includes("green") && !n.includes("coral") && !n.includes("intense")) {
       return [
         "/images/Valentino Uomo Born in Roma Valentino.png",
         "/images/Valentino Uomo Born in Roma Valentino1.png",
@@ -107,18 +108,8 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
   
   // ========== CREED ==========
   if (b.includes("creed")) {
-    // Aventus - 4 images
-    if (n.includes("aventus") && !n.includes("absolu")) {
-      return [
-        "/images/Aventus Creed.jpeg",
-        "/images/Aventus Creed1.png",
-        "/images/Aventus Creed2.jpeg",
-        "/images/Aventus Creed3.jpeg"
-      ];
-    }
-    
-    // Absolu Aventus - 5 images
-    if (n.includes("absolu aventus")) {
+    // Absolu Aventus - CHECK FIRST (more specific) - 5 images (alphabetical 0-4)
+    if (n.includes("absolu")) {
       return [
         "/images/Absolu Aventus Creed.jpeg",
         "/images/Absolu Aventus Creed1.png",
@@ -128,7 +119,17 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Delphinus - 4 images
+    // Aventus - 4 images (alphabetical 0-3)
+    if (n.includes("aventus")) {
+      return [
+        "/images/Aventus Creed.jpeg",
+        "/images/Aventus Creed1.png",
+        "/images/Aventus Creed2.jpeg",
+        "/images/Aventus Creed3.jpeg"
+      ];
+    }
+    
+    // Delphinus - 4 images (alphabetical 0-3)
     if (n.includes("delphinus")) {
       return [
         "/images/Delphinus Creed.jpeg",
@@ -138,7 +139,7 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Eladaria - 5 images
+    // Eladaria - 5 images (alphabetical 0-4)
     if (n.includes("eladaria")) {
       return [
         "/images/Eladaria Creed.jpeg",
@@ -149,7 +150,7 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Green Irish Tweed - 5 images
+    // Green Irish Tweed - 5 images (alphabetical 0-4)
     if (n.includes("green irish tweed")) {
       return [
         "/images/Green Irish Tweed Creed.jpeg",
@@ -163,18 +164,17 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
   
   // ========== YVES SAINT LAURENT / YSL ==========
   if (b.includes("yves saint laurent") || b.includes("ysl")) {
-    // MYSLF Eau de Parfum - 5 images
-    if (n.includes("myslf") && n.includes("eau de parfum") && !n.includes("le parfum")) {
+    // Black Opium - 4 images (alphabetical 0-3) - NEW!
+    if (n.includes("black opium")) {
       return [
-        "/images/MYSLF Eau de Parfum Yves Saint Laurent.jpeg",
-        "/images/MYSLF Eau de Parfum Yves Saint Laurent1.jpeg",
-        "/images/MYSLF Eau de Parfum Yves Saint Laurent2.jpeg",
-        "/images/MYSLF Eau de Parfum Yves Saint Laurent3.jpeg",
-        "/images/MYSLF Eau de Parfum Yves Saint Laurent4.jpeg"
+        "/images/Black Opium Yves Saint Laurent.jpeg",
+        "/images/Black Opium Yves Saint Laurent1.png",
+        "/images/Black Opium Yves Saint Laurent2.jpeg",
+        "/images/Black Opium Yves Saint Laurent3.jpeg"
       ];
     }
     
-    // MYSLF Le Parfum - 5 images
+    // MYSLF Le Parfum - CHECK FIRST (more specific) - 5 images (alphabetical 0-4)
     if (n.includes("myslf") && n.includes("le parfum")) {
       return [
         "/images/MYSLF Le Parfum Yves Saint Laurent.jpeg",
@@ -185,8 +185,19 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Y Eau de Parfum Intense - 4 images
-    if (n.includes("y eau de parfum intense") || (n.includes("y") && n.includes("intense"))) {
+    // MYSLF Eau de Parfum - 5 images (alphabetical 0-4)
+    if (n.includes("myslf") && n.includes("eau de parfum")) {
+      return [
+        "/images/MYSLF Eau de Parfum Yves Saint Laurent.jpeg",
+        "/images/MYSLF Eau de Parfum Yves Saint Laurent1.jpeg",
+        "/images/MYSLF Eau de Parfum Yves Saint Laurent2.jpeg",
+        "/images/MYSLF Eau de Parfum Yves Saint Laurent3.jpeg",
+        "/images/MYSLF Eau de Parfum Yves Saint Laurent4.jpeg"
+      ];
+    }
+    
+    // Y Eau de Parfum Intense - CHECK FIRST - 4 images (alphabetical 0-3)
+    if (n.includes("y") && n.includes("intense")) {
       return [
         "/images/Y Eau de Parfum Intense Yves Saint Laurent.png",
         "/images/Y Eau de Parfum Intense Yves Saint Laurent1.png",
@@ -195,8 +206,8 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
       ];
     }
     
-    // Y Eau de Parfum - 5 images
-    if (n.includes("y eau de parfum") || (n.includes("y") && !n.includes("intense") && !n.includes("myslf"))) {
+    // Y Eau de Parfum - 5 images (alphabetical 0-4)
+    if (n.includes("y eau de parfum") || (n.startsWith("y ") && !n.includes("myslf") && !n.includes("black"))) {
       return [
         "/images/Y Eau de Parfum Yves Saint Laurent.png",
         "/images/Y Eau de Parfum Yves Saint Laurent1.png",
@@ -207,14 +218,10 @@ const getImagePaths = (brand: string, name: string): string[] | null => {
     }
   }
   
-  return null;
+  // Fallback: return placeholder
+  console.warn(`No images mapped for: ${brand} - ${name}`);
+  return ["/images/placeholder.jpg"];
 };
-
-// Fallback placeholder image
-const PLACEHOLDER_IMAGES = [
-  "https://images.unsplash.com/photo-1523293188086-b469b979756c?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1509631179647-b84917759c1e?auto=format&fit=crop&w=800&q=80"
-];
 
 // FRAGRANCE INVENTORY
 const rawData: [string, string, string[]][] = [
@@ -236,6 +243,7 @@ const rawData: [string, string, string[]][] = [
   ["Creed", "Green Irish Tweed", ["100ml"]],
   
   // ========== YVES SAINT LAURENT ==========
+  ["Yves Saint Laurent", "Black Opium", ["90ml"]], // NEW!
   ["Yves Saint Laurent", "MYSLF Eau de Parfum", ["100ml"]],
   ["Yves Saint Laurent", "MYSLF Le Parfum", ["100ml"]],
   ["Yves Saint Laurent", "Y Eau de Parfum", ["100ml"]],
@@ -262,8 +270,8 @@ rawData.forEach(([brand, name, volumes], index) => {
   
   const key = `${normalizedBrand}|${normalizedName}`.toLowerCase();
   
-  // Get images, placeholder for products without images
-  const images = getImagePaths(normalizedBrand, normalizedName) || PLACEHOLDER_IMAGES;
+  // Get images - now always returns an array
+  const images = getImagePaths(normalizedBrand, normalizedName);
   
   // All products $80
   const price = 80;
@@ -277,8 +285,8 @@ rawData.forEach(([brand, name, volumes], index) => {
     stock: Math.floor(Math.random() * 15) + 3,
     price,
     category: 'Fragrance',
-    image: images[0],
-    images,
+    image: images[0], // First image as default
+    images, // Full array for carousel
     details: DEFAULT_DETAILS()
   };
 });
