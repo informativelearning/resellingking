@@ -75,7 +75,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
                     <div className="flex flex-col gap-1 max-w-[70%]">
                       <span className="text-v-red font-black uppercase tracking-tighter text-[9px]">{item.brand}</span>
                       <span className="text-sm font-bold uppercase tracking-tighter serif italic text-white leading-none">{item.name}</span>
-                      <span className="opacity-40 uppercase text-[9px] mt-1">{item.spec} // SKU: {item.ids[0]}</span>
+                      <span className="opacity-40 uppercase text-[9px] mt-1">{item.spec}</span>
                     </div>
                     <span className="font-black text-sm">${(item.price * item.quantity).toFixed(2)}</span>
                   </div>
