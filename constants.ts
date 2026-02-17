@@ -21,10 +21,35 @@ const DEFAULT_DETAILS = (category: string): ProductDetails => {
 
 // ---------------------------------------------------------------------------
 // IMAGE LOOKUP TABLE
-// Key format: "brand|product name" (lowercase, trimmed)
-// Value: ordered array of image paths
 // ---------------------------------------------------------------------------
 const IMAGE_MAP: Record<string, string[]> = {
+  // AZZARO
+  "azzaro|the most wanted": [
+    "/images/Azzaro The Most Wanted by Azzaro.jpg",
+    "/images/Azzaro The Most Wanted by Azzaro1.jpg",
+    "/images/Azzaro The Most Wanted by Azzaro2.jpg",
+  ],
+  "azzaro|wanted by night": [
+    "/images/Azzaro Wanted by Night Azzaro.jpg",
+    "/images/Azzaro Wanted by Night Azzaro1.jpg",
+    "/images/Azzaro Wanted by Night Azzaro2.jpg",
+  ],
+  "azzaro|forever wanted elixir": [
+    "/images/Forever Wanted Elixir Azzaro.jpg",
+    "/images/Forever Wanted Elixir Azzaro1.jpg",
+    "/images/Forever Wanted Elixir Azzaro3.jpeg",
+  ],
+  "azzaro|the most wanted parfum": [
+    "/images/The Most Wanted Parfum Azzaro.jpg",
+    "/images/The Most Wanted Parfum Azzaro1.jpg",
+    "/images/The Most Wanted Parfum Azzaro2.jpeg",
+  ],
+  "azzaro|wanted eau de parfum": [
+    "/images/Wanted Eau de Parfum Azzaro.jpg",
+    "/images/Wanted Eau de Parfum Azzaro1.jpg",
+    "/images/Wanted Eau de Parfum Azzaro2.jpg",
+  ],
+
   // VALENTINO
   "valentino|uomo born in roma green stravaganza": [
     "/images/ValentinoUomoBorninRomaGreenStravaganzaValentino.png",
@@ -235,6 +260,13 @@ const getImagePaths = (brand: string, name: string): string[] => {
 // RAW INVENTORY DATA
 // ---------------------------------------------------------------------------
 const rawData: [string, string, string[]][] = [
+  // AZZARO
+  ["Azzaro", "The Most Wanted",        ["100ml"]],
+  ["Azzaro", "The Most Wanted Parfum", ["100ml"]],
+  ["Azzaro", "Wanted by Night",        ["100ml"]],
+  ["Azzaro", "Wanted Eau de Parfum",   ["100ml"]],
+  ["Azzaro", "Forever Wanted Elixir",  ["100ml"]],
+
   // VALENTINO
   ["Valentino", "Uomo Born in Roma Green Stravaganza", ["100ml"]],
   ["Valentino", "Born in Roma Extradose Donna",        ["100ml"]],
@@ -253,18 +285,18 @@ const rawData: [string, string, string[]][] = [
   ["Creed", "Green Irish Tweed",["100ml"]],
 
   // YVES SAINT LAURENT
-  ["Yves Saint Laurent", "Black Opium",          ["90ml"]],
-  ["Yves Saint Laurent", "Mon Paris",            ["90ml"]],
-  ["Yves Saint Laurent", "MYSLF Eau de Parfum",  ["100ml"]],
-  ["Yves Saint Laurent", "MYSLF Le Parfum",      ["100ml"]],
-  ["Yves Saint Laurent", "Y Eau de Parfum",      ["100ml"]],
+  ["Yves Saint Laurent", "Black Opium",            ["90ml"]],
+  ["Yves Saint Laurent", "Mon Paris",              ["90ml"]],
+  ["Yves Saint Laurent", "MYSLF Eau de Parfum",    ["100ml"]],
+  ["Yves Saint Laurent", "MYSLF Le Parfum",        ["100ml"]],
+  ["Yves Saint Laurent", "Y Eau de Parfum",        ["100ml"]],
   ["Yves Saint Laurent", "Y Eau de Parfum Intense",["100ml"]],
 
   // GIORGIO ARMANI
-  ["Giorgio Armani", "Acqua di Giò Profumo",                        ["125ml"]],
-  ["Giorgio Armani", "Emporio Armani Stronger With You Absolutely",  ["100ml"]],
-  ["Giorgio Armani", "Emporio Armani Stronger With You Intensely",   ["100ml"]],
-  ["Giorgio Armani", "My Way",                                       ["90ml"]],
+  ["Giorgio Armani", "Acqua di Giò Profumo",                       ["125ml"]],
+  ["Giorgio Armani", "Emporio Armani Stronger With You Absolutely", ["100ml"]],
+  ["Giorgio Armani", "Emporio Armani Stronger With You Intensely",  ["100ml"]],
+  ["Giorgio Armani", "My Way",                                      ["90ml"]],
 
   // FEAR OF GOD ESSENTIALS
   ["Fear of God Essentials", "Essentials SS22 Stretch Limo Hoodie",   ["S, M, L, XL"]],
