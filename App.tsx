@@ -282,8 +282,8 @@ const App: React.FC = () => {
                 {/* Subtle Footer Logo */}
                 <div className="mb-12 flex justify-center opacity-15 hover:opacity-30 transition-opacity duration-700">
                   <img 
-                    src="/fortuning.png" 
-                    alt="Wings of Fortune"
+                    src="/images/wingsofofrtuning.jpg" 
+                    alt="Wings of `Fortune`"
                     className="h-12 w-auto filter brightness-110"
                     style={{ mixBlendMode: 'screen' }}
                   />
