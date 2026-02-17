@@ -6,6 +6,8 @@ import CartSidebar from './components/CartSidebar';
 import { INVENTORY } from './constants';
 import { Product, Category, CartItem } from './types';
 
+const LOGO = '/images/wingsofofrtuning.PNG';
+
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBrand, setFilterBrand] = useState('ALL');
@@ -17,7 +19,6 @@ const App: React.FC = () => {
 
   const categories: Category[] = ['All', 'Fragrance', 'Apparel'];
 
-  // Only show brands relevant to the active category
   const brands: string[] = useMemo(() => {
     const source =
       filterCategory === 'All'
@@ -27,7 +28,6 @@ const App: React.FC = () => {
     return ['ALL', ...unique];
   }, [filterCategory]);
 
-  // Reset brand filter whenever category changes so a stale brand doesn't linger
   const handleCategoryChange = (cat: Category) => {
     setFilterCategory(cat);
     setFilterBrand('ALL');
@@ -82,21 +82,20 @@ const App: React.FC = () => {
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Label and placeholder adapt to the active category
   const maisonLabel =
     filterCategory === 'Apparel'   ? 'Brand'         :
     filterCategory === 'Fragrance' ? 'Maison'        :
                                      'Maison / Brand';
 
   const maisonPlaceholder =
-    filterCategory === 'Apparel'   ? 'All Brands'  :
-    filterCategory === 'Fragrance' ? 'All Houses'  :
+    filterCategory === 'Apparel'   ? 'All Brands' :
+    filterCategory === 'Fragrance' ? 'All Houses' :
                                      'All Houses';
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
 
-      {/* Subtle Film Grain Texture */}
+      {/* Film Grain */}
       <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]"
            style={{
              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
@@ -104,12 +103,12 @@ const App: React.FC = () => {
            }}
       />
 
-      {/* Fixed Top Bar */}
+      {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img
-              src="/images/wingsofofrtuning.png"
+              src={LOGO}
               alt="Wings of Fortune"
               className="h-12 md:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110 contrast-110"
               style={{ mixBlendMode: 'screen' }}
@@ -146,7 +145,7 @@ const App: React.FC = () => {
 
         <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative mt-12">
 
-          {/* Hero Wordmark */}
+          {/* Hero */}
           <div className="text-center space-y-8 max-w-5xl">
             <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light">
               Wings of<br/>
@@ -185,7 +184,6 @@ const App: React.FC = () => {
             </div>
 
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-
               {/* Category */}
               <div className="space-y-3">
                 <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
@@ -208,7 +206,7 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Brand / Maison — filtered by active category */}
+              {/* Brand / Maison */}
               <div className="space-y-3 relative">
                 <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
                   {maisonLabel}
@@ -222,9 +220,7 @@ const App: React.FC = () => {
                   </span>
                   <svg
                     className={`w-3 h-3 transition-transform duration-300 ${isBrandDropdownOpen ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -279,7 +275,7 @@ const App: React.FC = () => {
           <div className="text-center space-y-8">
             <div className="mb-12 flex justify-center opacity-15 hover:opacity-30 transition-opacity duration-700">
               <img
-                src="/images/wingsofofrtuning.jpg"
+                src={LOGO}
                 alt="Wings of Fortune"
                 className="h-20 w-auto filter brightness-110 contrast-110"
                 style={{ mixBlendMode: 'screen' }}
