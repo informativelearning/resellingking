@@ -123,6 +123,18 @@ const App: React.FC = () => {
               </div>
             </button>
 
+            {/* Logo */}
+            <div className="mb-6 flex justify-center">
+              <div className="relative group/logo">
+                <div className="absolute inset-0 bg-v-red/20 blur-2xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-700" />
+                <img 
+                  src="/fortuning.png" 
+                  alt="Wings of Fortune"
+                  className="h-24 md:h-32 w-auto opacity-90 group-hover/logo:opacity-100 transition-all duration-500 drop-shadow-2xl relative filter brightness-110 contrast-125"
+                />
+              </div>
+            </div>
+
             <h1 className="text-5xl md:text-8xl serif italic tracking-tighter text-white leading-none drop-shadow-2xl">
               Wings of Fortune<span className="text-v-red">.</span>
             </h1>
@@ -282,6 +294,15 @@ const App: React.FC = () => {
              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-v-red/5 blur-[100px] rounded-full pointer-events-none" />
              
              <div className="text-center space-y-6 relative z-10">
+                {/* Footer Logo - smaller */}
+                <div className="mb-8 flex justify-center opacity-20 hover:opacity-40 transition-opacity duration-700">
+                  <img 
+                    src="/fortuning.png" 
+                    alt="Wings of Fortune"
+                    className="h-16 w-auto filter brightness-110"
+                  />
+                </div>
+                
                 <h2 className="text-6xl md:text-8xl serif italic tracking-tighter text-white/20 drop-shadow-lg">Atelier Los Angeles</h2>
                 <div className="flex flex-col items-center gap-2">
                    <p className="text-v-red font-bold text-xs tracking-[0.8em] uppercase">90015 / CALIFORNIA</p>
