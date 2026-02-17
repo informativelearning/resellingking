@@ -296,8 +296,8 @@ const getImagePaths = (brand: string, name: string): string[] => {
     // 1977 Hoodie Iron - 2 images
     if (n.includes("1977") && n.includes("iron")) {
       return [
-        "/images/Fear of God Essentials \"1977\" Hoodie – Iron.jpeg",
-        "/images/Fear of God Essentials \"1977\" Hoodie – Iron1.jpeg"
+        "/images/Fear of God Essentials \u201c1977\u201d Hoodie \u2013 Iron.jpeg",
+        "/images/Fear of God Essentials \u201c1977\u201d Hoodie \u2013 Iron1.jpeg"
       ];
     }
     
