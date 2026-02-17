@@ -101,7 +101,7 @@ const App: React.FC = () => {
           {/* Logo - Top Left (Luxury Letterhead Style) */}
           <div className="flex items-center gap-4">
             <img 
-              src="/fortuning.png" 
+              src="/images/wingsofofrtuning.jpg" 
               alt="Wings of Fortune"
               className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110"
               style={{ mixBlendMode: 'screen' }}
