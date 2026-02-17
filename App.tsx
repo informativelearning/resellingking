@@ -109,7 +109,7 @@ const App: React.FC = () => {
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img
-              src="/images/wingsofofrtuning.jpg"
+              src="/images/wingsofofrtuning.png"
               alt="Wings of Fortune"
               className="h-12 md:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110 contrast-110"
               style={{ mixBlendMode: 'screen' }}
