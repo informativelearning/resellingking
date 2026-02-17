@@ -128,7 +128,7 @@ const App: React.FC = () => {
               <div className="relative group/logo">
                 <div className="absolute inset-0 bg-v-red/20 blur-2xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-700" />
                 <img 
-                  src="/fortuning.png" 
+                  src="/images/fortuning.png" 
                   alt="Wings of Fortune"
                   className="h-24 md:h-32 w-auto opacity-90 group-hover/logo:opacity-100 transition-all duration-500 drop-shadow-2xl relative filter brightness-110 contrast-125"
                 />
@@ -297,7 +297,7 @@ const App: React.FC = () => {
                 {/* Footer Logo - smaller */}
                 <div className="mb-8 flex justify-center opacity-20 hover:opacity-40 transition-opacity duration-700">
                   <img 
-                    src="/fortuning.png" 
+                    src="/images/fortuning.png" 
                     alt="Wings of Fortune"
                     className="h-16 w-auto filter brightness-110"
                   />
