@@ -9,7 +9,6 @@ interface ProductModalProps {
 }
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire, onAddToCart }) => {
-  const isFragrance = product.category === 'Fragrance';
   const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -26,58 +25,55 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-v-black overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-v-black overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none overflow-hidden select-none">
+      <div className="fixed top-0 left-0 w-full h-full opacity-5 pointer-events-none overflow-hidden select-none">
         <span className="text-[40vh] font-black serif italic absolute -top-20 -left-20 whitespace-nowrap leading-none">
           {product.brand}
         </span>
       </div>
 
-      <div className="relative w-full h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
-        
-        {/* Close Button */}
-        <button 
+      {/* Close Button — sticky on mobile */}
+      <div className="sticky top-0 z-[60] flex justify-end px-6 py-4 bg-gradient-to-b from-v-black to-transparent pointer-events-none">
+        <button
           onClick={onClose}
-          className="absolute top-8 right-8 z-[60] text-white hover:text-v-red transition-colors text-xs tracking-[0.5em] uppercase flex items-center gap-2 group"
+          className="pointer-events-auto text-white hover:text-v-red transition-colors text-xs tracking-[0.5em] uppercase flex items-center gap-2 group bg-v-black/80 backdrop-blur-sm px-4 py-2 border border-white/10"
         >
-          Close <span className="text-2xl font-light group-hover:rotate-90 transition-transform">×</span>
+          Close <span className="text-xl font-light group-hover:rotate-90 transition-transform inline-block">×</span>
         </button>
+      </div>
 
-        {/* Left Side: Editorial Image with Carousel */}
-        <div className="w-full md:w-1/2 h-2/3 md:h-full relative overflow-hidden bg-v-gray">
-          <img 
-            src={productImages[currentImageIndex]} 
+      {/* Layout: stacked on mobile, side-by-side on md+ */}
+      <div className="flex flex-col md:flex-row md:min-h-screen md:h-screen md:overflow-hidden -mt-14 md:mt-0">
+
+        {/* Image Side */}
+        <div className="w-full md:w-1/2 h-[60vw] min-h-[280px] md:h-full relative overflow-hidden bg-v-gray flex-shrink-0">
+          <img
+            src={productImages[currentImageIndex]}
             alt={`${product.name} - Image ${currentImageIndex + 1}`}
             className="w-full h-full object-cover"
           />
 
-          {/* Image Navigation (if multiple images) */}
           {productImages.length > 1 && (
             <>
               <button
                 onClick={prevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-v-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-v-red transition-colors text-2xl"
-              >
-                ‹
-              </button>
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-v-red transition-colors text-2xl z-10"
+              >‹</button>
               <button
                 onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-v-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-v-red transition-colors text-2xl"
-              >
-                ›
-              </button>
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-v-red transition-colors text-2xl z-10"
+              >›</button>
 
-              {/* Image Indicator Dots */}
-              <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2">
+              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                 {productImages.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentImageIndex(idx)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      idx === currentImageIndex 
-                        ? 'w-8 bg-v-red' 
-                        : 'w-2 bg-white/30 hover:bg-white/60'
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      idx === currentImageIndex
+                        ? 'w-8 bg-v-red'
+                        : 'w-1.5 bg-white/30 hover:bg-white/60'
                     }`}
                   />
                 ))}
@@ -85,107 +81,81 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
             </>
           )}
 
-          <div className="absolute bottom-12 left-12">
-            <span className="text-v-red text-xs font-bold tracking-[0.5em] uppercase block mb-4">Master Manifest 2025</span>
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 inline-block">
-               <p className="text-[10px] text-white/40 uppercase mb-2">Authenticated Archive SKUs</p>
-               <div className="flex flex-wrap gap-2 max-w-xs">
-                 {product.ids.map(id => (
-                   <span key={id} className="font-mono text-[9px] text-white/60 tracking-tighter bg-black/40 px-2 py-1 border border-white/5">{id}</span>
-                 ))}
-               </div>
+          {/* SKU tag — hide on very small screens to avoid clutter */}
+          <div className="hidden sm:block absolute bottom-10 left-8 z-10">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 inline-block">
+              <p className="text-[9px] text-white/40 uppercase mb-1.5">SKU</p>
+              <div className="flex flex-wrap gap-1.5 max-w-[200px]">
+                {product.ids.map(id => (
+                  <span key={id} className="font-mono text-[9px] text-white/60 tracking-tighter bg-black/40 px-2 py-1 border border-white/5">{id}</span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Details Content */}
-        <div className="w-full md:w-1/2 h-auto md:h-full p-8 md:p-20 flex flex-col justify-center bg-v-black border-l border-white/10">
-          <div className="max-w-lg mx-auto space-y-12">
-            
+        {/* Details Side — scrollable on mobile via parent, flex on md */}
+        <div className="w-full md:w-1/2 md:h-full md:overflow-y-auto p-7 sm:p-10 md:p-16 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
+
+            {/* Header */}
             <header className="space-y-4">
-              <span className="text-v-red text-xs font-bold tracking-[0.6em] uppercase block">{product.brand}</span>
-              <h2 className="text-6xl md:text-8xl serif italic leading-[0.85] text-white tracking-tighter">
+              <span className="text-v-red text-[10px] font-bold tracking-[0.6em] uppercase block">{product.brand}</span>
+              <h2 className="text-5xl sm:text-6xl md:text-7xl serif italic leading-[0.88] text-white tracking-tighter">
                 {product.name}
               </h2>
-              <div className="flex gap-4 items-center pt-4">
+              <div className="flex gap-4 items-center pt-3">
                 <span className="text-3xl serif italic text-white/80">${product.price}</span>
                 <span className="h-[1px] flex-1 bg-white/20"></span>
                 <span className="text-[10px] tracking-[0.3em] uppercase text-white/40">{product.spec}</span>
               </div>
             </header>
 
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <p className="text-xl serif italic text-white/90 leading-relaxed">
-                  {product.details.description}
-                </p>
-              </div>
-
-              <div className="pt-12 border-t border-white/10">
-                <h4 className="text-[10px] tracking-[0.4em] uppercase text-v-red font-bold mb-8">Composition & Performance</h4>
-                
-                {isFragrance ? (
-                  <div className="grid grid-cols-1 gap-6">
-                    <div className="flex justify-between items-baseline border-b border-white/5 pb-2">
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest">Top</span>
-                      <span className="serif italic text-lg text-white/80">{product.details.topNotes?.join(', ')}</span>
-                    </div>
-                    <div className="flex justify-between items-baseline border-b border-white/5 pb-2">
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest">Heart</span>
-                      <span className="serif italic text-lg text-white/80">{product.details.heartNotes?.join(', ')}</span>
-                    </div>
-                    <div className="flex justify-between items-baseline border-b border-white/5 pb-2">
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest">Base</span>
-                      <span className="serif italic text-lg text-white/80">{product.details.baseNotes?.join(', ')}</span>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-12 mt-4">
-                      <div>
-                        <span className="text-[9px] uppercase tracking-widest text-white/20 block mb-1">Projection</span>
-                        <span className="text-xs font-bold text-white tracking-[0.2em]">{product.details.projection}</span>
-                      </div>
-                      <div>
-                        <span className="text-[9px] uppercase tracking-widest text-white/20 block mb-1">Sillage</span>
-                        <span className="text-xs font-bold text-white tracking-[0.2em]">{product.details.sillage}</span>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 gap-6">
-                    <div className="flex justify-between border-b border-white/5 pb-2">
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest">Authenticity</span>
-                      <span className="serif italic text-lg text-white/80">{product.details.serialStatus}</span>
-                    </div>
-                    <div className="flex justify-between border-b border-white/5 pb-2">
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest">Coverage</span>
-                      <span className="serif italic text-lg text-white/80">{product.details.coverage}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
+            {/* Description */}
+            <div>
+              <p className="text-base sm:text-lg serif italic text-white/80 leading-relaxed">
+                {product.details.description}
+              </p>
             </div>
 
-            <div className="pt-12 space-y-4">
-              <button 
+            {/* Condition / Authenticity pills */}
+            <div className="flex gap-3 flex-wrap">
+              <span className="text-[9px] uppercase tracking-[0.3em] border border-white/15 px-3 py-2 text-white/50">
+                {product.condition}
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.3em] border border-v-red/40 px-3 py-2 text-v-red/80">
+                Verified Auth
+              </span>
+              {product.category === 'Apparel' && (
+                <span className="text-[9px] uppercase tracking-[0.3em] border border-white/15 px-3 py-2 text-white/50">
+                  Multiple Sizes
+                </span>
+              )}
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="space-y-3 pt-4">
+              <button
                 onClick={handleAddToCart}
-                className="w-full bg-v-red text-white py-6 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black transition-all duration-500 border border-v-red"
+                className="w-full bg-v-red text-white py-5 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black active:scale-[0.98] transition-all duration-300 border border-v-red"
               >
                 Add to Bag
               </button>
-              
-              <button 
+
+              <button
                 onClick={onInquire}
-                className="w-full bg-transparent text-white py-6 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black transition-all duration-500 border border-white/20"
+                className="w-full bg-transparent text-white py-5 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black active:scale-[0.98] transition-all duration-300 border border-white/20"
               >
                 DM for Availability
               </button>
-              
-              <p className="text-center text-[9px] text-white/20 uppercase tracking-[0.4em] mt-6 italic">Verified Stock // Est. 2025</p>
+
+              <p className="text-center text-[9px] text-white/20 uppercase tracking-[0.4em] pt-2 italic">
+                Verified Stock // Est. 2025
+              </p>
             </div>
 
           </div>
         </div>
-
       </div>
     </div>
   );

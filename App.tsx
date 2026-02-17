@@ -6,7 +6,7 @@ import CartSidebar from './components/CartSidebar';
 import { INVENTORY } from './constants';
 import { Product, Category, CartItem } from './types';
 
-const LOGO = '/images/wingsofofrtuning.PNG';
+const LOGO = '/images/wingsofofrtuning.png';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
