@@ -428,7 +428,7 @@ rawData.forEach(([brand, name, volumes], index) => {
   const images = getImagePaths(normalizedBrand, normalizedName);
   
   // Set price based on category
-  const price = category === 'Apparel' ? 120 : 80;
+  const price = category === 'Apparel' ? 60 : 80;
   
   grouped[key] = {
     ids: [key],
