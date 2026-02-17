@@ -1,4 +1,4 @@
-export type Category = 'Fragrance' | 'Skincare' | 'All';
+export type Category = 'Fragrance' | 'Apparel' | 'All';
 
 export interface ProductDetails {
   topNotes?: string[];
@@ -10,6 +10,10 @@ export interface ProductDetails {
   serialStatus?: string;
   coverage?: string;
   batteryHealth?: string;
+  // Apparel-specific
+  material?: string;
+  fit?: string;
+  care?: string;
 }
 
 export interface Product {

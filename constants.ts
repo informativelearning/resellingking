@@ -1,6 +1,15 @@
 import { Product, Category, ProductDetails } from './types';
 
-const DEFAULT_DETAILS = (): ProductDetails => {
+const DEFAULT_DETAILS = (category: string): ProductDetails => {
+  if (category === 'Apparel') {
+    return {
+      description: "Verified authentic Fear of God Essentials. New with tags.",
+      material: "Cotton Blend",
+      fit: "Relaxed Oversized",
+      care: "Machine wash cold, tumble dry low"
+    };
+  }
+  
   return {
     description: "Verified authentic fragrance. 2024/2025 Batch.",
     projection: "STRONG",
@@ -274,6 +283,73 @@ const getImagePaths = (brand: string, name: string): string[] => {
     }
   }
   
+  // ========== FEAR OF GOD ESSENTIALS ==========
+  if (b.includes("fear of god") || b.includes("essentials")) {
+    // SS22 Stretch Limo Hoodie - 2 images
+    if (n.includes("stretch limo")) {
+      return [
+        "/images/Essentials SS22 Stretch Limo Hoodie.jpeg",
+        "/images/Essentials SS22 Stretch Limo Hoodie1.jpeg"
+      ];
+    }
+    
+    // 1977 Hoodie Iron - 2 images
+    if (n.includes("1977") && n.includes("iron")) {
+      return [
+        "/images/Fear of God Essentials \"1977\" Hoodie – Iron.jpeg",
+        "/images/Fear of God Essentials \"1977\" Hoodie – Iron1.jpeg"
+      ];
+    }
+    
+    // Hoodie Desert Taupe - 2 images
+    if (n.includes("desert taupe")) {
+      return [
+        "/images/Fear of God Essentials Hoodie – Desert Taupe.jpeg",
+        "/images/Fear of God Essentials Hoodie – Desert Taupe1.jpeg"
+      ];
+    }
+    
+    // Hoodie Eggshell - 2 images
+    if (n.includes("eggshell")) {
+      return [
+        "/images/Fear of God Essentials Hoodie – Eggshell.jpeg",
+        "/images/Fear of God Essentials Hoodie – Eggshell1.jpeg"
+      ];
+    }
+    
+    // Hoodie Sycamore - 2 images
+    if (n.includes("sycamore")) {
+      return [
+        "/images/Fear of God Essentials Hoodie – Sycamore.jpeg",
+        "/images/Fear of God Essentials Hoodie – Sycamore1.jpeg"
+      ];
+    }
+    
+    // SS22 Dark Oatmeal - 2 images (jpg and png)
+    if (n.includes("dark oatmeal")) {
+      return [
+        "/images/Fear of God Essentials SS22 Hoodie – Dark Oatmeal.jpg",
+        "/images/Fear of God Essentials SS22 Hoodie – Dark Oatmeal.png"
+      ];
+    }
+    
+    // SS22 Light Oatmeal - 2 images
+    if (n.includes("light oatmeal")) {
+      return [
+        "/images/Fear of God Essentials SS22 Hoodie – Light Oatmeal.jpeg",
+        "/images/Fear of God Essentials SS22 Hoodie – Light Oatmeal1.jpeg"
+      ];
+    }
+    
+    // Hoodie Coral - 2 images
+    if (n.includes("coral")) {
+      return [
+        "/images/Fear-of-God-Essentials-Hoodie-Coral.jpg",
+        "/images/Fear-of-God-Essentials-Hoodie-Coral1.jpg"
+      ];
+    }
+  }
+  
   // Fallback: return placeholder
   console.warn(`No images mapped for: ${brand} - ${name}`);
   return ["/images/placeholder.jpg"];
@@ -311,12 +387,23 @@ const rawData: [string, string, string[]][] = [
   ["Giorgio Armani", "Emporio Armani Stronger With You Absolutely", ["100ml"]],
   ["Giorgio Armani", "Emporio Armani Stronger With You Intensely", ["100ml"]],
   ["Giorgio Armani", "My Way", ["90ml"]],
+  
+  // ========== FEAR OF GOD ESSENTIALS ==========
+  ["Fear of God Essentials", "Essentials SS22 Stretch Limo Hoodie", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials 1977 Hoodie - Iron", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Hoodie - Desert Taupe", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Hoodie - Eggshell", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Hoodie - Sycamore", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials SS22 Hoodie - Dark Oatmeal", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials SS22 Hoodie - Light Oatmeal", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Hoodie - Coral", ["S, M, L, XL"]],
 ];
 
 export const DISCOUNTS = [
-  "FRAGRANCE COLLECTION",
-  "Fragrances • Clothes • Electronics & More Coming Soon",
-  "DAILY DROPS",
+  "LA LOCAL PICKUP: 90015",
+  "CURATED LUXURY COLLECTION",
+  "FRAGRANCE • STREETWEAR • ESSENTIALS",
+  "AUTHENTICITY VERIFIED",
   "EST. 2025 ARCHIVE"
 ];
 
@@ -332,24 +419,29 @@ rawData.forEach(([brand, name, volumes], index) => {
   
   const key = `${normalizedBrand}|${normalizedName}`.toLowerCase();
   
+  // Determine category based on brand or product type
+  const category: Category = normalizedBrand.toLowerCase().includes('essentials') || normalizedBrand.toLowerCase().includes('fear of god') 
+    ? 'Apparel' 
+    : 'Fragrance';
+  
   // Get images - now always returns an array
   const images = getImagePaths(normalizedBrand, normalizedName);
   
-  // All products $80
-  const price = 80;
+  // Set price based on category
+  const price = category === 'Apparel' ? 120 : 80;
   
   grouped[key] = {
     ids: [key],
     brand: normalizedBrand,
     name: normalizedName,
     spec,
-    condition: 'Sealed',
+    condition: category === 'Apparel' ? 'New with Tags' : 'Sealed',
     stock: Math.floor(Math.random() * 15) + 3,
     price,
-    category: 'Fragrance',
+    category,
     image: images[0], // First image as default
     images, // Full array for carousel
-    details: DEFAULT_DETAILS()
+    details: DEFAULT_DETAILS(category)
   };
 });
 

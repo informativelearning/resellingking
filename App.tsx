@@ -21,12 +21,13 @@ const App: React.FC = () => {
     return ['ALL', ...uniqueBrands];
   }, []);
 
-  const categories: Category[] = ['All', 'Fragrance'];
+  const categories: Category[] = ['All', 'Fragrance', 'Apparel'];
 
   const stats = useMemo(() => {
     return {
       models: INVENTORY.length,
       fragrance: INVENTORY.filter(p => p.category === 'Fragrance').length,
+      apparel: INVENTORY.filter(p => p.category === 'Apparel').length,
       brands: brands.length - 1
     };
   }, [brands]);
