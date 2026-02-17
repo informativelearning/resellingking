@@ -27,7 +27,7 @@ const App: React.FC = () => {
     return {
       models: INVENTORY.length,
       fragrance: INVENTORY.filter(p => p.category === 'Fragrance').length,
-      brands: brands.length - 1 // Exclude "ALL"
+      brands: brands.length - 1
     };
   }, [brands]);
 
@@ -87,196 +87,184 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
-      {/* Film Grain Texture Overlay */}
-      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.015]" 
+      {/* Subtle Film Grain Texture */}
+      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]" 
            style={{
              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
              backgroundRepeat: 'repeat'
            }}
       />
 
-      <header className="sticky top-0 z-30 bg-v-black/95 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-v-red/5">
-        <Ticker />
-        <div className="px-6 md:px-12 py-8 flex flex-col items-center gap-12 max-w-[1800px] mx-auto w-full relative">
-          
-          {/* Subtle glow effect behind header */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-v-red/5 blur-[120px] rounded-full pointer-events-none" />
-          
-          <div className="text-center group cursor-default relative z-10">
-            {/* Cart Icon - Top Right */}
-            <button 
-              onClick={() => setIsCartOpen(true)}
-              className="absolute -top-4 right-0 flex items-center gap-3 text-white hover:text-v-red transition-all duration-300 group/cart hover:scale-105"
-            >
-              <span className="text-[10px] tracking-[0.4em] uppercase font-bold opacity-0 group-hover/cart:opacity-100 transition-opacity">
-                BAG
-              </span>
-              <div className="relative">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                {totalCartItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-v-red text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                    {totalCartItems}
-                  </span>
-                )}
-              </div>
-            </button>
+      {/* Fixed Top Bar with Logo and Cart */}
+      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+          {/* Logo - Top Left (Luxury Letterhead Style) */}
+          <div className="flex items-center gap-4">
+            <img 
+              src="/fortuning.png" 
+              alt="Wings of Fortune"
+              className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110"
+              style={{ mixBlendMode: 'screen' }}
+            />
+            <div className="hidden md:block h-6 w-[1px] bg-white/10"></div>
+            <span className="hidden md:block text-[9px] tracking-[0.5em] uppercase text-white/30 font-light">
+              Los Angeles
+            </span>
+          </div>
 
-            {/* Logo */}
-            <div className="mb-6 flex justify-center">
-              <div className="relative group/logo">
-                <div className="absolute inset-0 bg-v-red/20 blur-2xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-700" />
-                <img 
-                  src="/images/wingsofofrtuning.jpg" 
-                  alt="Wings of Fortune"
-                  className="h-24 md:h-32 w-auto opacity-90 group-hover/logo:opacity-100 transition-all duration-500 drop-shadow-2xl relative filter brightness-110 contrast-125"
-                />
-              </div>
+          {/* Cart - Top Right */}
+          <button 
+            onClick={() => setIsCartOpen(true)}
+            className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart"
+          >
+            <span className="hidden md:block text-[9px] tracking-[0.4em] uppercase font-medium opacity-0 group-hover/cart:opacity-100 transition-opacity">
+              Shopping Bag
+            </span>
+            <div className="relative">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              {totalCartItems > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-v-red text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {totalCartItems}
+                </span>
+              )}
             </div>
+          </button>
+        </div>
+      </div>
 
-            <h1 className="text-5xl md:text-8xl serif italic tracking-tighter text-white leading-none drop-shadow-2xl">
-              Wings of Fortune<span className="text-v-red">.</span>
+      <header className="relative z-30 pt-24 pb-16">
+        <Ticker />
+        
+        <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative mt-12">
+          
+          {/* Hero Wordmark - Massive, Confident, Breathing */}
+          <div className="text-center space-y-8 max-w-5xl">
+            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light">
+              Wings of<br/>
+              <span className="block mt-2">Fortune</span>
             </h1>
-            <div className="flex flex-col items-center gap-4 mt-4">
-              <div className="flex items-center justify-center gap-6 opacity-40 group-hover:opacity-100 transition-opacity duration-700">
-                 <span className="h-[1px] w-8 bg-gradient-to-r from-transparent to-white"></span>
-                 <span className="text-[10px] tracking-[0.6em] uppercase font-bold">Couture Manifest 2025</span>
-                 <span className="h-[1px] w-8 bg-gradient-to-l from-transparent to-white"></span>
-              </div>
-              
-              <div className="text-[9px] tracking-[0.3em] uppercase text-white/30 font-medium flex gap-4">
-                <span>Unique Models: {stats.models}</span>
-                <span>//</span>
-                <span>Houses: {stats.brands}</span>
-                <span>//</span>
-                <span className={stats.fragrance > 0 ? 'text-v-red' : ''}>Archive: {stats.fragrance}</span>
-              </div>
+            
+            {/* Refined Tagline */}
+            <div className="flex flex-col items-center gap-6 pt-4">
+              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light">
+                Private Archive / 2025
+              </p>
+              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed">
+                Curated fragrance collection from the world's most distinguished maisons. 
+                Available exclusively in Los Angeles.
+              </p>
             </div>
           </div>
 
-          <div className="w-full max-w-5xl flex flex-col gap-10 items-center relative z-10">
-            {/* Search Bar */}
-            <div className="relative w-full max-w-2xl group">
+          {/* Refined Search & Filter Section */}
+          <div className="w-full max-w-3xl flex flex-col gap-12 items-center">
+            {/* Minimalist Search */}
+            <div className="relative w-full group">
                <input 
                 type="text" 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="SEARCH ARCHIVE BY NAME, BRAND, OR SKU..."
-                className="w-full bg-v-black/40 backdrop-blur-sm border border-white/10 p-4 text-white font-light placeholder-white/20 focus:outline-none uppercase text-xs tracking-[0.3em] focus:border-v-red transition-all duration-500 text-center shadow-xl focus:shadow-v-red/20"
+                placeholder="Search by name, house, or reference"
+                className="w-full bg-transparent border-b border-white/10 px-0 py-4 text-white/80 font-light placeholder-white/20 focus:outline-none text-sm tracking-[0.1em] focus:border-white/30 transition-all duration-500 text-center"
               />
-              <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-v-red transition-all duration-700 group-focus-within:w-full"></div>
               {searchTerm && (
                 <button 
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-v-red transition-colors"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors text-xs"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  Clear
+                </button>
+              )}
+            </div>
+
+            {/* Elegant Filters */}
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Category */}
+              <div className="space-y-3">
+                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
+                  Category
+                </label>
+                <div className="flex gap-4">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setFilterCategory(cat)}
+                      className={`text-[11px] tracking-[0.2em] uppercase transition-all duration-300 pb-2 border-b-2 ${
+                        filterCategory === cat 
+                          ? 'text-white border-white font-medium' 
+                          : 'text-white/30 border-transparent hover:text-white/60 font-light'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Maison Selector */}
+              <div className="space-y-3 relative">
+                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
+                  Maison
+                </label>
+                <button
+                  onClick={() => setIsBrandDropdownOpen(!isBrandDropdownOpen)}
+                  className="w-full bg-transparent border-b border-white/10 px-0 py-2 text-white/60 hover:text-white hover:border-white/30 transition-all duration-300 flex items-center justify-between text-left"
+                >
+                  <span className="text-[11px] tracking-[0.2em] uppercase font-light">
+                    {filterBrand === 'ALL' ? 'All Houses' : filterBrand}
+                  </span>
+                  <svg 
+                    className={`w-3 h-3 transition-transform duration-300 ${isBrandDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-              )}
-            </div>
 
-            {/* Category Filter */}
-            <div className="flex gap-10 border-b border-white/5 pb-4 w-full justify-center">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setFilterCategory(cat)}
-                  className={`text-[10px] tracking-[0.5em] uppercase transition-all duration-500 pb-2 relative ${
-                    filterCategory === cat ? 'text-white font-bold' : 'text-white/20 hover:text-white/60'
-                  }`}
-                >
-                  {cat} Collections
-                  {filterCategory === cat && (
-                    <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-v-red to-transparent"></span>
-                  )}
-                </button>
-              ))}
-            </div>
-            
-            {/* IMPROVED: Brand Filter Dropdown */}
-            <div className="w-full max-w-md relative">
-              <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 mb-3 text-center">
-                Filter by Maison
-              </label>
-              <button
-                onClick={() => setIsBrandDropdownOpen(!isBrandDropdownOpen)}
-                className="w-full bg-v-black/60 backdrop-blur-sm border border-white/10 px-6 py-4 text-white/80 hover:text-white hover:border-v-red transition-all duration-300 flex items-center justify-between group shadow-lg hover:shadow-v-red/10"
-              >
-                <span className="text-xs tracking-[0.3em] uppercase serif italic">
-                  {filterBrand === 'ALL' ? 'All Houses' : filterBrand}
-                </span>
-                <svg 
-                  className={`w-4 h-4 transition-transform duration-300 ${isBrandDropdownOpen ? 'rotate-180' : ''}`}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {/* Dropdown Menu */}
-              {isBrandDropdownOpen && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-[25]" 
-                    onClick={() => setIsBrandDropdownOpen(false)}
-                  />
-                  <div className="absolute top-full mt-2 w-full bg-v-black border border-white/10 shadow-2xl shadow-black/50 z-[26] max-h-[400px] overflow-y-auto backdrop-blur-xl">
-                    {brands.map((brand, idx) => (
-                      <button
-                        key={brand}
-                        onClick={() => {
-                          setFilterBrand(brand);
-                          setIsBrandDropdownOpen(false);
-                        }}
-                        className={`w-full px-6 py-3 text-left text-xs tracking-[0.3em] uppercase transition-all duration-200 border-b border-white/5 hover:bg-v-red/10 hover:border-v-red/20 ${
-                          filterBrand === brand 
-                            ? 'bg-v-red/20 text-v-red font-bold border-l-4 border-l-v-red' 
-                            : 'text-white/60 hover:text-white'
-                        }`}
-                        style={{ animationDelay: `${idx * 30}ms` }}
-                      >
-                        <span className="serif italic">{brand === 'ALL' ? '✦ All Houses' : brand}</span>
-                        {brand !== 'ALL' && (
-                          <span className="ml-2 text-[9px] opacity-40">
-                            ({INVENTORY.filter(p => p.brand === brand).length})
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Active Filters Display */}
-            {(filterBrand !== 'ALL' || searchTerm) && (
-              <div className="flex flex-wrap gap-2 items-center justify-center">
-                <span className="text-[9px] tracking-[0.3em] uppercase text-white/20">Active Filters:</span>
-                {filterBrand !== 'ALL' && (
-                  <span className="bg-v-red/20 border border-v-red/30 px-3 py-1 text-[9px] tracking-[0.2em] uppercase text-v-red flex items-center gap-2">
-                    {filterBrand}
-                    <button 
-                      onClick={() => setFilterBrand('ALL')}
-                      className="hover:text-white transition-colors"
-                    >×</button>
-                  </span>
-                )}
-                {searchTerm && (
-                  <span className="bg-white/5 border border-white/10 px-3 py-1 text-[9px] tracking-[0.2em] uppercase text-white/60 flex items-center gap-2">
-                    "{searchTerm}"
-                    <button 
-                      onClick={() => setSearchTerm('')}
-                      className="hover:text-v-red transition-colors"
-                    >×</button>
-                  </span>
+                {/* Refined Dropdown */}
+                {isBrandDropdownOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-[25]" 
+                      onClick={() => setIsBrandDropdownOpen(false)}
+                    />
+                    <div className="absolute top-full mt-2 w-full bg-v-black/95 backdrop-blur-xl border border-white/10 shadow-2xl z-[26] max-h-[320px] overflow-y-auto">
+                      {brands.map((brand) => (
+                        <button
+                          key={brand}
+                          onClick={() => {
+                            setFilterBrand(brand);
+                            setIsBrandDropdownOpen(false);
+                          }}
+                          className={`w-full px-6 py-3 text-left text-[11px] tracking-[0.15em] uppercase transition-all duration-200 border-b border-white/5 last:border-0 ${
+                            filterBrand === brand 
+                              ? 'bg-white/5 text-white font-medium' 
+                              : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02] font-light'
+                          }`}
+                        >
+                          {brand === 'ALL' ? 'All Houses' : brand}
+                          {brand !== 'ALL' && (
+                            <span className="ml-3 text-[9px] opacity-30">
+                              {INVENTORY.filter(p => p.brand === brand).length}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
-            )}
+            </div>
+
+            {/* Showing Results */}
+            <div className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">
+              {filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}
+            </div>
           </div>
         </div>
       </header>
@@ -289,39 +277,36 @@ const App: React.FC = () => {
           onAddToCart={addToCart}
         />
         
-        <footer className="mt-40 mb-20 py-20 border-t border-white/5 flex flex-col items-center gap-12 relative">
-             {/* Footer glow */}
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-v-red/5 blur-[100px] rounded-full pointer-events-none" />
-             
-             <div className="text-center space-y-6 relative z-10">
-                {/* Footer Logo - smaller */}
-                <div className="mb-8 flex justify-center opacity-20 hover:opacity-40 transition-opacity duration-700">
+        <footer className="mt-40 mb-20 py-24 border-t border-white/5 flex flex-col items-center gap-16">
+             <div className="text-center space-y-8">
+                {/* Subtle Footer Logo */}
+                <div className="mb-12 flex justify-center opacity-15 hover:opacity-30 transition-opacity duration-700">
                   <img 
-                    src="/images/wingsofofrtuning.jpg" 
+                    src="/fortuning.png" 
                     alt="Wings of Fortune"
-                    className="h-16 w-auto filter brightness-110"
+                    className="h-12 w-auto filter brightness-110"
+                    style={{ mixBlendMode: 'screen' }}
                   />
                 </div>
                 
-                <h2 className="text-6xl md:text-8xl serif italic tracking-tighter text-white/20 drop-shadow-lg">Atelier Los Angeles</h2>
-                <div className="flex flex-col items-center gap-2">
-                   <p className="text-v-red font-bold text-xs tracking-[0.8em] uppercase">90015 / CALIFORNIA</p>
-                   <p className="text-white/20 text-[10px] tracking-[0.4em] uppercase">Private Inventory Access Only</p>
+                <div className="space-y-4">
+                   <p className="text-[9px] tracking-[0.6em] uppercase text-white/30 font-light">Los Angeles Atelier</p>
+                   <p className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">Downtown Arts District / 90015</p>
                 </div>
              </div>
             
             <button 
               onClick={handleInquire}
-              className="group flex flex-col items-center gap-4 relative z-10"
+              className="group flex flex-col items-center gap-6"
             >
-              <span className="text-[10px] tracking-[0.5em] uppercase text-white/40 group-hover:text-v-red transition-colors">Contact Sales Executive</span>
-              <div className="h-12 w-[1px] bg-gradient-to-b from-white/10 via-white/30 to-transparent group-hover:from-v-red group-hover:via-v-red/50 group-hover:h-16 transition-all duration-700"></div>
+              <span className="text-[10px] tracking-[0.5em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">Inquiries</span>
+              <div className="h-16 w-[1px] bg-gradient-to-b from-white/10 via-white/20 to-transparent"></div>
             </button>
 
-            <div className="flex gap-12 text-[9px] font-medium text-white/10 uppercase tracking-[0.5em] relative z-10">
-                <span>2025 Archive Edition</span>
-                <span>//</span>
-                <span>Verified Authentic</span>
+            <div className="flex gap-8 text-[8px] font-light text-white/10 uppercase tracking-[0.5em]">
+                <span>Est. 2025</span>
+                <span>•</span>
+                <span>Private Collection</span>
             </div>
         </footer>
       </main>
