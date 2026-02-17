@@ -5,8 +5,8 @@ interface CartSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   cart: CartItem[];
-  onRemove: (id: string) => void;
-  onUpdateQty: (id: string, delta: number) => void;
+  onRemove: (id: string, selectedSize?: string) => void;
+  onUpdateQty: (id: string, delta: number, selectedSize?: string) => void;
 }
 
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemove, onUpdateQty }) => {
@@ -18,7 +18,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
 
   return (
     <>
-      {/* Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-v-black/80 backdrop-blur-sm z-[100] transition-opacity duration-500"
@@ -26,16 +25,11 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
         />
       )}
 
-      {/* Sidebar */}
       <div
         className={`fixed top-0 right-0 z-[110] transform transition-transform duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] border-l border-white/10 bg-v-black text-v-white flex flex-col ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style={{
-          width: '100%',
-          maxWidth: '420px',
-          height: '100dvh',
-        }}
+        style={{ width: '100%', maxWidth: '420px', height: '100dvh' }}
       >
         {/* Header */}
         <div className="px-6 py-5 border-b border-white/10 flex justify-between items-center flex-shrink-0">
@@ -57,7 +51,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
 
         {/* Items */}
         <div
-          className="flex-1 overflow-y-auto overscroll-contain px-5 py-5 space-y-4"
+          className="flex-1 overflow-y-auto overscroll-contain py-4"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {cart.length === 0 ? (
@@ -68,76 +62,88 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
               <p className="serif italic text-2xl">Empty</p>
             </div>
           ) : (
-            cart.map(item => (
-              <div key={`${item.ids[0]}-${item.selectedSize ?? ''}`} className="flex gap-4 items-stretch border border-white/5 bg-white/[0.02] p-3">
-                {/* Image — tall portrait ratio */}
-                {item.images?.[0] && (
-                  <div className="flex-shrink-0 w-20 overflow-hidden bg-white/5" style={{ aspectRatio: '3/4' }}>
-                    <img
-                      src={item.images[0]}
-                      alt={item.name}
-                      className="w-full h-full object-cover object-center"
-                    />
-                  </div>
-                )}
-
-                {/* Info */}
-                <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                  <div>
-                    <p className="text-[9px] text-v-red uppercase tracking-widest font-bold">{item.brand}</p>
-                    <p className="text-sm serif italic text-white leading-snug mt-0.5">{item.name}</p>
-                    {item.selectedSize && (
-                      <p className="text-[9px] text-white/35 uppercase tracking-wider mt-1">size: {item.selectedSize}</p>
-                    )}
-                  </div>
-
-                  {/* Qty + remove */}
-                  <div className="flex items-center gap-3 mt-3">
-                    <div className="flex items-center border border-white/15 bg-white/5">
-                      <button
-                        onClick={() => onUpdateQty(item.ids[0], -1)}
-                        className="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white active:bg-white/10 transition-colors"
-                      >−</button>
-                      <span className="w-7 text-center text-xs font-bold text-white">{item.quantity}</span>
-                      <button
-                        onClick={() => onUpdateQty(item.ids[0], 1)}
-                        className="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white active:bg-white/10 transition-colors"
-                      >+</button>
-                    </div>
-                    <button
-                      onClick={() => onRemove(item.ids[0])}
-                      className="text-[10px] text-white/20 hover:text-v-red transition-colors uppercase tracking-wider py-1"
+            <div className="space-y-0 divide-y divide-white/5">
+              {cart.map(item => (
+                <div
+                  key={`${item.ids[0]}-${item.selectedSize ?? 'none'}`}
+                  className="flex gap-0 items-stretch"
+                >
+                  {/* Image — flush left, no border, full bleed editorial */}
+                  {item.images?.[0] && (
+                    <div
+                      className="flex-shrink-0 w-24 overflow-hidden bg-v-gray"
+                      style={{ aspectRatio: '3/4' }}
                     >
-                      remove
-                    </button>
+                      <img
+                        src={item.images[0]}
+                        alt={item.name}
+                        className="w-full h-full object-cover grayscale-[20%] contrast-[1.05]"
+                      />
+                    </div>
+                  )}
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0 px-4 py-4 flex flex-col justify-between">
+                    <div>
+                      <p className="text-[9px] text-v-red uppercase tracking-[0.3em] font-bold">{item.brand}</p>
+                      <p className="text-sm serif italic text-white leading-snug mt-0.5">{item.name}</p>
+                      {item.selectedSize && (
+                        <div className="mt-1.5 inline-flex items-center gap-1.5">
+                          <span className="text-[8px] text-white/30 uppercase tracking-widest">size</span>
+                          <span className="text-[10px] font-bold text-white/70 tracking-wider border border-white/20 px-2 py-0.5">{item.selectedSize}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3">
+                      {/* Qty */}
+                      <div className="flex items-center border border-white/10">
+                        <button
+                          onClick={() => onUpdateQty(item.ids[0], -1, item.selectedSize)}
+                          className="w-7 h-7 flex items-center justify-center text-white/40 hover:text-white active:bg-white/5 transition-colors text-sm"
+                        >−</button>
+                        <span className="w-6 text-center text-xs font-bold text-white">{item.quantity}</span>
+                        <button
+                          onClick={() => onUpdateQty(item.ids[0], 1, item.selectedSize)}
+                          className="w-7 h-7 flex items-center justify-center text-white/40 hover:text-white active:bg-white/5 transition-colors text-sm"
+                        >+</button>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <p className="text-sm font-bold text-white">${(item.price * item.quantity).toFixed(2)}</p>
+                        <button
+                          onClick={() => onRemove(item.ids[0], item.selectedSize)}
+                          className="text-[9px] text-white/15 hover:text-v-red transition-colors uppercase tracking-wider"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                {/* Price */}
-                <div className="flex-shrink-0 flex flex-col justify-between items-end py-0.5">
-                  <p className="text-sm font-bold text-white">${(item.price * item.quantity).toFixed(2)}</p>
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
 
         {/* Footer */}
         {cart.length > 0 && (
           <div className="px-6 py-5 border-t border-white/10 space-y-4 flex-shrink-0">
-
-            {/* Total */}
             <div className="flex justify-between items-baseline">
-              <span className="text-white/40 text-xs uppercase tracking-widest font-mono">total</span>
+              <span className="text-white/30 text-[10px] uppercase tracking-widest font-mono">total</span>
               <span className="serif italic text-3xl text-white">${total.toFixed(2)}</span>
             </div>
 
-            {/* Screenshot hint */}
-            <p className="text-[10px] text-white/25 leading-relaxed font-mono tracking-wider text-center">
-              screenshot your bag, then dm us to order — we got deals you won't see here.
-            </p>
+            {/* Screenshot CTA — feels like a tip from a friend, not a popup */}
+            <div className="border border-white/8 bg-white/[0.02] px-4 py-3 text-center space-y-1">
+              <p className="text-[10px] text-white/50 tracking-wider font-mono">
+                📸 screenshot this bag
+              </p>
+              <p className="text-[9px] text-white/25 tracking-wider font-mono">
+                then dm us — we'll lock it in for you.
+              </p>
+            </div>
 
-            {/* DM Button */}
             <button
               onClick={handleDM}
               className="w-full bg-v-red text-white font-bold uppercase tracking-[0.2em] text-sm py-4 hover:bg-white hover:text-v-black active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3"
@@ -147,7 +153,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
               </svg>
               DM to Order
             </button>
-
           </div>
         )}
       </div>

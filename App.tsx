@@ -49,28 +49,36 @@ const App: React.FC = () => {
     window.open('https://instagram.com/661ro_resellz', '_blank');
   };
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, selectedSize?: string) => {
     setCart(prev => {
-      const existing = prev.find(item => item.ids[0] === product.ids[0]);
+      const existing = prev.find(item =>
+        item.ids[0] === product.ids[0] && item.selectedSize === selectedSize
+      );
       if (existing) {
         return prev.map(item =>
-          item.ids[0] === product.ids[0] ? { ...item, quantity: item.quantity + 1 } : item
+          item.ids[0] === product.ids[0] && item.selectedSize === selectedSize
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity: 1, selectedSize }];
     });
     setIsCartOpen(true);
   };
 
-  const removeFromCart = (productId: string) => {
-    setCart(prev => prev.filter(item => item.ids[0] !== productId));
+  // Size-aware remove: matches both id AND size so L and M of same hoodie stay independent
+  const removeFromCart = (productId: string, selectedSize?: string) => {
+    setCart(prev => prev.filter(item =>
+      !(item.ids[0] === productId && item.selectedSize === selectedSize)
+    ));
   };
 
-  const updateCartQuantity = (productId: string, delta: number) => {
+  // Size-aware quantity update
+  const updateCartQuantity = (productId: string, delta: number, selectedSize?: string) => {
     setCart(prev =>
       prev
         .map(item => {
-          if (item.ids[0] !== productId) return item;
+          if (item.ids[0] !== productId || item.selectedSize !== selectedSize) return item;
           const newQty = item.quantity + delta;
           if (newQty <= 0) return null;
           if (newQty > item.stock) return item;
@@ -94,9 +102,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
-
-      {/* Favicon injection */}
-      {React.createElement('link', { rel: 'icon', type: 'image/png', href: '/images/wingsofofrtuning.png' })}
 
       {/* Film Grain */}
       <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]"
