@@ -10,7 +10,6 @@ export interface ProductDetails {
   serialStatus?: string;
   coverage?: string;
   batteryHealth?: string;
-  // Apparel-specific
   material?: string;
   fit?: string;
   care?: string;
@@ -25,11 +24,12 @@ export interface Product {
   stock: number;
   price: number;
   category: Category;
-  image: string; // Keep for backwards compatibility
-  images?: string[]; // NEW: Array of images for carousel
+  image: string;
+  images?: string[];
   details: ProductDetails;
 }
 
 export interface CartItem extends Product {
   quantity: number;
+  selectedSize?: string; // for apparel
 }
