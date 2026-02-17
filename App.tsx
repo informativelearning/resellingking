@@ -15,12 +15,23 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
 
-  const brands: string[] = useMemo(() => {
-    const unique = Array.from(new Set(INVENTORY.map(p => p.brand))).sort();
-    return ['ALL', ...unique];
-  }, []);
-
   const categories: Category[] = ['All', 'Fragrance', 'Apparel'];
+
+  // Only show brands relevant to the active category
+  const brands: string[] = useMemo(() => {
+    const source =
+      filterCategory === 'All'
+        ? INVENTORY
+        : INVENTORY.filter(p => p.category === filterCategory);
+    const unique = Array.from(new Set(source.map(p => p.brand))).sort();
+    return ['ALL', ...unique];
+  }, [filterCategory]);
+
+  // Reset brand filter whenever category changes so a stale brand doesn't linger
+  const handleCategoryChange = (cat: Category) => {
+    setFilterCategory(cat);
+    setFilterBrand('ALL');
+  };
 
   const filteredProducts = useMemo(() => {
     return INVENTORY.filter(product => {
@@ -71,18 +82,29 @@ const App: React.FC = () => {
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Label and placeholder adapt to the active category
+  const maisonLabel =
+    filterCategory === 'Apparel'   ? 'Brand'         :
+    filterCategory === 'Fragrance' ? 'Maison'        :
+                                     'Maison / Brand';
+
+  const maisonPlaceholder =
+    filterCategory === 'Apparel'   ? 'All Brands'  :
+    filterCategory === 'Fragrance' ? 'All Houses'  :
+                                     'All Houses';
+
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
-      {/* Film Grain Texture */}
-      <div
-        className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat'
-        }}
+
+      {/* Subtle Film Grain Texture */}
+      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]"
+           style={{
+             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+             backgroundRepeat: 'repeat'
+           }}
       />
 
-      {/* Top Bar */}
+      {/* Fixed Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -123,10 +145,11 @@ const App: React.FC = () => {
         <Ticker />
 
         <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative mt-12">
+
           {/* Hero Wordmark */}
           <div className="text-center space-y-8 max-w-5xl">
             <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light">
-              Wings of<br />
+              Wings of<br/>
               <span className="block mt-2">Fortune</span>
             </h1>
             <div className="flex flex-col items-center gap-6 pt-4">
@@ -162,6 +185,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+
               {/* Category */}
               <div className="space-y-3">
                 <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
@@ -171,7 +195,7 @@ const App: React.FC = () => {
                   {categories.map(cat => (
                     <button
                       key={cat}
-                      onClick={() => setFilterCategory(cat)}
+                      onClick={() => handleCategoryChange(cat)}
                       className={`text-[11px] tracking-[0.2em] uppercase transition-all duration-300 pb-2 border-b-2 ${
                         filterCategory === cat
                           ? 'text-white border-white font-medium'
@@ -184,17 +208,17 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Maison Selector */}
+              {/* Brand / Maison — filtered by active category */}
               <div className="space-y-3 relative">
                 <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
-                  Maison
+                  {maisonLabel}
                 </label>
                 <button
                   onClick={() => setIsBrandDropdownOpen(!isBrandDropdownOpen)}
                   className="w-full bg-transparent border-b border-white/10 px-0 py-2 text-white/60 hover:text-white hover:border-white/30 transition-all duration-300 flex items-center justify-between text-left"
                 >
                   <span className="text-[11px] tracking-[0.2em] uppercase font-light">
-                    {filterBrand === 'ALL' ? 'All Houses' : filterBrand}
+                    {filterBrand === 'ALL' ? maisonPlaceholder : filterBrand}
                   </span>
                   <svg
                     className={`w-3 h-3 transition-transform duration-300 ${isBrandDropdownOpen ? 'rotate-180' : ''}`}
@@ -220,10 +244,13 @@ const App: React.FC = () => {
                               : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02] font-light'
                           }`}
                         >
-                          {brand === 'ALL' ? 'All Houses' : brand}
+                          {brand === 'ALL' ? maisonPlaceholder : brand}
                           {brand !== 'ALL' && (
                             <span className="ml-3 text-[9px] opacity-30">
-                              {INVENTORY.filter(p => p.brand === brand).length}
+                              {INVENTORY.filter(p =>
+                                p.brand === brand &&
+                                (filterCategory === 'All' || p.category === filterCategory)
+                              ).length}
                             </span>
                           )}
                         </button>
