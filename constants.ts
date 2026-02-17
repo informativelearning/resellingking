@@ -314,10 +314,9 @@ const rawData: [string, string, string[]][] = [
 ];
 
 export const DISCOUNTS = [
-  "LA LOCAL PICKUP: 90015",
-  "LUXURY FRAGRANCE COLLECTION",
-  "VALENTINO • CREED • YSL • ARMANI",
-  "AUTHENTICITY VERIFIED",
+  "FRAGRANCE COLLECTION",
+  "Fragrances • Clothes • Electronics & More Coming Soon",
+  "DAILY DROPS",
   "EST. 2025 ARCHIVE"
 ];
 
