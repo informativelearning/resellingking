@@ -164,13 +164,23 @@ const getImagePaths = (brand: string, name: string): string[] => {
   
   // ========== YVES SAINT LAURENT / YSL ==========
   if (b.includes("yves saint laurent") || b.includes("ysl")) {
-    // Black Opium - 4 images (alphabetical 0-3) - NEW!
+    // Black Opium - 4 images (alphabetical 0-3)
     if (n.includes("black opium")) {
       return [
         "/images/Black Opium Yves Saint Laurent.jpeg",
         "/images/Black Opium Yves Saint Laurent1.png",
         "/images/Black Opium Yves Saint Laurent2.jpeg",
         "/images/Black Opium Yves Saint Laurent3.jpeg"
+      ];
+    }
+    
+    // Mon Paris - 4 images (alphabetical 0-3)
+    if (n.includes("mon paris")) {
+      return [
+        "/images/Mon Paris Yves Saint Laurent.png",
+        "/images/Mon Paris Yves Saint Laurent1.png",
+        "/images/Mon Paris Yves Saint Laurent2.jpeg",
+        "/images/Mon Paris Yves Saint Laurent3.jpeg"
       ];
     }
     
@@ -207,13 +217,59 @@ const getImagePaths = (brand: string, name: string): string[] => {
     }
     
     // Y Eau de Parfum - 5 images (alphabetical 0-4)
-    if (n.includes("y eau de parfum") || (n.startsWith("y ") && !n.includes("myslf") && !n.includes("black"))) {
+    if (n.includes("y eau de parfum") || (n.startsWith("y ") && !n.includes("myslf") && !n.includes("black") && !n.includes("mon"))) {
       return [
         "/images/Y Eau de Parfum Yves Saint Laurent.png",
         "/images/Y Eau de Parfum Yves Saint Laurent1.png",
         "/images/Y Eau de Parfum Yves Saint Laurent2.jpeg",
         "/images/Y Eau de Parfum Yves Saint Laurent3.jpg",
         "/images/Y Eau de Parfum Yves Saint Laurent4.jpeg"
+      ];
+    }
+  }
+  
+  // ========== GIORGIO ARMANI ==========
+  if (b.includes("giorgio armani") || b.includes("armani")) {
+    // Acqua di Giò Profumo - 5 images (alphabetical 0,2,3,4,5 - missing 1)
+    if (n.includes("acqua") && n.includes("profumo")) {
+      return [
+        "/images/Acqua di Giò Profumo Giorgio Armani.png",
+        "/images/Acqua di Giò Profumo Giorgio Armani2.png",
+        "/images/Acqua di Giò Profumo Giorgio Armani3.png",
+        "/images/Acqua di Giò Profumo Giorgio Armani4.png",
+        "/images/Acqua di Giò Profumo Giorgio Armani5.png"
+      ];
+    }
+    
+    // Emporio Armani Stronger With You Absolutely - CHECK FIRST - 5 images (alphabetical 0-4)
+    if (n.includes("stronger with you absolutely")) {
+      return [
+        "/images/Emporio Armani Stronger With You Absolutely Giorgio Armani.png",
+        "/images/Emporio Armani Stronger With You Absolutely Giorgio Armani1.png",
+        "/images/Emporio Armani Stronger With You Absolutely Giorgio Armani2.jpeg",
+        "/images/Emporio Armani Stronger With You Absolutely Giorgio Armani3.jpeg",
+        "/images/Emporio Armani Stronger With You Absolutely Giorgio Armani4.png"
+      ];
+    }
+    
+    // Emporio Armani Stronger With You Intensely - 5 images (alphabetical 0-4)
+    if (n.includes("stronger with you intensely")) {
+      return [
+        "/images/Emporio Armani Stronger With You Intensely Giorgio Armani.png",
+        "/images/Emporio Armani Stronger With You Intensely Giorgio Armani1.png",
+        "/images/Emporio Armani Stronger With You Intensely Giorgio Armani2.png",
+        "/images/Emporio Armani Stronger With You Intensely Giorgio Armani3.png",
+        "/images/Emporio Armani Stronger With You Intensely Giorgio Armani4.png"
+      ];
+    }
+    
+    // My Way - 4 images (alphabetical 1,2,3,4 - missing 0)
+    if (n.includes("my way")) {
+      return [
+        "/images/My Way Giorgio Armani1.jpeg",
+        "/images/My Way Giorgio Armani2.jpeg",
+        "/images/My Way Giorgio Armani3.jpeg",
+        "/images/My Way Giorgio Armani4.jpeg"
       ];
     }
   }
@@ -243,17 +299,24 @@ const rawData: [string, string, string[]][] = [
   ["Creed", "Green Irish Tweed", ["100ml"]],
   
   // ========== YVES SAINT LAURENT ==========
-  ["Yves Saint Laurent", "Black Opium", ["90ml"]], // NEW!
+  ["Yves Saint Laurent", "Black Opium", ["90ml"]],
+  ["Yves Saint Laurent", "Mon Paris", ["90ml"]],
   ["Yves Saint Laurent", "MYSLF Eau de Parfum", ["100ml"]],
   ["Yves Saint Laurent", "MYSLF Le Parfum", ["100ml"]],
   ["Yves Saint Laurent", "Y Eau de Parfum", ["100ml"]],
   ["Yves Saint Laurent", "Y Eau de Parfum Intense", ["100ml"]],
+  
+  // ========== GIORGIO ARMANI ==========
+  ["Giorgio Armani", "Acqua di Giò Profumo", ["125ml"]],
+  ["Giorgio Armani", "Emporio Armani Stronger With You Absolutely", ["100ml"]],
+  ["Giorgio Armani", "Emporio Armani Stronger With You Intensely", ["100ml"]],
+  ["Giorgio Armani", "My Way", ["90ml"]],
 ];
 
 export const DISCOUNTS = [
   "LA LOCAL PICKUP: 90015",
   "LUXURY FRAGRANCE COLLECTION",
-  "VALENTINO • CREED • YSL",
+  "VALENTINO • CREED • YSL • ARMANI",
   "AUTHENTICITY VERIFIED",
   "EST. 2025 ARCHIVE"
 ];
