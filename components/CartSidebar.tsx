@@ -1,332 +1,158 @@
-import React, { useState, useMemo } from 'react';
-import Ticker from './components/Ticker';
-import InventoryTable from './components/InventoryTable';
-import ProductModal from './components/ProductModal';
-import CartSidebar from './components/CartSidebar';
-import { INVENTORY } from './constants';
-import { Product, Category, CartItem } from './types';
+import React from 'react';
+import { CartItem } from '../types';
 
-const LOGO = '/images/wingsofofrtuning.png';
+interface CartSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+  cart: CartItem[];
+  onRemove: (id: string) => void;
+  onUpdateQty: (id: string, delta: number) => void;
+}
 
-const App: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterBrand, setFilterBrand] = useState('ALL');
-  const [filterCategory, setFilterCategory] = useState<Category>('All');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
+const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemove, onUpdateQty }) => {
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const categories: Category[] = ['All', 'Fragrance', 'Apparel'];
-
-  const brands: string[] = useMemo(() => {
-    const source =
-      filterCategory === 'All'
-        ? INVENTORY
-        : INVENTORY.filter(p => p.category === filterCategory);
-    const unique = Array.from(new Set(source.map(p => p.brand))).sort();
-    return ['ALL', ...unique];
-  }, [filterCategory]);
-
-  const handleCategoryChange = (cat: Category) => {
-    setFilterCategory(cat);
-    setFilterBrand('ALL');
-  };
-
-  const filteredProducts = useMemo(() => {
-    return INVENTORY.filter(product => {
-      const matchesSearch =
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.ids.some(id => id.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesBrand    = filterBrand === 'ALL' || product.brand === filterBrand;
-      const matchesCategory = filterCategory === 'All' || product.category === filterCategory;
-      return matchesSearch && matchesBrand && matchesCategory;
-    });
-  }, [searchTerm, filterBrand, filterCategory]);
-
-  const handleInquire = () => {
+  const handleDM = () => {
     window.open('https://instagram.com/661ro_resellz', '_blank');
   };
 
-  // selectedSize is passed through from ProductModal for apparel
-  const addToCart = (product: Product, selectedSize?: string) => {
-    setCart(prev => {
-      // For apparel, key on id + size so different sizes are separate line items
-      const cartKey = selectedSize ? `${product.ids[0]}-${selectedSize}` : product.ids[0];
-      const existing = prev.find(item =>
-        selectedSize
-          ? item.ids[0] === product.ids[0] && item.selectedSize === selectedSize
-          : item.ids[0] === product.ids[0]
-      );
-      if (existing) {
-        return prev.map(item => {
-          const match = selectedSize
-            ? item.ids[0] === product.ids[0] && item.selectedSize === selectedSize
-            : item.ids[0] === product.ids[0];
-          return match ? { ...item, quantity: item.quantity + 1 } : item;
-        });
-      }
-      return [...prev, { ...product, quantity: 1, selectedSize }];
-    });
-    setIsCartOpen(true);
-  };
-
-  const removeFromCart = (productId: string) => {
-    setCart(prev => prev.filter(item => item.ids[0] !== productId));
-  };
-
-  const updateCartQuantity = (productId: string, delta: number) => {
-    setCart(prev =>
-      prev
-        .map(item => {
-          if (item.ids[0] !== productId) return item;
-          const newQty = item.quantity + delta;
-          if (newQty <= 0) return null;
-          if (newQty > item.stock) return item;
-          return { ...item, quantity: newQty };
-        })
-        .filter(Boolean) as CartItem[]
-    );
-  };
-
-  const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  const maisonLabel =
-    filterCategory === 'Apparel'   ? 'Brand'         :
-    filterCategory === 'Fragrance' ? 'Maison'        :
-                                     'Maison / Brand';
-
-  const maisonPlaceholder =
-    filterCategory === 'Apparel'   ? 'All Brands' :
-    filterCategory === 'Fragrance' ? 'All Houses' :
-                                     'All Houses';
-
   return (
-    <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
-
-      {/* Film Grain */}
-      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]"
-           style={{
-             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-             backgroundRepeat: 'repeat'
-           }}
-      />
-
-      {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img
-              src={LOGO}
-              alt="Wings of Fortune"
-              className="h-12 md:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110 contrast-110"
-              style={{ mixBlendMode: 'screen' }}
-            />
-            <div className="hidden md:block h-8 w-[1px] bg-white/10" />
-            <span className="hidden md:block text-[9px] tracking-[0.5em] uppercase text-white/30 font-light">
-              Wasco, CA
-            </span>
-          </div>
-
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart"
-          >
-            <span className="hidden md:block text-[9px] tracking-[0.4em] uppercase font-medium opacity-0 group-hover/cart:opacity-100 transition-opacity">
-              Shopping Bag
-            </span>
-            <div className="relative">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-              {totalCartItems > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-v-red text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                  {totalCartItems}
-                </span>
-              )}
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <header className="relative z-30 pt-24 pb-16">
-        <Ticker />
-
-        <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative mt-12">
-
-          {/* Hero */}
-          <div className="text-center space-y-8 max-w-5xl">
-            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light">
-              Wings of<br/>
-              <span className="block mt-2">Fortune</span>
-            </h1>
-            <div className="flex flex-col items-center gap-6 pt-4">
-              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light">
-                661 / Wasco, CA
-              </p>
-              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed">
-                heat from the 661. fragrances and fits that actually hit — picked and verified, no middleman markup.
-              </p>
-            </div>
-          </div>
-
-          {/* Search & Filters */}
-          <div className="w-full max-w-3xl flex flex-col gap-12 items-center">
-            <div className="relative w-full">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Search by name, house, or reference"
-                className="w-full bg-transparent border-b border-white/10 px-0 py-4 text-white/80 font-light placeholder-white/20 focus:outline-none text-sm tracking-[0.1em] focus:border-white/30 transition-all duration-500 text-center"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors text-xs"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Category */}
-              <div className="space-y-3">
-                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
-                  Category
-                </label>
-                <div className="flex gap-4">
-                  {categories.map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategoryChange(cat)}
-                      className={`text-[11px] tracking-[0.2em] uppercase transition-all duration-300 pb-2 border-b-2 ${
-                        filterCategory === cat
-                          ? 'text-white border-white font-medium'
-                          : 'text-white/30 border-transparent hover:text-white/60 font-light'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Brand / Maison */}
-              <div className="space-y-3 relative">
-                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
-                  {maisonLabel}
-                </label>
-                <button
-                  onClick={() => setIsBrandDropdownOpen(!isBrandDropdownOpen)}
-                  className="w-full bg-transparent border-b border-white/10 px-0 py-2 text-white/60 hover:text-white hover:border-white/30 transition-all duration-300 flex items-center justify-between text-left"
-                >
-                  <span className="text-[11px] tracking-[0.2em] uppercase font-light">
-                    {filterBrand === 'ALL' ? maisonPlaceholder : filterBrand}
-                  </span>
-                  <svg
-                    className={`w-3 h-3 transition-transform duration-300 ${isBrandDropdownOpen ? 'rotate-180' : ''}`}
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {isBrandDropdownOpen && (
-                  <>
-                    <div className="fixed inset-0 z-[25]" onClick={() => setIsBrandDropdownOpen(false)} />
-                    <div className="absolute top-full mt-2 w-full bg-v-black/95 backdrop-blur-xl border border-white/10 shadow-2xl z-[26] max-h-[320px] overflow-y-auto">
-                      {brands.map(brand => (
-                        <button
-                          key={brand}
-                          onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
-                          className={`w-full px-6 py-3 text-left text-[11px] tracking-[0.15em] uppercase transition-all duration-200 border-b border-white/5 last:border-0 ${
-                            filterBrand === brand
-                              ? 'bg-white/5 text-white font-medium'
-                              : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02] font-light'
-                          }`}
-                        >
-                          {brand === 'ALL' ? maisonPlaceholder : brand}
-                          {brand !== 'ALL' && (
-                            <span className="ml-3 text-[9px] opacity-30">
-                              {INVENTORY.filter(p =>
-                                p.brand === brand &&
-                                (filterCategory === 'All' || p.category === filterCategory)
-                              ).length}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">
-              {filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 px-6 md:px-12 py-12 max-w-[1800px] mx-auto w-full relative z-[2]">
-        <InventoryTable
-          products={filteredProducts}
-          onProductClick={setSelectedProduct}
-          onAddToCart={addToCart}
-        />
-
-        <footer className="mt-40 mb-20 py-24 border-t border-white/5 flex flex-col items-center gap-16">
-          <div className="text-center space-y-8">
-            <div className="mb-12 flex justify-center opacity-15 hover:opacity-30 transition-opacity duration-700">
-              <img
-                src={LOGO}
-                alt="Wings of Fortune"
-                className="h-20 w-auto filter brightness-110 contrast-110"
-                style={{ mixBlendMode: 'screen' }}
-              />
-            </div>
-            <div className="space-y-4">
-              <p className="text-[9px] tracking-[0.6em] uppercase text-white/30 font-light">661 / Wasco, CA</p>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">based in the valley.</p>
-            </div>
-          </div>
-
-          <button onClick={handleInquire} className="group flex flex-col items-center gap-6">
-            <span className="text-[10px] tracking-[0.5em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">hit us on ig</span>
-            <div className="h-16 w-[1px] bg-gradient-to-b from-white/10 via-white/20 to-transparent" />
-          </button>
-
-          <div className="flex gap-8 text-[8px] font-light text-white/10 uppercase tracking-[0.5em]">
-            <span>Est. 2025</span>
-            <span>•</span>
-            <span>private collection.</span>
-          </div>
-        </footer>
-      </main>
-
-      {selectedProduct && (
-        <ProductModal
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onInquire={handleInquire}
-          onAddToCart={addToCart}
+    <>
+      {/* Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-v-black/80 backdrop-blur-sm z-[100] transition-opacity duration-500"
+          onClick={onClose}
         />
       )}
 
-      <CartSidebar
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-        onRemove={removeFromCart}
-        onUpdateQty={updateCartQuantity}
-      />
-    </div>
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 right-0 z-[110] transform transition-transform duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] border-l border-white/10 bg-v-black text-v-white flex flex-col ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{
+          width: '100%',
+          maxWidth: '420px',
+          height: '100dvh',
+        }}
+      >
+        {/* Header */}
+        <div className="px-6 py-5 border-b border-white/10 flex justify-between items-center flex-shrink-0">
+          <div>
+            <h2 className="serif italic text-2xl tracking-tight text-white">Your Bag</h2>
+            {cart.length > 0 && (
+              <p className="text-[10px] text-white/30 mt-0.5 font-mono uppercase tracking-widest">
+                {cart.reduce((a, i) => a + i.quantity, 0)} item{cart.reduce((a, i) => a + i.quantity, 0) !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            className="text-white/30 hover:text-white transition-colors text-xs tracking-[0.2em] uppercase font-mono py-2 px-3 -mr-3"
+          >
+            Close
+          </button>
+        </div>
+
+        {/* Items */}
+        <div
+          className="flex-1 overflow-y-auto overscroll-contain px-5 py-5 space-y-4"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          {cart.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center gap-4 opacity-20">
+              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              <p className="serif italic text-2xl">Empty</p>
+            </div>
+          ) : (
+            cart.map(item => (
+              <div key={`${item.ids[0]}-${item.selectedSize ?? ''}`} className="flex gap-4 items-stretch border border-white/5 bg-white/[0.02] p-3">
+                {/* Image — tall portrait ratio */}
+                {item.images?.[0] && (
+                  <div className="flex-shrink-0 w-20 overflow-hidden bg-white/5" style={{ aspectRatio: '3/4' }}>
+                    <img
+                      src={item.images[0]}
+                      alt={item.name}
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </div>
+                )}
+
+                {/* Info */}
+                <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                  <div>
+                    <p className="text-[9px] text-v-red uppercase tracking-widest font-bold">{item.brand}</p>
+                    <p className="text-sm serif italic text-white leading-snug mt-0.5">{item.name}</p>
+                    {item.selectedSize && (
+                      <p className="text-[9px] text-white/35 uppercase tracking-wider mt-1">size: {item.selectedSize}</p>
+                    )}
+                  </div>
+
+                  {/* Qty + remove */}
+                  <div className="flex items-center gap-3 mt-3">
+                    <div className="flex items-center border border-white/15 bg-white/5">
+                      <button
+                        onClick={() => onUpdateQty(item.ids[0], -1)}
+                        className="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white active:bg-white/10 transition-colors"
+                      >−</button>
+                      <span className="w-7 text-center text-xs font-bold text-white">{item.quantity}</span>
+                      <button
+                        onClick={() => onUpdateQty(item.ids[0], 1)}
+                        className="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white active:bg-white/10 transition-colors"
+                      >+</button>
+                    </div>
+                    <button
+                      onClick={() => onRemove(item.ids[0])}
+                      className="text-[10px] text-white/20 hover:text-v-red transition-colors uppercase tracking-wider py-1"
+                    >
+                      remove
+                    </button>
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="flex-shrink-0 flex flex-col justify-between items-end py-0.5">
+                  <p className="text-sm font-bold text-white">${(item.price * item.quantity).toFixed(2)}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Footer */}
+        {cart.length > 0 && (
+          <div className="px-6 py-5 border-t border-white/10 space-y-4 flex-shrink-0">
+
+            {/* Total */}
+            <div className="flex justify-between items-baseline">
+              <span className="text-white/40 text-xs uppercase tracking-widest font-mono">total</span>
+              <span className="serif italic text-3xl text-white">${total.toFixed(2)}</span>
+            </div>
+
+            {/* Screenshot hint */}
+            <p className="text-[10px] text-white/25 leading-relaxed font-mono tracking-wider text-center">
+              screenshot your bag, then dm us to order — we got deals you won't see here.
+            </p>
+
+            {/* DM Button */}
+            <button
+              onClick={handleDM}
+              className="w-full bg-v-red text-white font-bold uppercase tracking-[0.2em] text-sm py-4 hover:bg-white hover:text-v-black active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              DM to Order
+            </button>
+
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
-export default App;
+export default CartSidebar;
