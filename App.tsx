@@ -6,7 +6,7 @@ import CartSidebar from './components/CartSidebar';
 import { INVENTORY } from './constants';
 import { Product, Category, CartItem } from './types';
 
-const LOGO = '/images/wingsofofrtuning.PNG';
+const LOGO = '/images/wingsofofrtuning.png';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -96,7 +96,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
 
       {/* Favicon injection */}
-      {React.createElement('link', { rel: 'icon', type: 'image/png', href: '/images/wingsofofrtuning.PNG' })}
+      {React.createElement('link', { rel: 'icon', type: 'image/png', href: '/images/wingsofofrtuning.png' })}
 
       {/* Film Grain */}
       <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]"
