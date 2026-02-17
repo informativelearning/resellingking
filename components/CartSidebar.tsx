@@ -56,8 +56,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
         {/* Cart Items List */}
         <div className="flex-1 overflow-y-auto p-8 font-mono text-[11px] selection:bg-v-red selection:text-white">
           <div className="text-center mb-10 pb-6 border-b border-dashed border-white/20">
-            <h3 className="font-black text-lg uppercase tracking-widest mb-1">WINGS OF FORTUNE</h3>
-            <p className="opacity-40 uppercase tracking-[0.3em]">Los Angeles Atelier // 90015</p>
+            <h3 className="font-black text-lg uppercase tracking-widest mb-1">Wings of Fortune</h3>
+            <p className="opacity-40 uppercase tracking-[0.3em]">Based in Wasco // 93280</p>
             <p className="opacity-20 uppercase tracking-[0.2em] mt-2">
               {new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })} // {new Date().toLocaleTimeString('en-US', { hour12: false })}
             </p>
@@ -123,11 +123,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
                 <span>-${discountAmount.toFixed(2)}</span>
               </div>
             )}
-
-            <div className="flex justify-between opacity-50">
-              <span>State Tax (9.5%)</span>
-              <span>${tax.toFixed(2)}</span>
-            </div>
             
             <div className="flex justify-between text-3xl font-black italic mt-6 pt-6 border-t-2 border-v-black/10 serif tracking-tighter">
               <span>TOTAL DUE</span>
@@ -145,7 +140,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
           
           <p className="text-[7px] text-center mt-4 opacity-40 uppercase tracking-[0.3em] font-bold leading-relaxed">
             All Archive Sales Are Final // No Returns on Opened Seals<br/>
-            Couture Standard v2.025 // Secure Handshake Protocol
+            Couture Standard // Secure Handshake Protocol
           </p>
         </div>
 
