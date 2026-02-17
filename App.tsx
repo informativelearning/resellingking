@@ -6,7 +6,7 @@ import CartSidebar from './components/CartSidebar';
 import { INVENTORY } from './constants';
 import { Product, Category, CartItem } from './types';
 
-const LOGO = '/images/wingsofofrtuning.png';
+const LOGO = '/images/wingsofofrtuning.PNG';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -95,6 +95,9 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
 
+      {/* Favicon injection */}
+      {React.createElement('link', { rel: 'icon', type: 'image/png', href: '/images/wingsofofrtuning.PNG' })}
+
       {/* Film Grain */}
       <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]"
            style={{
@@ -115,7 +118,7 @@ const App: React.FC = () => {
             />
             <div className="hidden md:block h-8 w-[1px] bg-white/10" />
             <span className="hidden md:block text-[9px] tracking-[0.5em] uppercase text-white/30 font-light">
-              Los Angeles
+              Wasco, CA
             </span>
           </div>
 
@@ -153,12 +156,11 @@ const App: React.FC = () => {
             </h1>
             <div className="flex flex-col items-center gap-6 pt-4">
               <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light">
-                Private Archive / 2025
+                661 / Wasco, CA
               </p>
               <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed">
-                Curated fragrance collection from the world's most distinguished maisons.
-                Available exclusively in Los Angeles.
+                heat from the 661. fragrances and fits that actually hit — picked and verified, no middleman markup.
               </p>
             </div>
           </div>
@@ -282,20 +284,20 @@ const App: React.FC = () => {
               />
             </div>
             <div className="space-y-4">
-              <p className="text-[9px] tracking-[0.6em] uppercase text-white/30 font-light">Los Angeles Atelier</p>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">Downtown Arts District / 90015</p>
+              <p className="text-[9px] tracking-[0.6em] uppercase text-white/30 font-light">661 / Wasco, CA</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">based in the valley.</p>
             </div>
           </div>
 
           <button onClick={handleInquire} className="group flex flex-col items-center gap-6">
-            <span className="text-[10px] tracking-[0.5em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">Inquiries</span>
+            <span className="text-[10px] tracking-[0.5em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">hit us on ig</span>
             <div className="h-16 w-[1px] bg-gradient-to-b from-white/10 via-white/20 to-transparent" />
           </button>
 
           <div className="flex gap-8 text-[8px] font-light text-white/10 uppercase tracking-[0.5em]">
             <span>Est. 2025</span>
             <span>•</span>
-            <span>Private Collection</span>
+            <span>private collection.</span>
           </div>
         </footer>
       </main>
