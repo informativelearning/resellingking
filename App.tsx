@@ -103,10 +103,10 @@ const App: React.FC = () => {
             <img 
               src="/images/wingsofofrtuning.jpg" 
               alt="Wings of Fortune"
-              className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110"
+              className="h-12 md:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110 contrast-110"
               style={{ mixBlendMode: 'screen' }}
             />
-            <div className="hidden md:block h-6 w-[1px] bg-white/10"></div>
+            <div className="hidden md:block h-8 w-[1px] bg-white/10"></div>
             <span className="hidden md:block text-[9px] tracking-[0.5em] uppercase text-white/30 font-light">
               Los Angeles
             </span>
@@ -283,8 +283,8 @@ const App: React.FC = () => {
                 <div className="mb-12 flex justify-center opacity-15 hover:opacity-30 transition-opacity duration-700">
                   <img 
                     src="/images/wingsofofrtuning.jpg" 
-                    alt="Wings of `Fortune`"
-                    className="h-12 w-auto filter brightness-110"
+                    alt="Wings of Fortune"
+                    className="h-20 w-auto filter brightness-110 contrast-110"
                     style={{ mixBlendMode: 'screen' }}
                   />
                 </div>
