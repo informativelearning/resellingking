@@ -75,17 +75,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
             </>
           )}
 
-          {/* SKU */}
-          <div className="hidden sm:block absolute bottom-10 left-8 z-10">
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 inline-block">
-              <p className="text-[9px] text-white/40 uppercase mb-1.5">SKU</p>
-              <div className="flex flex-wrap gap-1.5 max-w-[200px]">
-                {product.ids.map(id => (
-                  <span key={id} className="font-mono text-[9px] text-white/60 tracking-tighter bg-black/40 px-2 py-1 border border-white/5">{id}</span>
-                ))}
-              </div>
-            </div>
-          </div>
+
         </div>
 
         {/* Details side */}
