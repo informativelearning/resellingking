@@ -3,8 +3,7 @@ import Ticker from './components/Ticker';
 import InventoryTable from './components/InventoryTable';
 import ProductModal from './components/ProductModal';
 import CartSidebar from './components/CartSidebar';
-import AdminPanel from './components/AdminPanel';
-import { getMergedInventory } from './components/AdminPanel';
+import AdminPanel, { getMergedInventory } from './components/AdminPanel';
 import { Product, Category, CartItem } from './types';
 
 const LOGO = '/images/wingsofofrtuning.png';
