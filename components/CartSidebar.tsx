@@ -7,19 +7,40 @@ interface CartSidebarProps {
   cart: CartItem[];
   onRemove: (id: string, selectedSize?: string) => void;
   onUpdateQty: (id: string, delta: number, selectedSize?: string) => void;
+  igHandle: string;
 }
 
-const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemove, onUpdateQty }) => {
+const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemove, onUpdateQty, igHandle }) => {
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const [shareMode, setShareMode] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [shareImg, setShareImg] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const handleDM = () => {
-    window.open('https://instagram.com/661ro_resellz', '_blank');
+  // Build a pre-filled order message from cart contents
+  const buildOrderMessage = () => {
+    const lines = cart.map(item => {
+      const size = item.selectedSize ? ` (size ${item.selectedSize})` : '';
+      const qty = item.quantity > 1 ? ` x${item.quantity}` : '';
+      return `• ${item.brand} – ${item.name}${size}${qty} — $${(item.price * item.quantity).toFixed(0)}`;
+    });
+    return encodeURIComponent(
+      `hey, i want to order:\n\n${lines.join('\n')}\n\ntotal: $${total.toFixed(0)}`
+    );
   };
 
-  // Generate a clean shareable bag image using Canvas
+  const handleDM = () => {
+    // Try Instagram DM deep link with pre-filled message
+    // Falls back to profile if deep link unsupported
+    const msg = buildOrderMessage();
+    // Instagram doesn't support pre-filled DMs via URL on all platforms,
+    // so we open their profile and copy the message to clipboard as fallback
+    try {
+      navigator.clipboard.writeText(decodeURIComponent(msg.replace(/%0A/g, '\n').replace(/%E2%80%93/g, '–').replace(/%E2%80%A2/g, '•')));
+    } catch {}
+    window.open(`https://ig.me/m/${igHandle}`, '_blank');
+  };
+
   const generateShareImage = async () => {
     setGenerating(true);
     const canvas = canvasRef.current!;
@@ -35,24 +56,18 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
     canvas.width = W;
     canvas.height = H;
 
-    // Background
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, W, H);
-
-    // Subtle top red line
     ctx.fillStyle = '#D30000';
     ctx.fillRect(0, 0, W, 3);
 
-    // Header
     ctx.fillStyle = '#ffffff';
     ctx.font = 'italic 700 40px Georgia, serif';
     ctx.fillText('Wings of Fortune', PADDING, 56);
 
     ctx.fillStyle = '#D30000';
     ctx.font = '500 11px monospace';
-    ctx.letterSpacing = '4px';
     ctx.fillText('661 / WASCO, CA', PADDING, 80);
-    ctx.letterSpacing = '0px';
 
     ctx.strokeStyle = 'rgba(255,255,255,0.08)';
     ctx.lineWidth = 1;
@@ -61,33 +76,27 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
     ctx.lineTo(W - PADDING, 100);
     ctx.stroke();
 
-    // Items
     cart.forEach((item, i) => {
       const y = HEADER_H + i * ITEM_H;
 
-      // Alternating very subtle row bg
       if (i % 2 === 0) {
         ctx.fillStyle = 'rgba(255,255,255,0.02)';
         ctx.fillRect(0, y, W, ITEM_H);
       }
 
-      // Index dot
       ctx.fillStyle = '#D30000';
       ctx.font = 'bold 10px monospace';
       ctx.fillText(`${String(i + 1).padStart(2, '0')}`, PADDING, y + 30);
 
-      // Brand
       ctx.fillStyle = 'rgba(211,0,0,0.7)';
       ctx.font = 'bold 10px monospace';
       ctx.fillText(item.brand.toUpperCase(), PADDING + 36, y + 24);
 
-      // Name
       ctx.fillStyle = '#ffffff';
       ctx.font = 'italic 600 18px Georgia, serif';
       const name = item.name.length > 38 ? item.name.slice(0, 36) + '…' : item.name;
       ctx.fillText(name, PADDING + 36, y + 46);
 
-      // Size badge if apparel
       if (item.selectedSize) {
         ctx.fillStyle = 'rgba(255,255,255,0.12)';
         ctx.fillRect(PADDING + 36, y + 52, 36, 14);
@@ -96,7 +105,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
         ctx.fillText(item.selectedSize, PADDING + 44, y + 63);
       }
 
-      // Qty × price
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 15px monospace';
       const priceStr = `$${(item.price * item.quantity).toFixed(0)}`;
@@ -108,7 +116,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
       ctx.font = '12px monospace';
       ctx.fillText(qtyStr, W - PADDING - priceW - qtyW - 10, y + 38);
 
-      // Row divider
       ctx.strokeStyle = 'rgba(255,255,255,0.05)';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -117,7 +124,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
       ctx.stroke();
     });
 
-    // Footer total
     const footerY = HEADER_H + cart.length * ITEM_H + 24;
     ctx.strokeStyle = 'rgba(255,255,255,0.15)';
     ctx.lineWidth = 1;
@@ -136,37 +142,31 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
     const totalW = ctx.measureText(totalStr).width;
     ctx.fillText(totalStr, W - PADDING - totalW, footerY + 38);
 
-    // Instagram handle
     ctx.fillStyle = 'rgba(211,0,0,0.6)';
     ctx.font = '500 11px monospace';
-    ctx.fillText('@661ro_resellz', PADDING, footerY + 68);
+    ctx.fillText(`@${igHandle}`, PADDING, footerY + 68);
 
-    // Bottom red line
     ctx.fillStyle = '#D30000';
     ctx.fillRect(0, H - 3, W, 3);
 
+    setShareImg(canvas.toDataURL('image/png'));
     setGenerating(false);
     setShareMode(true);
   };
 
   const handleDownload = () => {
-    const canvas = canvasRef.current!;
     const link = document.createElement('a');
     link.download = 'my-bag-661.png';
-    link.href = canvas.toDataURL('image/png');
+    link.href = shareImg!;
     link.click();
   };
 
   return (
     <>
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-v-black/80 backdrop-blur-sm z-[100] transition-opacity duration-500"
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 bg-v-black/80 backdrop-blur-sm z-[100] transition-opacity duration-500" onClick={onClose} />
       )}
 
-      {/* Hidden canvas for image generation */}
       <canvas ref={canvasRef} className="hidden" />
 
       <div
@@ -179,10 +179,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
         <div className="px-6 py-5 border-b border-white/10 flex justify-between items-center flex-shrink-0">
           <div>
             {shareMode ? (
-              <button
-                onClick={() => setShareMode(false)}
-                className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-xs tracking-[0.2em] uppercase font-mono"
-              >
+              <button onClick={() => setShareMode(false)} className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-xs tracking-[0.2em] uppercase font-mono">
                 ← back to bag
               </button>
             ) : (
@@ -196,31 +193,19 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
               </>
             )}
           </div>
-          <button
-            onClick={onClose}
-            className="text-white/30 hover:text-white transition-colors text-xs tracking-[0.2em] uppercase font-mono py-2 px-3 -mr-3"
-          >
+          <button onClick={onClose} className="text-white/30 hover:text-white transition-colors text-xs tracking-[0.2em] uppercase font-mono py-2 px-3 -mr-3">
             Close
           </button>
         </div>
 
-        {/* Share Mode — show generated image */}
-        {shareMode ? (
-          <div className="flex-1 overflow-y-auto overscroll-contain flex flex-col items-center justify-center px-6 py-8 gap-6" style={{ WebkitOverflowScrolling: 'touch' }}>
+        {/* Share mode */}
+        {shareMode && shareImg ? (
+          <div className="flex-1 overflow-y-auto overscroll-contain flex flex-col items-center px-6 py-8 gap-5" style={{ WebkitOverflowScrolling: 'touch' }}>
             <p className="text-[10px] text-white/30 font-mono uppercase tracking-widest text-center">
               long press to save · then dm us
             </p>
-            {/* Show canvas as image so mobile can long-press save */}
-            <img
-              src={canvasRef.current?.toDataURL('image/png')}
-              alt="Your bag"
-              className="w-full border border-white/10"
-              style={{ imageRendering: 'crisp-edges' }}
-            />
-            <button
-              onClick={handleDownload}
-              className="w-full border border-white/15 text-white/50 hover:text-white hover:border-white/40 text-xs uppercase tracking-[0.3em] py-3 transition-all duration-200 font-mono"
-            >
+            <img src={shareImg} alt="Your bag" className="w-full border border-white/10" style={{ imageRendering: 'crisp-edges' }} />
+            <button onClick={handleDownload} className="w-full border border-white/15 text-white/50 hover:text-white hover:border-white/40 text-xs uppercase tracking-[0.3em] py-3 transition-all duration-200 font-mono">
               save image
             </button>
             <button
@@ -232,14 +217,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
               </svg>
               DM to Order
             </button>
+            <p className="text-[9px] text-white/15 font-mono text-center leading-relaxed">
+              your order was copied to clipboard — just paste it in the dm.
+            </p>
           </div>
         ) : (
           <>
-            {/* Normal bag items view */}
-            <div
-              className="flex-1 overflow-y-auto overscroll-contain py-4"
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
+            {/* Items */}
+            <div className="flex-1 overflow-y-auto overscroll-contain py-4" style={{ WebkitOverflowScrolling: 'touch' }}>
               {cart.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center gap-4 opacity-20">
                   <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,17 +235,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
               ) : (
                 <div className="space-y-0 divide-y divide-white/5">
                   {cart.map(item => (
-                    <div
-                      key={`${item.ids[0]}-${item.selectedSize ?? 'none'}`}
-                      className="flex gap-0 items-stretch"
-                    >
+                    <div key={`${item.ids[0]}-${item.selectedSize ?? 'none'}`} className="flex gap-0 items-stretch">
                       {item.images?.[0] && (
                         <div className="flex-shrink-0 w-24 overflow-hidden bg-v-gray" style={{ aspectRatio: '3/4' }}>
-                          <img
-                            src={item.images[0]}
-                            alt={item.name}
-                            className="w-full h-full object-cover grayscale-[20%] contrast-[1.05]"
-                          />
+                          <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover grayscale-[20%] contrast-[1.05]" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0 px-4 py-4 flex flex-col justify-between">
@@ -300,7 +278,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
                   <span className="serif italic text-3xl text-white">${total.toFixed(2)}</span>
                 </div>
 
-                {/* Share bag button */}
                 <button
                   onClick={generateShareImage}
                   disabled={generating}
