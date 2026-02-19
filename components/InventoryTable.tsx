@@ -73,7 +73,7 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
                   src={productImages[currentIndex]}
                   alt={`${product.name} - Image ${currentIndex + 1}`}
                   className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 opacity-90 group-hover:opacity-100"
-                  style={{ mixBlendMode: 'luminosity', filter: 'brightness(0.88) contrast(1.05)' }}
+                  style={{ filter: 'brightness(0.88) contrast(1.05)' }}
                 />
 
                 {/* Category Vertical Tag */}
