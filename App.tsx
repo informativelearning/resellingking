@@ -23,6 +23,7 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
   // Persist cart to localStorage whenever it changes
@@ -83,6 +84,10 @@ const App: React.FC = () => {
       }
       return [...prev, { ...product, quantity: 1, selectedSize }];
     });
+    // Show toast instead of forcing sidebar open every time
+    const label = selectedSize ? `${product.name} (${selectedSize})` : product.name;
+    setToast(label);
+    setTimeout(() => setToast(null), 2500);
     setIsCartOpen(true);
   };
 
@@ -373,6 +378,19 @@ const App: React.FC = () => {
       />
 
       {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
+
+      {/* Toast notification */}
+      <div
+        style={{ transition: 'opacity 0.5s, transform 0.5s' }}
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] pointer-events-none ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
+      >
+        <div className="bg-v-black border border-white/15 px-5 py-3 flex items-center gap-3 shadow-2xl shadow-black/60">
+          <span className="w-1.5 h-1.5 rounded-full bg-v-red flex-shrink-0" />
+          <p className="text-[11px] font-mono text-white/70 whitespace-nowrap">
+            <span className="text-white">{toast}</span> added.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
