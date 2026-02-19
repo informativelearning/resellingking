@@ -14,11 +14,23 @@ const App: React.FC = () => {
   const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState<Category>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('wof_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [inventory, setInventory] = useState<Product[]>([]);
+
+  // Persist cart to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('wof_cart', JSON.stringify(cart));
+    } catch {}
+  }, [cart]);
 
   // Load merged inventory (base + any custom added via admin)
   useEffect(() => {
