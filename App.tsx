@@ -223,7 +223,7 @@ const App: React.FC = () => {
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Search by name, house, or reference"
+                placeholder="Search by Brand"
                 className="w-full bg-transparent border-b border-white/10 px-0 py-4 text-white/80 font-light placeholder-white/20 focus:outline-none text-sm tracking-[0.1em] focus:border-white/30 transition-all duration-500 text-center"
               />
               {searchTerm && (
