@@ -119,9 +119,9 @@ const App: React.FC = () => {
                                      'Maison / Brand';
 
   const maisonPlaceholder =
-    filterCategory === 'Apparel'   ? 'All Brands' :
-    filterCategory === 'Fragrance' ? 'All Houses' :
-                                     'All Houses';
+    filterCategory === 'Apparel'   ? 'All Items' :
+    filterCategory === 'Fragrance' ? 'All Items' :
+                                     'All Items';
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
@@ -211,7 +211,7 @@ const App: React.FC = () => {
               </p>
               <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed">
-                heat from the 661. fragrances and fits that actually hit — picked and verified, no middleman markup.
+                quick. cheap. no bs.
               </p>
             </div>
           </div>
@@ -231,7 +231,7 @@ const App: React.FC = () => {
                   onClick={() => setSearchTerm('')}
                   className="absolute right-0 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors text-xs"
                 >
-                  Clear
+                  Reset
                 </button>
               )}
             </div>
