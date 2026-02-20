@@ -56,7 +56,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
           <img
             src={productImages[currentImageIndex]}
             alt={`${product.name} - Image ${currentImageIndex + 1}`}
-            className="w-full h-full object-cover"
+            className={`w-full h-full transition-all duration-500 ${
+              isApparel ? 'object-cover' : 'object-contain p-6'
+            }`}
           />
 
           {productImages.length > 1 && (
