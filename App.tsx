@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import Ticker from './components/Ticker';
 import InventoryTable from './components/InventoryTable';
 import ProductModal from './components/ProductModal';
@@ -372,6 +373,7 @@ const App: React.FC = () => {
       />
 
       {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
+      <Analytics />
 
       {/* Toast notification */}
       <div
