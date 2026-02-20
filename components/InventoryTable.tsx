@@ -23,11 +23,19 @@ const ProductCard = memo(({
   onAddToCart: (p: Product, size?: string) => void;
 }) => {
   const [currentIndex, setCurrentIndex]   = useState(0);
+  const [isSquare, setIsSquare]           = useState(false);
   const [isHovered, setIsHovered]         = useState(false);
 
   const images    = product.images && product.images.length > 0 ? product.images : [product.image];
   const isApparel = product.category === 'Apparel';
 
+
+  const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const ratio = img.naturalWidth / img.naturalHeight;
+    // Square = ratio between 0.9 and 1.1
+    if (ratio >= 0.9 && ratio <= 1.1) setIsSquare(true);
+  }, []);
 
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -61,8 +69,13 @@ const ProductCard = memo(({
           alt={product.name}
           loading="lazy"
           decoding="async"
+          onLoad={handleImageLoad}
           className={`w-full h-full ${
-            isApparel ? 'object-cover' : 'object-contain p-2'
+            isApparel
+              ? 'object-cover'
+              : isSquare
+                ? 'object-cover'
+                : 'object-contain p-2'
           } ${isTouchDevice ? '' : 'transition-transform duration-700 group-hover:scale-105'}`}
           style={{ filter: 'brightness(0.92) contrast(1.05)' }}
         />

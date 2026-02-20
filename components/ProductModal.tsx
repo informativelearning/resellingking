@@ -15,6 +15,13 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
   const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [isSquare, setIsSquare] = useState(false);
+
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const r = img.naturalWidth / img.naturalHeight;
+    setIsSquare(r >= 0.9 && r <= 1.1);
+  };
   const [sizeError, setSizeError] = useState(false);
 
   const handleAddToCart = () => {
@@ -57,8 +64,13 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
             src={productImages[currentImageIndex]}
             alt={`${product.name} - Image ${currentImageIndex + 1}`}
             className={`w-full h-full transition-all duration-500 ${
-              isApparel ? 'object-cover' : 'object-contain p-4'
+              isApparel
+                ? 'object-cover'
+                : isSquare
+                  ? 'object-cover'
+                  : 'object-contain p-4'
             }`}
+            onLoad={handleImageLoad}
           />
 
           {productImages.length > 1 && (
