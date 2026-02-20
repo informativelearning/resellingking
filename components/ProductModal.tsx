@@ -15,6 +15,14 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
   const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [isPortraitImage, setIsPortraitImage] = useState(false);
+
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const ratio = img.naturalWidth / img.naturalHeight;
+    // Only use cover if clearly portrait (tall bottle shot)
+    setIsPortraitImage(ratio < 0.75);
+  };
   const [sizeError, setSizeError] = useState(false);
 
   const handleAddToCart = () => {
@@ -56,8 +64,13 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
           <img
             src={productImages[currentImageIndex]}
             alt={`${product.name} - Image ${currentImageIndex + 1}`}
+            onLoad={handleImageLoad}
             className={`w-full h-full transition-all duration-500 ${
-              isApparel ? 'object-cover' : 'object-contain p-6'
+              isApparel
+                ? 'object-cover'
+                : isPortraitImage
+                  ? 'object-cover'
+                  : 'object-contain p-4'
             }`}
           />
 
