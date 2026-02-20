@@ -126,16 +126,10 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
 
-      {/* Film Grain */}
-      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.012]"
-           style={{
-             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-             backgroundRepeat: 'repeat'
-           }}
-      />
+
 
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/80 backdrop-blur-xl border-b border-white/5">
+      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
 
           {/* Left: logo + location */}
