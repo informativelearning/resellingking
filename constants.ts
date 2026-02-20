@@ -25,7 +25,7 @@ const DEFAULT_DETAILS = (category: string): ProductDetails => {
 const IMAGE_MAP: Record<string, string[]> = {
   // AZZARO
   "azzaro|the most wanted": [
-    "/images/Azzaro The Most Wanted By azzaro.jpg",
+    "/images/Azzaro The Most Wanted by azzaro.jpg",
     "/images/Azzaro The Most Wanted by Azzaro1.jpg",
     "/images/Azzaro The Most Wanted by Azzaro2.jpg",
   ],
