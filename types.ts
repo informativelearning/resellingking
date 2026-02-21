@@ -27,6 +27,7 @@ export interface Product {
   image: string;
   images?: string[];
   details: ProductDetails;
+  cardBg?: string;
 }
 
 export interface CartItem extends Product {
