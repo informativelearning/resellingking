@@ -9,6 +9,10 @@ interface ProductModalProps {
 }
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
+const SNEAKER_SIZES = [
+  '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5',
+  '11', '11.5', '12', '12.5', '13', '14'
+];
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire, onAddToCart }) => {
   const isApparel = product.category === 'Apparel' || product.category === 'Sneakers';
@@ -137,11 +141,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
                   {sizeError ? 'pick a size first.' : 'select size'}
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  {SIZES.map(size => (
+                  {(product.category === 'Sneakers' ? SNEAKER_SIZES : SIZES).map(size => (
                     <button
                       key={size}
                       onClick={() => { setSelectedSize(size); setSizeError(false); }}
-                      className={`w-12 h-12 text-xs font-bold uppercase tracking-wider border transition-all duration-200 active:scale-95 ${
+                      className={`h-10 text-xs font-bold tracking-wider border transition-all duration-200 active:scale-95 ${product.category === "Sneakers" ? "w-14" : "w-12 uppercase"} ${
                         selectedSize === size
                           ? 'bg-v-red border-v-red text-white'
                           : sizeError
