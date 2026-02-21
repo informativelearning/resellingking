@@ -62,10 +62,16 @@ const ProductCard = memo(({
       <div className={`relative overflow-hidden ${isSneakers ? 'aspect-[4/3] bg-[#f0eeeb] border border-white/10 border-t-2 border-t-v-red' : 'aspect-[3/4] bg-v-gray border border-white/5'}`}>
 
         {/* Gradient overlay — no transition on mobile */}
-        {isSneakers
-          ? <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent z-[1] pointer-events-none" />
-          : <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1] ${isTouchDevice ? 'opacity-50' : 'opacity-60 transition-opacity duration-500 group-hover:opacity-30'}`} />
-        }
+        {isSneakers ? (
+          <>
+            {/* Edge vignette — fades warm bg to dark on all sides */}
+            <div className="absolute inset-0 z-[1] pointer-events-none" style={{
+              boxShadow: 'inset 0 0 40px 20px rgba(0,0,0,0.55)'
+            }} />
+          </>
+        ) : (
+          <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1] ${isTouchDevice ? 'opacity-50' : 'opacity-60 transition-opacity duration-500 group-hover:opacity-30'}`} />
+        )}
 
         <img
           src={images[currentIndex]}
