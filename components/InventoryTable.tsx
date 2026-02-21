@@ -59,12 +59,12 @@ const ProductCard = memo(({
       }}
     >
       {/* Image Container */}
-      <div className={`relative overflow-hidden bg-v-gray border border-white/5 ${isSneakers ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}>
+      <div className={`relative overflow-hidden border border-white/5 ${isSneakers ? 'aspect-[4/3] bg-white' : 'aspect-[3/4] bg-v-gray'}`}>
 
         {/* Gradient overlay — no transition on mobile */}
-        <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1] ${
+        {!isSneakers && <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1] ${
           isTouchDevice ? 'opacity-50' : 'opacity-60 transition-opacity duration-500 group-hover:opacity-30'
-        }`} />
+        }`} />}
 
         <img
           src={images[currentIndex]}
@@ -81,23 +81,23 @@ const ProductCard = memo(({
                   ? 'object-cover'
                   : 'object-contain p-2'
           } ${isTouchDevice ? '' : 'transition-transform duration-700 group-hover:scale-105'}`}
-          style={{ filter: 'brightness(0.92) contrast(1.05)' }}
+          style={{ filter: isSneakers ? 'none' : 'brightness(0.92) contrast(1.05)' }}
         />
 
         {/* Category tag — no backdrop-blur on mobile */}
-        <div className={`absolute top-0 left-0 h-full w-6 sm:w-8 flex items-center justify-center border-r border-white/10 pointer-events-none z-[2] ${
-          isTouchDevice ? 'bg-v-black/70' : 'bg-v-black/60 backdrop-blur-sm'
+        <div className={`absolute top-0 left-0 h-full w-6 sm:w-8 flex items-center justify-center pointer-events-none z-[2] ${
+          isSneakers ? 'bg-black/8 border-r border-black/10' : isTouchDevice ? 'bg-v-black/70 border-r border-white/10' : 'bg-v-black/60 backdrop-blur-sm border-r border-white/10'
         }`}>
-          <span className="whitespace-nowrap -rotate-90 text-[7px] sm:text-[8px] tracking-[0.4em] uppercase text-white/50 font-bold">
+          <span className={`whitespace-nowrap -rotate-90 text-[7px] sm:text-[8px] tracking-[0.4em] uppercase font-bold ${isSneakers ? 'text-black/40' : 'text-white/50'}`}>
             {product.category}
           </span>
         </div>
 
         {/* Price tag — no backdrop-blur on mobile */}
         <div className="absolute top-3 right-3 z-[2]">
-          <div className={`text-[11px] sm:text-xs font-black tracking-wider bg-v-red text-white px-2 py-1.5 sm:px-3 sm:py-2 ${
-            isTouchDevice ? '' : 'transition-transform duration-300 group-hover:scale-110'
-          }`}>
+          <div className={`text-[11px] sm:text-xs font-black tracking-wider px-2 py-1.5 sm:px-3 sm:py-2 ${
+            isSneakers ? 'bg-v-black text-white' : 'bg-v-red text-white'
+          } ${isTouchDevice ? '' : 'transition-transform duration-300 group-hover:scale-110'}`}>
             ${product.price}
           </div>
         </div>
@@ -133,15 +133,17 @@ const ProductCard = memo(({
 
         {/* Hover overlay — desktop only, skipped entirely on touch */}
         {!isTouchDevice && (
-          <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent transition-opacity duration-400 flex flex-col items-center justify-center gap-3 z-[2] ${
+          <div className={`absolute inset-0 transition-opacity duration-400 flex flex-col items-center justify-center gap-3 z-[2] ${
+            isSneakers ? 'bg-white/90' : 'bg-gradient-to-t from-black via-black/80 to-transparent'
+          } ${
             isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}>
-            <span className="text-[9px] sm:text-[10px] tracking-[0.5em] uppercase border border-white/60 px-4 py-2 text-white/90">
+            <span className={`text-[9px] sm:text-[10px] tracking-[0.5em] uppercase px-4 py-2 ${isSneakers ? 'border border-black/30 text-black/80' : 'border border-white/60 text-white/90'}`}>
               View Details
             </span>
             <button
               onClick={handleAddToCart}
-              className="bg-v-red text-white px-4 py-2 text-[9px] sm:text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-white hover:text-v-black transition-colors duration-200"
+              className={`px-4 py-2 text-[9px] sm:text-[10px] tracking-[0.4em] uppercase font-bold transition-colors duration-200 ${isSneakers ? 'bg-v-black text-white hover:bg-v-red' : 'bg-v-red text-white hover:bg-white hover:text-v-black'}`}
             >
               {isApparel || isSneakers ? 'Select Size' : 'Add to Bag'}
             </button>
