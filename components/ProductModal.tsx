@@ -11,7 +11,7 @@ interface ProductModalProps {
 const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire, onAddToCart }) => {
-  const isApparel = product.category === 'Apparel';
+  const isApparel = product.category === 'Apparel' || product.category === 'Sneakers';
   const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);

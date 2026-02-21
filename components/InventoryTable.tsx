@@ -28,6 +28,8 @@ const ProductCard = memo(({
 
   const images    = product.images && product.images.length > 0 ? product.images : [product.image];
   const isApparel = product.category === 'Apparel';
+  const isSneakers = product.category === 'Sneakers';
+  const usesCover = isApparel || isSneakers;
 
 
   const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -39,7 +41,7 @@ const ProductCard = memo(({
 
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isApparel) onProductClick(product);
+    if (isApparel || isSneakers) onProductClick(product);
     else onAddToCart(product);
   }, [isApparel, product, onProductClick, onAddToCart]);
 
@@ -139,7 +141,7 @@ const ProductCard = memo(({
               onClick={handleAddToCart}
               className="bg-v-red text-white px-4 py-2 text-[9px] sm:text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-white hover:text-v-black transition-colors duration-200"
             >
-              {isApparel ? 'Select Size' : 'Add to Bag'}
+              {isApparel || isSneakers ? 'Select Size' : 'Add to Bag'}
             </button>
           </div>
         )}

@@ -39,7 +39,7 @@ const App: React.FC = () => {
     setInventory(getMergedInventory());
   }, [showAdmin]); // refresh when admin closes
 
-  const categories: Category[] = ['All', 'Fragrance', 'Apparel'];
+  const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
   const brands: string[] = useMemo(() => {
     const source =
@@ -117,6 +117,7 @@ const App: React.FC = () => {
   const maisonLabel =
     filterCategory === 'Apparel'   ? 'Brand'         :
     filterCategory === 'Fragrance' ? 'Maison'        :
+    filterCategory === 'Sneakers'  ? 'Brand'         :
                                      'Maison / Brand';
 
   const maisonPlaceholder =

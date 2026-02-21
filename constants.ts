@@ -325,7 +325,136 @@ export const DISCOUNTS = [
 const isApparel = (brand: string): boolean =>
   brand.toLowerCase().includes('essentials') || brand.toLowerCase().includes('fear of god');
 
-export const INVENTORY: Product[] = rawData.map(([brand, name, volumes]) => {
+
+// ---------------------------------------------------------------------------
+// SNEAKERS
+// ---------------------------------------------------------------------------
+const SNEAKERS: Product[] = [
+  {
+    ids: ['jordan|air-jordan-4-retro-og-sp'],
+    brand: 'Jordan',
+    name: 'Air Jordan 4 Retro OG SP',
+    price: 180,
+    spec: 'Various Sizes',
+    category: 'Sneakers' as Category,
+    condition: 'New',
+    stock: 10,
+    image: '/images/Air Jordan 4 Retro OG SP.jpeg',
+    images: [
+      '/images/Air Jordan 4 Retro OG SP.jpeg',
+      '/images/Air Jordan 4 Retro OG SP1.jpeg',
+      '/images/Air Jordan 4 Retro OG SP2.jpeg',
+      '/images/Air Jordan 4 Retro OG SP3.jpeg',
+      '/images/Air Jordan 4 Retro OG SP4.jpeg',
+      '/images/Air Jordan 4 Retro OG SP5.jpeg',
+    ],
+    details: { description: 'Air Jordan 4 Retro OG SP. New, verified authentic.' },
+  },
+  {
+    ids: ['jordan|travis-scott-aj1-low-medium-olive'],
+    brand: 'Jordan',
+    name: 'Travis Scott x Jordan 1 Low OG SP Medium Olive',
+    price: 180,
+    spec: 'Various Sizes',
+    category: 'Sneakers' as Category,
+    condition: 'New',
+    stock: 10,
+    image: '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive.jpeg',
+    images: [
+      '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive.jpeg',
+      '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive1.jpeg',
+      '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive2.jpeg',
+      '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive3.jpeg',
+      '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive4.jpeg',
+      '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive5.jpeg',
+    ],
+    details: { description: 'Travis Scott x Jordan 1 Retro Low OG SP Medium Olive. New, verified authentic.' },
+  },
+  {
+    ids: ['jordan|jordan-5-retro-grape-2025'],
+    brand: 'Jordan',
+    name: 'Jordan 5 Retro Grape (2025)',
+    price: 180,
+    spec: 'Various Sizes',
+    category: 'Sneakers' as Category,
+    condition: 'New',
+    stock: 10,
+    image: '/images/Jordan 5 Retro Grape (2025).jpeg',
+    images: [
+      '/images/Jordan 5 Retro Grape (2025).jpeg',
+      '/images/Jordan 5 Retro Grape (2025)1.jpeg',
+      '/images/Jordan 5 Retro Grape (2025)3.jpeg',
+      '/images/Jordan 5 Retro Grape (2025)4.jpeg',
+      '/images/Jordan 5 Retro Grape (2025)5.jpeg',
+      '/images/Jordan 5 Retro Grape (2025)6.jpeg',
+    ],
+    details: { description: 'Jordan 5 Retro Grape 2025 retro. New, verified authentic.' },
+  },
+  {
+    ids: ['nike|sb-air-jordan-4-navy'],
+    brand: 'Nike',
+    name: 'Nike SB x Air Jordan 4 Navy',
+    price: 180,
+    spec: 'Various Sizes',
+    category: 'Sneakers' as Category,
+    condition: 'New',
+    stock: 10,
+    image: '/images/Nike SB x Air Jordan 4 Navy.png',
+    images: [
+      '/images/Nike SB x Air Jordan 4 Navy.png',
+      '/images/Nike SB x Air Jordan 4 Navy2.png',
+      '/images/Nike SB x Air Jordan 4 Navy3.png',
+      '/images/Nike SB x Air Jordan 4 Navy4.png',
+      '/images/Nike SB x Air Jordan 4 Navy5.png',
+      '/images/Nike SB x Air Jordan 4 Navy6.png',
+      '/images/Nike SB x Air Jordan 4 Navy7.png',
+    ],
+    details: { description: 'Nike SB x Air Jordan 4 Navy. New, verified authentic.' },
+  },
+  {
+    ids: ['jordan|travis-scott-aj1-low-velvet-brown'],
+    brand: 'Jordan',
+    name: "Travis Scott x Air Jordan 1 Low OG SP Velvet Brown",
+    price: 180,
+    spec: 'Various Sizes',
+    category: 'Sneakers' as Category,
+    condition: 'New',
+    stock: 10,
+    image: "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'.jpeg",
+    images: [
+      "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'.jpeg",
+      "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'1.jpeg",
+      "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'2.jpeg",
+      "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'3.jpeg",
+      "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'4.jpeg",
+      "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'5.jpeg",
+      "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'6.jpeg",
+    ],
+    details: { description: 'Travis Scott x Air Jordan 1 Retro Low OG SP Velvet Brown. New, verified authentic.' },
+  },
+  {
+    ids: ['jordan|travis-scott-aj1-low-sail-ridgerock'],
+    brand: 'Jordan',
+    name: 'Travis Scott x Jordan 1 Low OG SP Sail and Ridgerock',
+    price: 180,
+    spec: 'Various Sizes',
+    category: 'Sneakers' as Category,
+    condition: 'New',
+    stock: 10,
+    image: '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock.jpeg',
+    images: [
+      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock.jpeg',
+      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock1.jpeg',
+      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock2.jpeg',
+      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock3.jpeg',
+      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock4.jpeg',
+      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock5.jpeg',
+    ],
+    details: { description: 'Travis Scott x Jordan Air Jordan 1 Low OG SP Sail and Ridgerock. New, verified authentic.' },
+  },
+];
+
+export const INVENTORY: Product[] = [...rawData.map(([brand, name, volumes]) => {
   const normalizedBrand = brand.trim();
   const normalizedName  = name.trim();
   const spec            = volumes.length > 1 ? `${volumes.join(', ')} options` : volumes[0];
@@ -345,4 +474,4 @@ export const INVENTORY: Product[] = rawData.map(([brand, name, volumes]) => {
     images,
     details:   DEFAULT_DETAILS(category),
   };
-});
+}), ...SNEAKERS];

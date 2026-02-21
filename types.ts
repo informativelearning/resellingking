@@ -1,4 +1,4 @@
-export type Category = 'Fragrance' | 'Apparel' | 'All';
+export type Category = 'Fragrance' | 'Apparel' | 'Sneakers' | 'All';
 
 export interface ProductDetails {
   topNotes?: string[];
