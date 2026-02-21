@@ -59,7 +59,7 @@ const ProductCard = memo(({
       }}
     >
       {/* Image Container */}
-      <div className={`relative overflow-hidden ${isSneakers ? 'aspect-[4/3] bg-[#eceae6] border border-white/10 border-t-2 border-t-v-red' : 'aspect-[3/4] bg-v-gray border border-white/5'}`}>
+      <div className={`relative overflow-hidden ${isSneakers ? 'aspect-[4/3] bg-white border border-white/10 border-t-2 border-t-v-red' : 'aspect-[3/4] bg-v-gray border border-white/5'}`}>
 
         {/* Gradient overlay — no transition on mobile */}
         {isSneakers ? (
@@ -91,8 +91,8 @@ const ProductCard = memo(({
           style={{
             filter: isSneakers ? 'contrast(1.08) saturate(0.95)' : 'brightness(0.92) contrast(1.05)',
             ...(isSneakers ? {
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 50%, black 50%, transparent 100%)',
-              maskImage: 'linear-gradient(to bottom, transparent 0%, black 50%, black 50%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 75%, transparent 100%)',
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 75%, transparent 100%)',
             } : {})
           }}
         />
