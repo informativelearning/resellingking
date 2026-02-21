@@ -59,14 +59,14 @@ const ProductCard = memo(({
       }}
     >
       {/* Image Container */}
-      <div className={`relative overflow-hidden ${isSneakers ? 'aspect-[4/3] bg-[#d8d4cf] border border-white/10 border-t-2 border-t-v-red' : 'aspect-[3/4] bg-v-gray border border-white/5'}`}>
+      <div className={`relative overflow-hidden ${isSneakers ? 'aspect-[4/3] bg-[#eceae6] border border-white/10 border-t-2 border-t-v-red' : 'aspect-[3/4] bg-v-gray border border-white/5'}`}>
 
         {/* Gradient overlay — no transition on mobile */}
         {isSneakers ? (
           <>
             {/* Edge vignette — fades warm bg to dark on all sides */}
             <div className="absolute inset-0 z-[1] pointer-events-none" style={{
-              boxShadow: 'inset 0 0 80px 35px rgba(0,0,0,0.75)'
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 35%, transparent 65%, rgba(0,0,0,0.55) 100%)'
             }} />
           </>
         ) : (
