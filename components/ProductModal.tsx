@@ -63,18 +63,18 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       <div className="flex flex-col md:flex-row md:min-h-screen md:h-screen md:overflow-hidden -mt-14 md:mt-0">
 
         {/* Image side */}
-        <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-[50vw] min-h-[240px] md:h-full" : isApparel ? "bg-v-gray h-[60vw] min-h-[280px] md:h-full" : "bg-v-gray h-[60vw] min-h-[280px] md:h-full"}`}>
+        <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-auto md:h-full" : "bg-v-gray h-[60vw] min-h-[280px] md:h-full"}`}>
           <img
             src={productImages[currentImageIndex]}
             alt={`${product.name} - Image ${currentImageIndex + 1}`}
-            className={`w-full h-full transition-all duration-500 ${
+            className={`transition-all duration-500 ${
               product.category === 'Sneakers'
-                ? 'object-contain p-6'
+                ? 'w-full h-auto block'
                 : isApparel
-                  ? 'object-cover'
+                  ? 'w-full h-full object-cover'
                   : isSquare
-                    ? 'object-cover'
-                    : 'object-contain p-4'
+                    ? 'w-full h-full object-cover'
+                    : 'w-full h-full object-contain p-4'
             }`}
             onLoad={handleImageLoad}
             style={product.category === 'Sneakers' ? { filter: 'none' } : {}}

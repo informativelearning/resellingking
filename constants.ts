@@ -367,7 +367,7 @@ const SNEAKERS: Product[] = [
       '/images/Air Jordan 5 Retro Wolf Grey7.jpeg',
     ],
     details: { description: 'Air Jordan 5 Retro Wolf Grey 2026. New, verified authentic.' },
-    cardBg: '#ababa9',
+
   },
   {
     ids: ['CT8012-005'],

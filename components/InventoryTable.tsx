@@ -59,7 +59,7 @@ const ProductCard = memo(({
       }}
     >
       {/* Image Container */}
-      <div className={`relative overflow-hidden ${isSneakers ? 'aspect-[4/3] border border-white/10 border-t-2 border-t-v-red' : 'aspect-[3/4] bg-v-gray border border-white/5'}`} style={isSneakers ? { backgroundColor: product.cardBg || '#ffffff' } : {}}>
+      <div className={`relative overflow-hidden ${isSneakers ? 'bg-white border border-white/10 border-t-2 border-t-v-red' : 'aspect-[3/4] bg-v-gray border border-white/5'}`}>
 
         {/* Gradient overlay — no transition on mobile */}
         {isSneakers ? (
@@ -79,9 +79,9 @@ const ProductCard = memo(({
           loading="lazy"
           decoding="async"
           onLoad={handleImageLoad}
-          className={`w-full h-full ${
+          className={`${isSneakers ? '' : 'w-full h-full '}${
             isSneakers
-              ? 'object-contain'
+              ? 'w-full h-auto block'
               : isApparel
                 ? 'object-cover'
                 : isSquare
