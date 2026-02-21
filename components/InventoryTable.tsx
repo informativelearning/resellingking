@@ -59,7 +59,7 @@ const ProductCard = memo(({
       }}
     >
       {/* Image Container */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-v-gray border border-white/5">
+      <div className={`relative overflow-hidden bg-v-gray border border-white/5 ${isSneakers ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}>
 
         {/* Gradient overlay — no transition on mobile */}
         <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1] ${
@@ -73,11 +73,13 @@ const ProductCard = memo(({
           decoding="async"
           onLoad={handleImageLoad}
           className={`w-full h-full ${
-            isApparel
-              ? 'object-cover'
-              : isSquare
+            isSneakers
+              ? 'object-contain'
+              : isApparel
                 ? 'object-cover'
-                : 'object-contain p-2'
+                : isSquare
+                  ? 'object-cover'
+                  : 'object-contain p-2'
           } ${isTouchDevice ? '' : 'transition-transform duration-700 group-hover:scale-105'}`}
           style={{ filter: 'brightness(0.92) contrast(1.05)' }}
         />

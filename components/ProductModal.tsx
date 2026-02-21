@@ -59,16 +59,18 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       <div className="flex flex-col md:flex-row md:min-h-screen md:h-screen md:overflow-hidden -mt-14 md:mt-0">
 
         {/* Image side */}
-        <div className="w-full md:w-1/2 h-[60vw] min-h-[280px] md:h-full relative overflow-hidden bg-v-gray flex-shrink-0">
+        <div className={`w-full md:w-1/2 relative overflow-hidden bg-v-gray flex-shrink-0 ${isApparel ? "h-[60vw] min-h-[280px] md:h-full" : "h-[50vw] min-h-[240px] md:h-full"}`}>
           <img
             src={productImages[currentImageIndex]}
             alt={`${product.name} - Image ${currentImageIndex + 1}`}
             className={`w-full h-full transition-all duration-500 ${
-              isApparel
-                ? 'object-cover'
-                : isSquare
+              product.category === 'Sneakers'
+                ? 'object-contain p-6'
+                : isApparel
                   ? 'object-cover'
-                  : 'object-contain p-4'
+                  : isSquare
+                    ? 'object-cover'
+                    : 'object-contain p-4'
             }`}
             onLoad={handleImageLoad}
           />
