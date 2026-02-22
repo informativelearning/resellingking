@@ -101,14 +101,14 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
         {/* Details side */}
         <div
-          className="w-full md:w-1/2 px-7 py-10 sm:px-10 sm:py-12 md:px-14 md:py-16 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
+          className="w-full md:w-1/2 px-7 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12 md:px-14 md:pt-10 md:pb-16 flex flex-col bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
         >
           <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
 
             {/* Header */}
             <header className="space-y-4">
               <span className="text-v-red text-[10px] font-bold tracking-[0.6em] uppercase block">{product.brand}</span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl serif italic leading-snug text-white tracking-tight">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl serif italic leading-snug text-white tracking-tight">
                 {(() => {
                   const name = product.name;
                   // Split on Jordan/Nike/Air keyword to get collab prefix + model
