@@ -634,23 +634,6 @@ const SNEAKERS: Product[] = [
   {
     ids: ['DM7866-104'],
     brand: 'Travis Scott x Jordan',
-    name: 'Travis Scott x Air Jordan 1 Low OG Sail and Ridgerock',
-    price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
-    condition: 'New', stock: 10,
-    image: '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock.jpeg',
-    images: [
-      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock.jpeg',
-      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock1.jpeg',
-      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock2.jpeg',
-      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock3.jpeg',
-      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock4.jpeg',
-      '/images/Travis Scott x Jordan Air Jordan 1 Low OG SP Sail andRidgerock5.jpeg',
-    ],
-    details: { description: 'Travis Scott x Air Jordan 1 Low OG Sail and Ridgerock. New, verified authentic.' },
-  },
-  {
-    ids: ['DM7866-162'],
-    brand: 'Travis Scott x Jordan',
     name: 'Travis Scott x Air Jordan 1 Low OG Reverse Mocha',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
@@ -667,8 +650,9 @@ const SNEAKERS: Product[] = [
       "/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'8.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'9.jpeg",
     ],
-    details: { description: 'Travis Scott x Air Jordan 1 Low OG Reverse Mocha. New, verified authentic.' },
+    details: { description: 'Travis Scott x Air Jordan 1 Low OG Reverse Mocha (Sail/University Red/Ridgerock). New, verified authentic.' },
   },
+
   {
     ids: ['DZ4137-106'],
     brand: 'Travis Scott x Jordan',
