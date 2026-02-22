@@ -115,9 +115,9 @@ const App: React.FC = () => {
 
   const maisonLabel =
     filterCategory === 'Apparel'   ? 'Brand'         :
-    filterCategory === 'Fragrance' ? 'Maison'        :
+    filterCategory === 'Fragrance' ? 'Brand'        :
     filterCategory === 'Sneakers'  ? 'Brand'         :
-                                     'Maison / Brand';
+                                     'Brand';
 
   const maisonPlaceholder =
     filterCategory === 'Apparel'   ? 'All Items' :
