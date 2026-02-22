@@ -60,7 +60,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       </div>
 
       {/* Layout */}
-      <div className="flex flex-col md:flex-row md:min-h-screen md:h-screen md:overflow-hidden -mt-14 md:mt-0">
+      <div className="flex flex-col md:flex-row md:min-h-screen md:h-screen md:overflow-hidden">
 
         {/* Image side */}
         <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-[56vw] min-h-[260px] md:h-full" : "bg-v-gray h-[60vw] min-h-[280px] md:h-full"}`}>
