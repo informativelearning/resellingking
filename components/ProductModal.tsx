@@ -63,18 +63,18 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       <div className="flex flex-col md:flex-row md:min-h-screen md:h-screen md:overflow-hidden -mt-14 md:mt-0">
 
         {/* Image side */}
-        <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-auto md:h-full" : "bg-v-gray h-[60vw] min-h-[280px] md:h-full"}`}>
+        <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-[56vw] min-h-[260px] md:h-full" : "bg-v-gray h-[60vw] min-h-[280px] md:h-full"}`}>
           <img
             src={productImages[currentImageIndex]}
             alt={`${product.name} - Image ${currentImageIndex + 1}`}
-            className={`transition-all duration-500 ${
+            className={`w-full h-full transition-all duration-500 ${
               product.category === 'Sneakers'
-                ? 'w-full h-auto block'
+                ? 'object-contain p-6'
                 : isApparel
-                  ? 'w-full h-full object-cover'
+                  ? 'object-cover'
                   : isSquare
-                    ? 'w-full h-full object-cover'
-                    : 'w-full h-full object-contain p-4'
+                    ? 'object-cover'
+                    : 'object-contain p-4'
             }`}
             onLoad={handleImageLoad}
             style={product.category === 'Sneakers' ? { filter: 'none' } : {}}
@@ -101,7 +101,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
         {/* Details side */}
         <div
-          className="w-full md:w-1/2 md:h-full md:overflow-y-auto p-7 sm:p-10 md:p-16 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
+          className="w-full md:w-1/2 md:h-full md:overflow-y-auto p-7 pt-10 sm:p-10 sm:pt-12 md:p-16 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
@@ -109,7 +109,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
             {/* Header */}
             <header className="space-y-4">
               <span className="text-v-red text-[10px] font-bold tracking-[0.6em] uppercase block">{product.brand}</span>
-              <h2 className="text-5xl sm:text-6xl md:text-7xl serif italic leading-[0.88] text-white tracking-tighter">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl serif italic leading-[1.0] text-white tracking-tighter">
                 {product.name}
               </h2>
               <div className="flex gap-4 items-center pt-3">
