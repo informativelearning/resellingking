@@ -182,21 +182,31 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
-      <header className="relative z-30 pt-[80px] md:pt-[88px]">
+      {/* Hero Section (With Giant Ghost Logo) */}
+      <header className="relative z-30 pt-[80px] md:pt-[88px] overflow-hidden">
         <Ticker />
-        <div className="px-6 md:px-12 flex flex-col items-center gap-12 max-w-[1400px] mx-auto w-full relative mt-12 mb-10">
+
+        {/* Giant Background Logo Watermark */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] opacity-[0.04] pointer-events-none z-0 mix-blend-screen flex justify-center items-center">
+          <img
+            src={LOGO}
+            alt="Wings Watermark"
+            className="w-full h-auto object-contain scale-150 md:scale-125 filter grayscale contrast-125"
+          />
+        </div>
+
+        <div className="px-6 md:px-12 flex flex-col items-center gap-12 max-w-[1400px] mx-auto w-full relative z-10 mt-16 mb-16">
           <div className="text-center space-y-8 max-w-5xl">
-            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light">
+            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light drop-shadow-2xl">
               Wings of<br/>
               <span className="block mt-2">Fortune</span>
             </h1>
             <div className="flex flex-col items-center gap-6 pt-4">
-              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light">
+              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light font-mono">
                 661 / Wasco, CA
               </p>
-              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed">
+              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-v-red/50 to-transparent" />
+              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed serif italic">
                 quick. cheap. no bs.
               </p>
             </div>
@@ -211,7 +221,7 @@ const App: React.FC = () => {
 
             {/* Search Input — Sharp & Minimal */}
             <div className="flex-shrink-0 snap-start relative flex items-center h-full border-r border-white/10 pr-4 mr-4">
-              <span className="text-[10px] text-white/30 tracking-[0.4em] uppercase font-mono mr-2">
+              <span className="text-[10px] text-v-red tracking-[0.4em] uppercase font-mono mr-2">
                 Search
               </span>
               <input
@@ -219,12 +229,12 @@ const App: React.FC = () => {
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 placeholder="//"
-                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[10px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none"
+                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[10px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none font-mono"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-4 text-v-red text-xs hover:text-white"
+                  className="absolute right-4 text-white/40 text-xs hover:text-white"
                 >✕</button>
               )}
             </div>
@@ -233,7 +243,7 @@ const App: React.FC = () => {
             <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
               <button
                 onClick={() => setIsBrandDropdownOpen(true)}
-                className={`flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full ${
+                className={`flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${
                   filterBrand !== 'ALL'
                     ? 'text-v-red font-bold'
                     : 'text-white/40 hover:text-white'
@@ -250,7 +260,7 @@ const App: React.FC = () => {
                 <button
                   key={cat}
                   onClick={() => handleCategoryChange(cat)}
-                  className={`flex-shrink-0 snap-start text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 ${
+                  className={`flex-shrink-0 snap-start text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 font-mono ${
                     filterCategory === cat
                       ? 'text-white border-white font-bold'
                       : 'text-white/30 border-transparent hover:text-white/60'
@@ -266,16 +276,16 @@ const App: React.FC = () => {
       </div>
 
       {/* Main Grid Section */}
-      <main className="flex-1 px-6 md:px-12 pt-8 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
+      <main className="flex-1 px-6 md:px-12 pt-10 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
         
-        {/* Archive Title & Item Count */}
-        <div className="flex items-end justify-between mb-8 border-b border-white/5 pb-4">
-          <h2 className="serif italic text-2xl md:text-3xl text-white">
+        {/* Collection Title & Item Count */}
+        <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
+          <h2 className="serif italic text-3xl md:text-4xl text-white">
             {filterCategory === 'All' ? 'Complete Collection' : filterCategory}
-            {filterBrand !== 'ALL' && <span className="text-white/40 text-lg md:text-xl ml-2">/ {filterBrand}</span>}
+            {filterBrand !== 'ALL' && <span className="text-white/40 text-xl md:text-2xl ml-3">/ {filterBrand}</span>}
           </h2>
-          <p className="text-[9px] tracking-[0.3em] uppercase text-white/30 font-mono mb-1">
-            {filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}
+          <p className="text-[10px] tracking-[0.4em] uppercase text-v-red font-mono mb-1">
+            [{filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}]
           </p>
         </div>
 
