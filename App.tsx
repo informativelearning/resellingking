@@ -111,14 +111,12 @@ const App: React.FC = () => {
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const maisonLabel =
-    filterCategory === 'Fragrance' ? 'Maison' : 'Brand';
-
+  const maisonLabel = 'Brand';
   const maisonPlaceholder = 'All Items';
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
-
+      
       <style>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -184,7 +182,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
+      {/* Hero Section (With Giant Ghost Logo) */}
       <header className="relative z-30 pt-[80px] md:pt-[88px] overflow-hidden">
         <Ticker />
 
@@ -197,9 +195,7 @@ const App: React.FC = () => {
           />
         </div>
 
-        <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative z-10 mt-12">
-
-          {/* Hero */}
+        <div className="px-6 md:px-12 flex flex-col items-center gap-12 max-w-[1400px] mx-auto w-full relative z-10 mt-16 mb-16">
           <div className="text-center space-y-8 max-w-5xl">
             <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light drop-shadow-2xl">
               Wings of<br/>
@@ -215,106 +211,84 @@ const App: React.FC = () => {
               </p>
             </div>
           </div>
+        </div>
+      </header>
 
-          {/* Search & Filters */}
-          <div className="w-full max-w-3xl flex flex-col gap-12 items-center">
-            <div className="relative w-full">
+      {/* ─── Sticky Horizontal Filter Bar ─── */}
+      <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/95 backdrop-blur-md border-y border-white/10 py-0 transition-all w-full">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+          <div className="flex items-center overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory h-14">
+
+            {/* Search Input */}
+            <div className="flex-shrink-0 snap-start relative flex items-center h-full border-r border-white/10 pr-4 mr-4">
+              <span className="text-[10px] text-v-red tracking-[0.4em] uppercase font-mono mr-2">
+                Search
+              </span>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Search by Brand"
-                className="w-full bg-transparent border-b border-white/10 px-0 py-4 text-white/80 font-light placeholder-white/20 focus:outline-none text-sm tracking-[0.1em] focus:border-white/30 transition-all duration-500 text-center"
+                placeholder="//"
+                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[10px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none font-mono"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors text-xs"
-                >
-                  Reset
-                </button>
+                  className="absolute right-4 text-white/40 text-xs hover:text-white"
+                >✕</button>
               )}
             </div>
 
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Category */}
-              <div className="space-y-3">
-                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
-                  Category
-                </label>
-                <div className="flex gap-4 flex-wrap">
-                  {categories.map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategoryChange(cat)}
-                      className={`text-[11px] tracking-[0.2em] uppercase transition-all duration-300 pb-2 border-b-2 ${
-                        filterCategory === cat
-                          ? 'text-white border-white font-medium'
-                          : 'text-white/30 border-transparent hover:text-white/60 font-light'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            {/* Brand Modal Trigger */}
+            <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
+              <button
+                onClick={() => setIsBrandDropdownOpen(true)}
+                className={`flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${
+                  filterBrand !== 'ALL'
+                    ? 'text-v-red font-bold'
+                    : 'text-white/40 hover:text-white'
+                }`}
+              >
+                <span>{filterBrand === 'ALL' ? maisonLabel : filterBrand}</span>
+                <span className="text-[8px]">▼</span>
+              </button>
+            </div>
 
-              {/* Brand / Maison */}
-              <div className="space-y-3 relative">
-                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
-                  {maisonLabel}
-                </label>
+            {/* Categories */}
+            <div className="flex items-center h-full gap-6">
+              {categories.map(cat => (
                 <button
-                  onClick={() => setIsBrandDropdownOpen(!isBrandDropdownOpen)}
-                  className="w-full bg-transparent border-b border-white/10 px-0 py-2 text-white/60 hover:text-white hover:border-white/30 transition-all duration-300 flex items-center justify-between text-left"
+                  key={cat}
+                  onClick={() => handleCategoryChange(cat)}
+                  className={`flex-shrink-0 snap-start text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 font-mono ${
+                    filterCategory === cat
+                      ? 'text-white border-white font-bold'
+                      : 'text-white/30 border-transparent hover:text-white/60'
+                  }`}
                 >
-                  <span className="text-[11px] tracking-[0.2em] uppercase font-light">
-                    {filterBrand === 'ALL' ? maisonPlaceholder : filterBrand}
-                  </span>
-                  <svg className={`w-3 h-3 transition-transform duration-300 ${isBrandDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  {cat}
                 </button>
-
-                {isBrandDropdownOpen && (
-                  <>
-                    <div className="fixed inset-0 z-[25]" onClick={() => setIsBrandDropdownOpen(false)} />
-                    <div className="absolute top-full mt-2 w-full bg-v-black/95 backdrop-blur-xl border border-white/10 shadow-2xl z-[26] max-h-[320px] overflow-y-auto hide-scrollbar">
-                      {brands.map(brand => (
-                        <button
-                          key={brand}
-                          onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
-                          className={`w-full px-6 py-3 text-left text-[11px] tracking-[0.15em] uppercase transition-all duration-200 border-b border-white/5 last:border-0 ${
-                            filterBrand === brand
-                              ? 'bg-white/5 text-white font-medium'
-                              : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02] font-light'
-                          }`}
-                        >
-                          {brand === 'ALL' ? maisonPlaceholder : brand}
-                          {brand !== 'ALL' && (
-                            <span className="ml-3 text-[9px] opacity-30">
-                              {inventory.filter(p =>
-                                p.brand === brand &&
-                                (filterCategory === 'All' || p.category === filterCategory)
-                              ).length}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
+              ))}
             </div>
 
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">
-              {filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}
-            </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="flex-1 px-6 md:px-12 py-12 max-w-[1800px] mx-auto w-full relative z-[2]">
+      {/* Main Grid Section */}
+      <main className="flex-1 px-6 md:px-12 pt-10 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
+        
+        {/* Collection Title & Item Count */}
+        <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
+          <h2 className="serif italic text-3xl md:text-4xl text-white">
+            {filterCategory === 'All' ? 'Complete Collection' : filterCategory}
+            {filterBrand !== 'ALL' && <span className="text-white/40 text-xl md:text-2xl ml-3">/ {filterBrand}</span>}
+          </h2>
+          <p className="text-[10px] tracking-[0.4em] uppercase text-v-red font-mono mb-1">
+            [{filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}]
+          </p>
+        </div>
+
         <InventoryTable
           products={filteredProducts}
           onProductClick={setSelectedProduct}
@@ -357,6 +331,59 @@ const App: React.FC = () => {
           </div>
         </footer>
       </main>
+
+      {/* ─── Brand Selection Modal ─── */}
+      {isBrandDropdownOpen && (
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6">
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsBrandDropdownOpen(false)}
+          />
+          <div className="w-full sm:max-w-md bg-v-black border-t sm:border border-white/10 z-10 max-h-[85vh] flex flex-col transform animate-slideUp shadow-2xl rounded-none">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0 bg-v-black">
+              <div>
+                <p className="text-[9px] text-v-red tracking-[0.5em] uppercase font-mono mb-2">Refine Search</p>
+                <h3 className="text-3xl serif italic text-white">{maisonLabel}</h3>
+              </div>
+              <button
+                onClick={() => setIsBrandDropdownOpen(false)}
+                className="text-white/40 hover:text-v-red transition-colors text-xl font-light px-4 py-2 border border-white/10"
+              >
+                ✕
+              </button>
+            </div>
+            {/* List */}
+            <div className="overflow-y-auto overscroll-contain px-0 py-0 hide-scrollbar pb-10 bg-v-black divide-y divide-white/5">
+              {brands.map(brand => {
+                const count = inventory.filter(p =>
+                  p.brand === brand && (filterCategory === 'All' || p.category === filterCategory)
+                ).length;
+                return (
+                  <button
+                    key={brand}
+                    onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
+                    className={`w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-200 group ${
+                      filterBrand === brand
+                        ? 'bg-white/5 border-l-2 border-v-red text-white'
+                        : 'text-white/50 hover:bg-white/[0.02] hover:text-white border-l-2 border-transparent'
+                    }`}
+                  >
+                    <span className="text-[11px] tracking-[0.3em] uppercase font-mono group-hover:tracking-[0.4em] transition-all">
+                      {brand === 'ALL' ? maisonPlaceholder : brand}
+                    </span>
+                    {brand !== 'ALL' && (
+                      <span className="text-[9px] font-mono text-white/20">
+                        [{count}]
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {selectedProduct && (
         <ProductModal
