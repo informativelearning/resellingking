@@ -109,7 +109,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
             {/* Header */}
             <header className="space-y-4">
               <span className="text-v-red text-[10px] font-bold tracking-[0.6em] uppercase block">{product.brand}</span>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl serif italic leading-snug text-white tracking-tight">
+              <h2 className={`serif italic leading-snug text-white tracking-tight ${product.name.length > 30 ? "text-xl sm:text-2xl md:text-3xl" : "text-2xl sm:text-3xl md:text-4xl"}`}>
                 {product.name}
               </h2>
               <div className="flex gap-4 items-center pt-3">
