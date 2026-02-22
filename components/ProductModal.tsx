@@ -41,12 +41,12 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
   const prevImage = () => setCurrentImageIndex(prev => (prev - 1 + productImages.length) % productImages.length);
 
   return (
-    <div className="fixed inset-0 z-50 bg-v-black flex flex-col">
-      {/* Close bar — always on top, never overlaps */}
-      <div className="flex-shrink-0 flex justify-end px-6 py-4 border-b border-white/5">
+    <div className="fixed inset-0 z-50 bg-v-black overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+      {/* Close bar */}
+      <div className="sticky top-0 z-10 flex justify-end px-6 py-4 border-b border-white/5 bg-v-black">
         <button
           onClick={onClose}
-          className="text-white hover:text-v-red transition-colors text-xs tracking-[0.5em] uppercase flex items-center gap-2 group bg-v-black px-4 py-2 border border-white/10"
+          className="text-white hover:text-v-red transition-colors text-xs tracking-[0.5em] uppercase flex items-center gap-2 group px-4 py-2 border border-white/10"
         >
           Close <span className="text-xl font-light group-hover:rotate-90 transition-transform inline-block">×</span>
         </button>
@@ -59,11 +59,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
         </span>
       </div>
 
-      {/* Layout */}
-      <div className="flex-1 overflow-y-auto overscroll-contain md:overflow-hidden md:flex md:flex-row" style={{ WebkitOverflowScrolling: 'touch' }}>
+      {/* Layout — stack on mobile, side by side on desktop */}
+      <div className="flex flex-col md:flex-row md:min-h-[calc(100vh-57px)]">
 
         {/* Image side */}
-        <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-[70vw] min-h-[280px] md:h-full" : "bg-v-gray h-[70vw] min-h-[280px] md:h-full"}`}>
+        <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-[80vw] min-h-[300px] md:h-auto md:min-h-full" : "bg-v-gray h-[80vw] min-h-[300px] md:h-auto md:min-h-full"}`}>
           <img
             src={productImages[currentImageIndex]}
             alt={`${product.name} - Image ${currentImageIndex + 1}`}
@@ -101,8 +101,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
         {/* Details side */}
         <div
-          className="w-full md:w-1/2 md:h-full md:overflow-y-auto md:overscroll-contain px-7 py-8 sm:px-10 sm:py-10 md:px-14 flex flex-col md:justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
-          style={{ WebkitOverflowScrolling: 'touch' }}
+          className="w-full md:w-1/2 px-7 py-10 sm:px-10 sm:py-12 md:px-14 md:py-16 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
         >
           <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
 
