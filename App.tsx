@@ -27,17 +27,15 @@ const App: React.FC = () => {
   const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
-  // Persist cart to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem('wof_cart', JSON.stringify(cart));
     } catch {}
   }, [cart]);
 
-  // Load merged inventory (base + any custom added via admin)
   useEffect(() => {
     setInventory(getMergedInventory());
-  }, [showAdmin]); // refresh when admin closes
+  }, [showAdmin]);
 
   const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
@@ -85,7 +83,6 @@ const App: React.FC = () => {
       }
       return [...prev, { ...product, quantity: 1, selectedSize }];
     });
-    // Show toast instead of forcing sidebar open every time
     const label = selectedSize ? `${product.name} (${selectedSize})` : product.name;
     setToast(label);
     setTimeout(() => setToast(null), 2500);
@@ -115,25 +112,26 @@ const App: React.FC = () => {
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const maisonLabel =
-    filterCategory === 'Apparel'   ? 'Brand'         :
-    filterCategory === 'Fragrance' ? 'Maison'        :
-    filterCategory === 'Sneakers'  ? 'Brand'         :
-                                     'Maison / Brand';
+    filterCategory === 'Fragrance' ? 'Maison' : 'Brand';
 
-  const maisonPlaceholder =
-    filterCategory === 'Apparel'   ? 'All Items' :
-    filterCategory === 'Fragrance' ? 'All Items' :
-                                     'All Items';
+  const maisonPlaceholder = 'All Items';
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
 
-
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes slideUp {
+          from { transform: translateY(100%); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
+        }
+        .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      `}</style>
 
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5">
-        <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
-
+      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5 h-[80px] md:h-[88px] flex items-center">
+        <div className="max-w-[1800px] w-full mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Left: logo + location */}
           <div className="flex items-center gap-4">
             <img
@@ -150,7 +148,6 @@ const App: React.FC = () => {
 
           {/* Right: IG handle + cart */}
           <div className="flex items-center gap-5">
-            {/* Instagram handle — always visible, subtle */}
             <a
               href={`https://instagram.com/${IG_HANDLE}`}
               target="_blank"
@@ -164,10 +161,7 @@ const App: React.FC = () => {
                 @{IG_HANDLE}
               </span>
             </a>
-
             <div className="w-[1px] h-5 bg-white/10" />
-
-            {/* Cart */}
             <button
               onClick={() => setIsCartOpen(true)}
               className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart"
@@ -190,23 +184,33 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <header className="relative z-30 pt-24 pb-16">
+      {/* Hero Section */}
+      <header className="relative z-30 pt-[80px] md:pt-[88px] overflow-hidden">
         <Ticker />
 
-        <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative mt-12">
+        {/* Giant Background Logo Watermark */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] opacity-[0.04] pointer-events-none z-0 mix-blend-screen flex justify-center items-center">
+          <img
+            src={LOGO}
+            alt="Wings Watermark"
+            className="w-full h-auto object-contain scale-150 md:scale-125 filter grayscale contrast-125"
+          />
+        </div>
+
+        <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative z-10 mt-12">
 
           {/* Hero */}
           <div className="text-center space-y-8 max-w-5xl">
-            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light">
+            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light drop-shadow-2xl">
               Wings of<br/>
               <span className="block mt-2">Fortune</span>
             </h1>
             <div className="flex flex-col items-center gap-6 pt-4">
-              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light">
+              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light font-mono">
                 661 / Wasco, CA
               </p>
-              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed">
+              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-v-red/50 to-transparent" />
+              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed serif italic">
                 quick. cheap. no bs.
               </p>
             </div>
@@ -238,7 +242,7 @@ const App: React.FC = () => {
                 <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
                   Category
                 </label>
-                <div className="flex gap-4">
+                <div className="flex gap-4 flex-wrap">
                   {categories.map(cat => (
                     <button
                       key={cat}
@@ -275,7 +279,7 @@ const App: React.FC = () => {
                 {isBrandDropdownOpen && (
                   <>
                     <div className="fixed inset-0 z-[25]" onClick={() => setIsBrandDropdownOpen(false)} />
-                    <div className="absolute top-full mt-2 w-full bg-v-black/95 backdrop-blur-xl border border-white/10 shadow-2xl z-[26] max-h-[320px] overflow-y-auto">
+                    <div className="absolute top-full mt-2 w-full bg-v-black/95 backdrop-blur-xl border border-white/10 shadow-2xl z-[26] max-h-[320px] overflow-y-auto hide-scrollbar">
                       {brands.map(brand => (
                         <button
                           key={brand}
@@ -345,7 +349,6 @@ const App: React.FC = () => {
             <span>•</span>
             <span>private collection.</span>
             <span>•</span>
-            {/* Hidden admin access — triple-click */}
             <span
               className="cursor-default select-none"
               onClick={() => setShowAdmin(true)}
@@ -376,7 +379,6 @@ const App: React.FC = () => {
       {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
       <Analytics />
 
-      {/* Toast notification */}
       <div
         style={{ transition: 'opacity 0.5s, transform 0.5s' }}
         className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] pointer-events-none ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
