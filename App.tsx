@@ -27,14 +27,12 @@ const App: React.FC = () => {
   const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
-  // Persist cart to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem('wof_cart', JSON.stringify(cart));
     } catch {}
   }, [cart]);
 
-  // Load merged inventory (base + any custom added via admin)
   useEffect(() => {
     setInventory(getMergedInventory());
   }, [showAdmin]);
@@ -113,36 +111,20 @@ const App: React.FC = () => {
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const maisonLabel =
-    filterCategory === 'Apparel'   ? 'Brand'         :
-    filterCategory === 'Fragrance' ? 'Brand'        :
-    filterCategory === 'Sneakers'  ? 'Brand'         :
-                                     'Brand';
-
-  const maisonPlaceholder =
-    filterCategory === 'Apparel'   ? 'All Items' :
-    filterCategory === 'Fragrance' ? 'All Items' :
-                                     'All Items';
+  const maisonLabel = 'Brand';
+  const maisonPlaceholder = 'All Items';
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
       
-      {/* Global CSS for hiding scrollbars and animations */}
       <style>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes slideUp {
           from { transform: translateY(100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
+          to   { transform: translateY(0);    opacity: 1; }
         }
-        .animate-slideUp {
-          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+        .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       `}</style>
 
       {/* Top Bar */}
@@ -200,7 +182,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section (Filters removed from here) */}
+      {/* Hero Section */}
       <header className="relative z-30 pt-[80px] md:pt-[88px]">
         <Ticker />
         <div className="px-6 md:px-12 flex flex-col items-center gap-12 max-w-[1400px] mx-auto w-full relative mt-12 mb-10">
@@ -222,68 +204,63 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Sticky Horizontal Filter Bar (IG/SNKRS Style) */}
-      <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/90 backdrop-blur-xl border-y border-white/5 py-3 sm:py-4 transition-all w-full">
+      {/* ─── Sticky Horizontal Filter Bar — Archive / Brutalist Style ─── */}
+      <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/95 backdrop-blur-md border-y border-white/10 py-0 transition-all w-full">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
-          <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory">
-            
-            {/* Search Pill */}
-            <div className="flex-shrink-0 snap-start relative flex items-center">
-              <svg className="absolute left-3 w-3.5 h-3.5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+          <div className="flex items-center overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory h-14">
+
+            {/* Search Input — Sharp & Minimal */}
+            <div className="flex-shrink-0 snap-start relative flex items-center h-full border-r border-white/10 pr-4 mr-4">
+              <span className="text-[10px] text-white/30 tracking-[0.4em] uppercase font-mono mr-2">
+                Search
+              </span>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Search..."
-                className="w-[130px] focus:w-[180px] sm:w-[160px] sm:focus:w-[220px] transition-all duration-300 bg-white/5 border border-white/10 rounded-full pl-9 pr-4 py-2 text-[10px] tracking-[0.2em] uppercase text-white placeholder-white/30 focus:outline-none focus:border-white/30 focus:bg-white/10"
+                placeholder="//"
+                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[10px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3 text-white/40 hover:text-white"
-                >
-                  ✕
-                </button>
+                  className="absolute right-4 text-v-red text-xs hover:text-white"
+                >✕</button>
               )}
             </div>
 
-            <div className="w-[1px] h-5 bg-white/10 flex-shrink-0 mx-1" />
-
-            {/* Brand Bottom-Sheet Trigger Pill */}
-            <div className="relative flex-shrink-0 snap-start">
-               <button
-                 onClick={() => setIsBrandDropdownOpen(true)}
-                 className={`flex items-center gap-2 px-5 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase transition-all duration-300 border ${
-                   filterBrand !== 'ALL'
-                     ? 'bg-v-red text-white border-v-red font-bold'
-                     : 'bg-transparent text-white/50 border-white/10 hover:border-white/30 hover:text-white hover:bg-white/5'
-                 }`}
-               >
-                 <span>{filterBrand === 'ALL' ? maisonLabel : filterBrand}</span>
-                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                 </svg>
-               </button>
-            </div>
-
-            <div className="w-[1px] h-5 bg-white/10 flex-shrink-0 mx-1" />
-
-            {/* Categories Pills */}
-            {categories.map(cat => (
+            {/* Brand Modal Trigger — Sharp Text Button */}
+            <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
               <button
-                key={cat}
-                onClick={() => handleCategoryChange(cat)}
-                className={`flex-shrink-0 snap-start px-5 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase transition-all duration-300 border ${
-                  filterCategory === cat
-                    ? 'bg-white text-v-black border-white font-bold'
-                    : 'bg-transparent text-white/50 border-white/10 hover:border-white/30 hover:text-white hover:bg-white/5'
+                onClick={() => setIsBrandDropdownOpen(true)}
+                className={`flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full ${
+                  filterBrand !== 'ALL'
+                    ? 'text-v-red font-bold'
+                    : 'text-white/40 hover:text-white'
                 }`}
               >
-                {cat}
+                <span>{filterBrand === 'ALL' ? maisonLabel : filterBrand}</span>
+                <span className="text-[8px]">▼</span>
               </button>
-            ))}
+            </div>
+
+            {/* Categories — Sharp Editorial Tabs */}
+            <div className="flex items-center h-full gap-6">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => handleCategoryChange(cat)}
+                  className={`flex-shrink-0 snap-start text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 ${
+                    filterCategory === cat
+                      ? 'text-white border-white font-bold'
+                      : 'text-white/30 border-transparent hover:text-white/60'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
           </div>
         </div>
       </div>
@@ -345,49 +322,49 @@ const App: React.FC = () => {
         </footer>
       </main>
 
-      {/* Brand Selection Mobile Bottom Sheet / Modal */}
+      {/* ─── Brand Selection Modal — Sharp / Archive Vibe ─── */}
       {isBrandDropdownOpen && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
             onClick={() => setIsBrandDropdownOpen(false)}
           />
-          <div className="w-full sm:max-w-md bg-v-black border border-white/10 rounded-t-2xl sm:rounded-2xl z-10 max-h-[85vh] flex flex-col transform animate-slideUp shadow-2xl shadow-black">
+          <div className="w-full sm:max-w-md bg-v-black border-t sm:border border-white/10 z-10 max-h-[85vh] flex flex-col transform animate-slideUp shadow-2xl rounded-none">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0">
+            <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0 bg-v-black">
               <div>
-                <p className="text-[9px] text-v-red tracking-[0.4em] uppercase font-bold mb-1">Filter by</p>
-                <h3 className="text-2xl serif italic text-white">{maisonLabel}</h3>
+                <p className="text-[9px] text-v-red tracking-[0.5em] uppercase font-mono mb-2">Refine Search</p>
+                <h3 className="text-3xl serif italic text-white">{maisonLabel}</h3>
               </div>
               <button
                 onClick={() => setIsBrandDropdownOpen(false)}
-                className="w-8 h-8 flex items-center justify-center bg-white/5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+                className="text-white/40 hover:text-v-red transition-colors text-xl font-light px-4 py-2 border border-white/10"
               >
                 ✕
               </button>
             </div>
             {/* List */}
-            <div className="overflow-y-auto overscroll-contain px-3 py-3 hide-scrollbar pb-10">
+            <div className="overflow-y-auto overscroll-contain px-0 py-0 hide-scrollbar pb-10 bg-v-black divide-y divide-white/5">
               {brands.map(brand => {
-                const count = inventory.filter(p => p.brand === brand && (filterCategory === 'All' || p.category === filterCategory)).length;
+                const count = inventory.filter(p =>
+                  p.brand === brand && (filterCategory === 'All' || p.category === filterCategory)
+                ).length;
                 return (
                   <button
                     key={brand}
                     onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
-                    className={`w-full px-5 py-4 text-left flex items-center justify-between rounded-xl transition-all duration-200 ${
+                    className={`w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-200 group ${
                       filterBrand === brand
-                        ? 'bg-white/10 text-white'
-                        : 'text-white/60 hover:bg-white/5 hover:text-white'
+                        ? 'bg-white/5 border-l-2 border-v-red text-white'
+                        : 'text-white/50 hover:bg-white/[0.02] hover:text-white border-l-2 border-transparent'
                     }`}
                   >
-                    <span className="text-[11px] tracking-[0.2em] uppercase font-medium">
+                    <span className="text-[11px] tracking-[0.3em] uppercase font-mono group-hover:tracking-[0.4em] transition-all">
                       {brand === 'ALL' ? maisonPlaceholder : brand}
                     </span>
                     {brand !== 'ALL' && (
-                      <span className={`text-[9px] px-2 py-0.5 rounded-full border font-mono ${
-                        filterBrand === brand ? 'border-white/30 text-white/80' : 'border-white/10 text-white/30'
-                      }`}>
-                        {count}
+                      <span className="text-[9px] font-mono text-white/20">
+                        [{count}]
                       </span>
                     )}
                   </button>
