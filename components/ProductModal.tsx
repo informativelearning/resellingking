@@ -60,8 +60,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       </div>
 
       {/* Layout */}
-      <div className="flex-1 overflow-hidden">
-      <div className="flex flex-col md:flex-row h-full">
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
 
         {/* Image side */}
         <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-[56vw] min-h-[260px] md:h-full" : "bg-v-gray h-[60vw] min-h-[280px] md:h-full"}`}>
@@ -102,7 +101,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
         {/* Details side */}
         <div
-          className="w-full md:w-1/2 md:h-full md:overflow-y-auto px-7 py-8 sm:px-10 sm:py-10 md:px-14 md:py-12 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
+          className="w-full md:w-1/2 md:h-full md:overflow-y-auto overscroll-contain px-7 py-8 sm:px-10 sm:py-10 md:px-14 md:py-12 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
@@ -208,7 +207,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
