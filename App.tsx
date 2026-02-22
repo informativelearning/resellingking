@@ -271,7 +271,7 @@ const App: React.FC = () => {
         {/* Archive Title & Item Count */}
         <div className="flex items-end justify-between mb-8 border-b border-white/5 pb-4">
           <h2 className="serif italic text-2xl md:text-3xl text-white">
-            {filterCategory === 'All' ? 'Complete Archive' : filterCategory}
+            {filterCategory === 'All' ? 'Complete Collection' : filterCategory}
             {filterBrand !== 'ALL' && <span className="text-white/40 text-lg md:text-xl ml-2">/ {filterBrand}</span>}
           </h2>
           <p className="text-[9px] tracking-[0.3em] uppercase text-white/30 font-mono mb-1">
