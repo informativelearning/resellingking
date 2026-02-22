@@ -8,7 +8,7 @@ interface InventoryTableProps {
 }
 
 const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
-const LOGO = '/images/wingsofofrtune2.png';
+const LOGO = '/images/wingsofofrtuning.png';
 
 const ProductCard = memo(({
   product,
@@ -69,13 +69,6 @@ const ProductCard = memo(({
           }`} />
         )}
 
-        {/* Sneaker edge vignette */}
-        {isSneakers && (
-          <div className="absolute inset-0 z-[1] pointer-events-none" style={{
-            background: 'linear-gradient(to bottom, transparent 0%, black 15%, black 75%, transparent 100%)'
-          }} />
-        )}
-
         <img
           src={images[currentIndex]}
           alt={product.name}
@@ -91,10 +84,6 @@ const ProductCard = memo(({
           } ${isTouchDevice ? '' : 'transition-transform duration-700 group-hover:scale-105'}`}
           style={{
             filter: isSneakers ? 'contrast(1.08) saturate(0.95)' : 'brightness(0.92) contrast(1.05)',
-            ...(isSneakers ? {
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 75%, transparent 100%)',
-              maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 75%, transparent 100%)',
-            } : {})
           }}
         />
 
