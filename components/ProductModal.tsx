@@ -102,7 +102,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
         {/* Details side */}
         <div
-          className="w-full md:w-1/2 md:h-full md:overflow-y-auto p-7 pt-10 sm:p-10 sm:pt-12 md:p-16 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
+          className="w-full md:w-1/2 md:h-full md:overflow-y-auto px-7 pt-8 pb-10 sm:px-10 sm:pt-10 md:px-16 md:pt-[12vh] md:pb-16 flex flex-col justify-start bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
