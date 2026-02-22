@@ -109,8 +109,31 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
             {/* Header */}
             <header className="space-y-4">
               <span className="text-v-red text-[10px] font-bold tracking-[0.6em] uppercase block">{product.brand}</span>
-              <h2 className={`serif italic leading-snug text-white tracking-tight ${product.name.length > 40 ? "text-base sm:text-lg md:text-xl" : product.name.length > 30 ? "text-lg sm:text-xl md:text-2xl" : "text-2xl sm:text-3xl md:text-4xl"}`}>
-                {product.name}
+              <h2 className="text-2xl sm:text-3xl md:text-4xl serif italic leading-snug text-white tracking-tight">
+                {(() => {
+                  const name = product.name;
+                  // Split on Jordan/Nike/Air keyword to get collab prefix + model
+                  const splitOn = ['Travis Scott x ', 'Fragment x ', 'Nigel Sylvester x ', 'Undefeated x ', 'Nike SB x '];
+                  const modelStart = name.search(/Air Jordan|Nike SB|Jordan \d/);
+                  if (modelStart > 0) {
+                    const prefix = name.slice(0, modelStart).trim().replace(/x\s*$/, '').trim();
+                    const model  = name.slice(modelStart);
+                    // Further split model on last word group (colorway)
+                    const colorStart = model.lastIndexOf(' ') !== -1
+                      ? model.search(/\s(Black Cat|Wolf Grey|Cave Stone|Reverse Mocha|Velvet Brown|Medium Olive|Dark Mocha|Cool Grey|Gamma|Cap and Gown|Rare Air|Fire Red|Grape|Pine Green|Navy|Olive|Sail|Brick|Reimagined|Deep Green|OG SP)/)
+                      : -1;
+                    const modelName  = colorStart > 0 ? model.slice(0, colorStart) : model;
+                    const colorway   = colorStart > 0 ? model.slice(colorStart) : '';
+                    return (
+                      <>
+                        {prefix && <span className="block text-white/50 text-sm sm:text-base tracking-widest uppercase not-italic mb-1">{prefix} ×</span>}
+                        <span className="block">{modelName}</span>
+                        {colorway && <span className="block text-v-red/90">{colorway.trim()}</span>}
+                      </>
+                    );
+                  }
+                  return name;
+                })()}
               </h2>
               <div className="flex gap-4 items-center pt-3">
                 <span className="text-3xl serif italic text-white/80">${product.price}</span>
