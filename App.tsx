@@ -27,15 +27,17 @@ const App: React.FC = () => {
   const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
+  // Persist cart to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem('wof_cart', JSON.stringify(cart));
     } catch {}
   }, [cart]);
 
+  // Load merged inventory (base + any custom added via admin)
   useEffect(() => {
     setInventory(getMergedInventory());
-  }, [showAdmin]);
+  }, [showAdmin]); // refresh when admin closes
 
   const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
@@ -83,6 +85,7 @@ const App: React.FC = () => {
       }
       return [...prev, { ...product, quantity: 1, selectedSize }];
     });
+    // Show toast instead of forcing sidebar open every time
     const label = selectedSize ? `${product.name} (${selectedSize})` : product.name;
     setToast(label);
     setTimeout(() => setToast(null), 2500);
@@ -111,25 +114,26 @@ const App: React.FC = () => {
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const maisonLabel = 'Brand';
-  const maisonPlaceholder = 'All Items';
+  const maisonLabel =
+    filterCategory === 'Apparel'   ? 'Brand'         :
+    filterCategory === 'Fragrance' ? 'Maison'        :
+    filterCategory === 'Sneakers'  ? 'Brand'         :
+                                     'Maison / Brand';
+
+  const maisonPlaceholder =
+    filterCategory === 'Apparel'   ? 'All Items' :
+    filterCategory === 'Fragrance' ? 'All Items' :
+                                     'All Items';
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
-      
-      <style>{`
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes slideUp {
-          from { transform: translateY(100%); opacity: 0; }
-          to   { transform: translateY(0);    opacity: 1; }
-        }
-        .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-      `}</style>
+
+
 
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5 h-[80px] md:h-[88px] flex items-center">
-        <div className="max-w-[1800px] w-full mx-auto px-6 md:px-12 flex items-center justify-between">
+      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+
           {/* Left: logo + location */}
           <div className="flex items-center gap-4">
             <img
@@ -146,6 +150,7 @@ const App: React.FC = () => {
 
           {/* Right: IG handle + cart */}
           <div className="flex items-center gap-5">
+            {/* Instagram handle — always visible, subtle */}
             <a
               href={`https://instagram.com/${IG_HANDLE}`}
               target="_blank"
@@ -159,7 +164,10 @@ const App: React.FC = () => {
                 @{IG_HANDLE}
               </span>
             </a>
+
             <div className="w-[1px] h-5 bg-white/10" />
+
+            {/* Cart */}
             <button
               onClick={() => setIsCartOpen(true)}
               className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart"
@@ -182,113 +190,127 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section (With Giant Ghost Logo) */}
-      <header className="relative z-30 pt-[80px] md:pt-[88px] overflow-hidden">
+      <header className="relative z-30 pt-24 pb-16">
         <Ticker />
 
-        {/* Giant Background Logo Watermark */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] opacity-[0.04] pointer-events-none z-0 mix-blend-screen flex justify-center items-center">
-          <img
-            src={LOGO}
-            alt="Wings Watermark"
-            className="w-full h-auto object-contain scale-150 md:scale-125 filter grayscale contrast-125"
-          />
-        </div>
+        <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative mt-12">
 
-        <div className="px-6 md:px-12 flex flex-col items-center gap-12 max-w-[1400px] mx-auto w-full relative z-10 mt-16 mb-16">
+          {/* Hero */}
           <div className="text-center space-y-8 max-w-5xl">
-            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light drop-shadow-2xl">
+            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light">
               Wings of<br/>
               <span className="block mt-2">Fortune</span>
             </h1>
             <div className="flex flex-col items-center gap-6 pt-4">
-              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light font-mono">
+              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light">
                 661 / Wasco, CA
               </p>
-              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-v-red/50 to-transparent" />
-              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed serif italic">
+              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed">
                 quick. cheap. no bs.
               </p>
+            </div>
+          </div>
+
+          {/* Search & Filters */}
+          <div className="w-full max-w-3xl flex flex-col gap-12 items-center">
+            <div className="relative w-full">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                placeholder="Search by Brand"
+                className="w-full bg-transparent border-b border-white/10 px-0 py-4 text-white/80 font-light placeholder-white/20 focus:outline-none text-sm tracking-[0.1em] focus:border-white/30 transition-all duration-500 text-center"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors text-xs"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Category */}
+              <div className="space-y-3">
+                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
+                  Category
+                </label>
+                <div className="flex gap-4">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => handleCategoryChange(cat)}
+                      className={`text-[11px] tracking-[0.2em] uppercase transition-all duration-300 pb-2 border-b-2 ${
+                        filterCategory === cat
+                          ? 'text-white border-white font-medium'
+                          : 'text-white/30 border-transparent hover:text-white/60 font-light'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Brand / Maison */}
+              <div className="space-y-3 relative">
+                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
+                  {maisonLabel}
+                </label>
+                <button
+                  onClick={() => setIsBrandDropdownOpen(!isBrandDropdownOpen)}
+                  className="w-full bg-transparent border-b border-white/10 px-0 py-2 text-white/60 hover:text-white hover:border-white/30 transition-all duration-300 flex items-center justify-between text-left"
+                >
+                  <span className="text-[11px] tracking-[0.2em] uppercase font-light">
+                    {filterBrand === 'ALL' ? maisonPlaceholder : filterBrand}
+                  </span>
+                  <svg className={`w-3 h-3 transition-transform duration-300 ${isBrandDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isBrandDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-[25]" onClick={() => setIsBrandDropdownOpen(false)} />
+                    <div className="absolute top-full mt-2 w-full bg-v-black/95 backdrop-blur-xl border border-white/10 shadow-2xl z-[26] max-h-[320px] overflow-y-auto">
+                      {brands.map(brand => (
+                        <button
+                          key={brand}
+                          onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
+                          className={`w-full px-6 py-3 text-left text-[11px] tracking-[0.15em] uppercase transition-all duration-200 border-b border-white/5 last:border-0 ${
+                            filterBrand === brand
+                              ? 'bg-white/5 text-white font-medium'
+                              : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02] font-light'
+                          }`}
+                        >
+                          {brand === 'ALL' ? maisonPlaceholder : brand}
+                          {brand !== 'ALL' && (
+                            <span className="ml-3 text-[9px] opacity-30">
+                              {inventory.filter(p =>
+                                p.brand === brand &&
+                                (filterCategory === 'All' || p.category === filterCategory)
+                              ).length}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">
+              {filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}
             </div>
           </div>
         </div>
       </header>
 
-      {/* ─── Sticky Horizontal Filter Bar — Archive / Brutalist Style ─── */}
-      <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/95 backdrop-blur-md border-y border-white/10 py-0 transition-all w-full">
-        <div className="max-w-[1800px] mx-auto px-6 md:px-12">
-          <div className="flex items-center overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory h-14">
-
-            {/* Search Input — Sharp & Minimal */}
-            <div className="flex-shrink-0 snap-start relative flex items-center h-full border-r border-white/10 pr-4 mr-4">
-              <span className="text-[10px] text-v-red tracking-[0.4em] uppercase font-mono mr-2">
-                Search
-              </span>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                placeholder="//"
-                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[10px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none font-mono"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-4 text-white/40 text-xs hover:text-white"
-                >✕</button>
-              )}
-            </div>
-
-            {/* Brand Modal Trigger — Sharp Text Button */}
-            <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
-              <button
-                onClick={() => setIsBrandDropdownOpen(true)}
-                className={`flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${
-                  filterBrand !== 'ALL'
-                    ? 'text-v-red font-bold'
-                    : 'text-white/40 hover:text-white'
-                }`}
-              >
-                <span>{filterBrand === 'ALL' ? maisonLabel : filterBrand}</span>
-                <span className="text-[8px]">▼</span>
-              </button>
-            </div>
-
-            {/* Categories — Sharp Editorial Tabs */}
-            <div className="flex items-center h-full gap-6">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => handleCategoryChange(cat)}
-                  className={`flex-shrink-0 snap-start text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 font-mono ${
-                    filterCategory === cat
-                      ? 'text-white border-white font-bold'
-                      : 'text-white/30 border-transparent hover:text-white/60'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      {/* Main Grid Section */}
-      <main className="flex-1 px-6 md:px-12 pt-10 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
-        
-        {/* Collection Title & Item Count */}
-        <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
-          <h2 className="serif italic text-3xl md:text-4xl text-white">
-            {filterCategory === 'All' ? 'Complete Collection' : filterCategory}
-            {filterBrand !== 'ALL' && <span className="text-white/40 text-xl md:text-2xl ml-3">/ {filterBrand}</span>}
-          </h2>
-          <p className="text-[10px] tracking-[0.4em] uppercase text-v-red font-mono mb-1">
-            [{filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}]
-          </p>
-        </div>
-
+      <main className="flex-1 px-6 md:px-12 py-12 max-w-[1800px] mx-auto w-full relative z-[2]">
         <InventoryTable
           products={filteredProducts}
           onProductClick={setSelectedProduct}
@@ -323,6 +345,7 @@ const App: React.FC = () => {
             <span>•</span>
             <span>private collection.</span>
             <span>•</span>
+            {/* Hidden admin access — triple-click */}
             <span
               className="cursor-default select-none"
               onClick={() => setShowAdmin(true)}
@@ -331,59 +354,6 @@ const App: React.FC = () => {
           </div>
         </footer>
       </main>
-
-      {/* ─── Brand Selection Modal — Sharp / Archive Vibe ─── */}
-      {isBrandDropdownOpen && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6">
-          <div
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
-            onClick={() => setIsBrandDropdownOpen(false)}
-          />
-          <div className="w-full sm:max-w-md bg-v-black border-t sm:border border-white/10 z-10 max-h-[85vh] flex flex-col transform animate-slideUp shadow-2xl rounded-none">
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0 bg-v-black">
-              <div>
-                <p className="text-[9px] text-v-red tracking-[0.5em] uppercase font-mono mb-2">Refine Search</p>
-                <h3 className="text-3xl serif italic text-white">{maisonLabel}</h3>
-              </div>
-              <button
-                onClick={() => setIsBrandDropdownOpen(false)}
-                className="text-white/40 hover:text-v-red transition-colors text-xl font-light px-4 py-2 border border-white/10"
-              >
-                ✕
-              </button>
-            </div>
-            {/* List */}
-            <div className="overflow-y-auto overscroll-contain px-0 py-0 hide-scrollbar pb-10 bg-v-black divide-y divide-white/5">
-              {brands.map(brand => {
-                const count = inventory.filter(p =>
-                  p.brand === brand && (filterCategory === 'All' || p.category === filterCategory)
-                ).length;
-                return (
-                  <button
-                    key={brand}
-                    onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
-                    className={`w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-200 group ${
-                      filterBrand === brand
-                        ? 'bg-white/5 border-l-2 border-v-red text-white'
-                        : 'text-white/50 hover:bg-white/[0.02] hover:text-white border-l-2 border-transparent'
-                    }`}
-                  >
-                    <span className="text-[11px] tracking-[0.3em] uppercase font-mono group-hover:tracking-[0.4em] transition-all">
-                      {brand === 'ALL' ? maisonPlaceholder : brand}
-                    </span>
-                    {brand !== 'ALL' && (
-                      <span className="text-[9px] font-mono text-white/20">
-                        [{count}]
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
 
       {selectedProduct && (
         <ProductModal
@@ -406,6 +376,7 @@ const App: React.FC = () => {
       {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
       <Analytics />
 
+      {/* Toast notification */}
       <div
         style={{ transition: 'opacity 0.5s, transform 0.5s' }}
         className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] pointer-events-none ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
