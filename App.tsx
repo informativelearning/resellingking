@@ -37,7 +37,7 @@ const App: React.FC = () => {
   // Load merged inventory (base + any custom added via admin)
   useEffect(() => {
     setInventory(getMergedInventory());
-  }, [showAdmin]); // refresh when admin closes
+  }, [showAdmin]);
 
   const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
@@ -85,7 +85,6 @@ const App: React.FC = () => {
       }
       return [...prev, { ...product, quantity: 1, selectedSize }];
     });
-    // Show toast instead of forcing sidebar open every time
     const label = selectedSize ? `${product.name} (${selectedSize})` : product.name;
     setToast(label);
     setTimeout(() => setToast(null), 2500);
@@ -127,13 +126,28 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
-
-
+      
+      {/* Global CSS for hiding scrollbars and animations */}
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        @keyframes slideUp {
+          from { transform: translateY(100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slideUp {
+          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+      `}</style>
 
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5">
-        <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
-
+      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5 h-[80px] md:h-[88px] flex items-center">
+        <div className="max-w-[1800px] w-full mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Left: logo + location */}
           <div className="flex items-center gap-4">
             <img
@@ -150,7 +164,6 @@ const App: React.FC = () => {
 
           {/* Right: IG handle + cart */}
           <div className="flex items-center gap-5">
-            {/* Instagram handle — always visible, subtle */}
             <a
               href={`https://instagram.com/${IG_HANDLE}`}
               target="_blank"
@@ -164,10 +177,7 @@ const App: React.FC = () => {
                 @{IG_HANDLE}
               </span>
             </a>
-
             <div className="w-[1px] h-5 bg-white/10" />
-
-            {/* Cart */}
             <button
               onClick={() => setIsCartOpen(true)}
               className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart"
@@ -190,12 +200,10 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <header className="relative z-30 pt-24 pb-16">
+      {/* Hero Section (Filters removed from here) */}
+      <header className="relative z-30 pt-[80px] md:pt-[88px]">
         <Ticker />
-
-        <div className="px-6 md:px-12 flex flex-col items-center gap-20 max-w-[1400px] mx-auto w-full relative mt-12">
-
-          {/* Hero */}
+        <div className="px-6 md:px-12 flex flex-col items-center gap-12 max-w-[1400px] mx-auto w-full relative mt-12 mb-10">
           <div className="text-center space-y-8 max-w-5xl">
             <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light">
               Wings of<br/>
@@ -211,106 +219,89 @@ const App: React.FC = () => {
               </p>
             </div>
           </div>
+        </div>
+      </header>
 
-          {/* Search & Filters */}
-          <div className="w-full max-w-3xl flex flex-col gap-12 items-center">
-            <div className="relative w-full">
+      {/* Sticky Horizontal Filter Bar (IG/SNKRS Style) */}
+      <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/90 backdrop-blur-xl border-y border-white/5 py-3 sm:py-4 transition-all w-full">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+          <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory">
+            
+            {/* Search Pill */}
+            <div className="flex-shrink-0 snap-start relative flex items-center">
+              <svg className="absolute left-3 w-3.5 h-3.5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Search by Brand"
-                className="w-full bg-transparent border-b border-white/10 px-0 py-4 text-white/80 font-light placeholder-white/20 focus:outline-none text-sm tracking-[0.1em] focus:border-white/30 transition-all duration-500 text-center"
+                placeholder="Search..."
+                className="w-[130px] focus:w-[180px] sm:w-[160px] sm:focus:w-[220px] transition-all duration-300 bg-white/5 border border-white/10 rounded-full pl-9 pr-4 py-2 text-[10px] tracking-[0.2em] uppercase text-white placeholder-white/30 focus:outline-none focus:border-white/30 focus:bg-white/10"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors text-xs"
+                  className="absolute right-3 text-white/40 hover:text-white"
                 >
-                  Reset
+                  ✕
                 </button>
               )}
             </div>
 
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Category */}
-              <div className="space-y-3">
-                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
-                  Category
-                </label>
-                <div className="flex gap-4">
-                  {categories.map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategoryChange(cat)}
-                      className={`text-[11px] tracking-[0.2em] uppercase transition-all duration-300 pb-2 border-b-2 ${
-                        filterCategory === cat
-                          ? 'text-white border-white font-medium'
-                          : 'text-white/30 border-transparent hover:text-white/60 font-light'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            <div className="w-[1px] h-5 bg-white/10 flex-shrink-0 mx-1" />
 
-              {/* Brand / Maison */}
-              <div className="space-y-3 relative">
-                <label className="block text-[9px] tracking-[0.4em] uppercase text-white/30 font-light">
-                  {maisonLabel}
-                </label>
-                <button
-                  onClick={() => setIsBrandDropdownOpen(!isBrandDropdownOpen)}
-                  className="w-full bg-transparent border-b border-white/10 px-0 py-2 text-white/60 hover:text-white hover:border-white/30 transition-all duration-300 flex items-center justify-between text-left"
-                >
-                  <span className="text-[11px] tracking-[0.2em] uppercase font-light">
-                    {filterBrand === 'ALL' ? maisonPlaceholder : filterBrand}
-                  </span>
-                  <svg className={`w-3 h-3 transition-transform duration-300 ${isBrandDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {isBrandDropdownOpen && (
-                  <>
-                    <div className="fixed inset-0 z-[25]" onClick={() => setIsBrandDropdownOpen(false)} />
-                    <div className="absolute top-full mt-2 w-full bg-v-black/95 backdrop-blur-xl border border-white/10 shadow-2xl z-[26] max-h-[320px] overflow-y-auto">
-                      {brands.map(brand => (
-                        <button
-                          key={brand}
-                          onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
-                          className={`w-full px-6 py-3 text-left text-[11px] tracking-[0.15em] uppercase transition-all duration-200 border-b border-white/5 last:border-0 ${
-                            filterBrand === brand
-                              ? 'bg-white/5 text-white font-medium'
-                              : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02] font-light'
-                          }`}
-                        >
-                          {brand === 'ALL' ? maisonPlaceholder : brand}
-                          {brand !== 'ALL' && (
-                            <span className="ml-3 text-[9px] opacity-30">
-                              {inventory.filter(p =>
-                                p.brand === brand &&
-                                (filterCategory === 'All' || p.category === filterCategory)
-                              ).length}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
+            {/* Brand Bottom-Sheet Trigger Pill */}
+            <div className="relative flex-shrink-0 snap-start">
+               <button
+                 onClick={() => setIsBrandDropdownOpen(true)}
+                 className={`flex items-center gap-2 px-5 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase transition-all duration-300 border ${
+                   filterBrand !== 'ALL'
+                     ? 'bg-v-red text-white border-v-red font-bold'
+                     : 'bg-transparent text-white/50 border-white/10 hover:border-white/30 hover:text-white hover:bg-white/5'
+                 }`}
+               >
+                 <span>{filterBrand === 'ALL' ? maisonLabel : filterBrand}</span>
+                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                 </svg>
+               </button>
             </div>
 
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">
-              {filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}
-            </div>
+            <div className="w-[1px] h-5 bg-white/10 flex-shrink-0 mx-1" />
+
+            {/* Categories Pills */}
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => handleCategoryChange(cat)}
+                className={`flex-shrink-0 snap-start px-5 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase transition-all duration-300 border ${
+                  filterCategory === cat
+                    ? 'bg-white text-v-black border-white font-bold'
+                    : 'bg-transparent text-white/50 border-white/10 hover:border-white/30 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="flex-1 px-6 md:px-12 py-12 max-w-[1800px] mx-auto w-full relative z-[2]">
+      {/* Main Grid Section */}
+      <main className="flex-1 px-6 md:px-12 pt-8 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
+        
+        {/* Archive Title & Item Count */}
+        <div className="flex items-end justify-between mb-8 border-b border-white/5 pb-4">
+          <h2 className="serif italic text-2xl md:text-3xl text-white">
+            {filterCategory === 'All' ? 'Complete Archive' : filterCategory}
+            {filterBrand !== 'ALL' && <span className="text-white/40 text-lg md:text-xl ml-2">/ {filterBrand}</span>}
+          </h2>
+          <p className="text-[9px] tracking-[0.3em] uppercase text-white/30 font-mono mb-1">
+            {filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}
+          </p>
+        </div>
+
         <InventoryTable
           products={filteredProducts}
           onProductClick={setSelectedProduct}
@@ -345,7 +336,6 @@ const App: React.FC = () => {
             <span>•</span>
             <span>private collection.</span>
             <span>•</span>
-            {/* Hidden admin access — triple-click */}
             <span
               className="cursor-default select-none"
               onClick={() => setShowAdmin(true)}
@@ -354,6 +344,59 @@ const App: React.FC = () => {
           </div>
         </footer>
       </main>
+
+      {/* Brand Selection Mobile Bottom Sheet / Modal */}
+      {isBrandDropdownOpen && (
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsBrandDropdownOpen(false)}
+          />
+          <div className="w-full sm:max-w-md bg-v-black border border-white/10 rounded-t-2xl sm:rounded-2xl z-10 max-h-[85vh] flex flex-col transform animate-slideUp shadow-2xl shadow-black">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0">
+              <div>
+                <p className="text-[9px] text-v-red tracking-[0.4em] uppercase font-bold mb-1">Filter by</p>
+                <h3 className="text-2xl serif italic text-white">{maisonLabel}</h3>
+              </div>
+              <button
+                onClick={() => setIsBrandDropdownOpen(false)}
+                className="w-8 h-8 flex items-center justify-center bg-white/5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            {/* List */}
+            <div className="overflow-y-auto overscroll-contain px-3 py-3 hide-scrollbar pb-10">
+              {brands.map(brand => {
+                const count = inventory.filter(p => p.brand === brand && (filterCategory === 'All' || p.category === filterCategory)).length;
+                return (
+                  <button
+                    key={brand}
+                    onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
+                    className={`w-full px-5 py-4 text-left flex items-center justify-between rounded-xl transition-all duration-200 ${
+                      filterBrand === brand
+                        ? 'bg-white/10 text-white'
+                        : 'text-white/60 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-[11px] tracking-[0.2em] uppercase font-medium">
+                      {brand === 'ALL' ? maisonPlaceholder : brand}
+                    </span>
+                    {brand !== 'ALL' && (
+                      <span className={`text-[9px] px-2 py-0.5 rounded-full border font-mono ${
+                        filterBrand === brand ? 'border-white/30 text-white/80' : 'border-white/10 text-white/30'
+                      }`}>
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {selectedProduct && (
         <ProductModal
@@ -376,7 +419,6 @@ const App: React.FC = () => {
       {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
       <Analytics />
 
-      {/* Toast notification */}
       <div
         style={{ transition: 'opacity 0.5s, transform 0.5s' }}
         className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] pointer-events-none ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
