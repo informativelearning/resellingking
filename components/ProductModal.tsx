@@ -60,8 +60,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       </div>
 
       {/* Layout */}
-      <div className="flex-1 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
-      <div className="flex flex-col md:flex-row md:min-h-full">
+      <div className="flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row h-full">
 
         {/* Image side */}
         <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-[56vw] min-h-[260px] md:h-full" : "bg-v-gray h-[60vw] min-h-[280px] md:h-full"}`}>
@@ -102,7 +102,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
         {/* Details side */}
         <div
-          className="w-full md:w-1/2 md:h-full md:overflow-y-auto px-7 pt-8 pb-10 sm:px-10 sm:pt-10 md:px-16 md:pt-[12vh] md:pb-16 flex flex-col justify-start bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
+          className="w-full md:w-1/2 md:h-full md:overflow-y-auto px-7 py-8 sm:px-10 sm:py-10 md:px-14 md:py-12 flex flex-col justify-center bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
@@ -110,7 +110,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
             {/* Header */}
             <header className="space-y-4">
               <span className="text-v-red text-[10px] font-bold tracking-[0.6em] uppercase block">{product.brand}</span>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl serif italic leading-snug text-white tracking-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl serif italic leading-snug text-white tracking-tight">
                 {(() => {
                   const name = product.name;
                   // Split on Jordan/Nike/Air keyword to get collab prefix + model
