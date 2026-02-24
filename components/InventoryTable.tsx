@@ -47,11 +47,10 @@ const ProductCard = memo(({
       onClick={() => onProductClick(product)}
       onMouseEnter={() => !isTouchDevice && setIsHovered(true)}
       onMouseLeave={() => !isTouchDevice && setIsHovered(false)}
-      // ─── NEW: Staggered animation classes applied here ───
       className="group cursor-pointer flex flex-col space-y-3 relative opacity-0 animate-staggeredFadeIn"
       style={{
-        // We cap the delay at 600ms so users aren't waiting for the bottom row to load
-        animationDelay: `${Math.min(idx * 75, 600)}ms`,
+        // INCREASED DELAY: idx * 120 (was 75), and increased max cap to 800ms (was 600)
+        animationDelay: `${Math.min(idx * 120, 800)}ms`,
         contain: 'layout style',
       }}
     >
@@ -62,7 +61,6 @@ const ProductCard = memo(({
           : 'aspect-[3/4] bg-v-gray border border-white/5'
       }`}>
 
-        {/* Gradient overlay — fragrances/apparel only */}
         {!isSneakers && (
           <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1] ${
             isTouchDevice ? 'opacity-50' : 'opacity-60 transition-opacity duration-500 group-hover:opacity-30'
@@ -216,14 +214,15 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
       </div>
     )}
 
-    {/* ─── NEW: CSS STAGGERED FADE IN ─── */}
+    {/* ─── SLOWER, SMOOTHER CSS STAGGERED FADE IN ─── */}
     <style>{`
       @keyframes staggeredFadeIn {
-        0% { opacity: 0; transform: translateY(15px); }
+        0% { opacity: 0; transform: translateY(20px); }
         100% { opacity: 1; transform: translateY(0); }
       }
       .animate-staggeredFadeIn {
-        animation: staggeredFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        /* INCREASED DURATION: 1s (was 0.6s) */
+        animation: staggeredFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
     `}</style>
   </div>
