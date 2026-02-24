@@ -74,11 +74,31 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {cart.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center gap-4 opacity-20">
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-              <p className="serif italic text-2xl">Empty</p>
+            <div className="h-full flex flex-col items-center justify-center px-8 text-center animate-slideUp">
+              <div className="opacity-10 mb-6">
+                <svg className="w-14 h-14 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+              </div>
+              <p className="serif italic text-3xl text-white mb-2">Bag is Empty</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-white/40 font-mono mb-10">
+                Let's fix that.
+              </p>
+              
+              <div className="w-full space-y-3">
+                <button
+                  onClick={onClose}
+                  className="w-full bg-v-red text-white py-4 text-xs font-bold uppercase tracking-[0.4em] hover:bg-white hover:text-v-black transition-all duration-300 border border-v-red"
+                >
+                  Explore Collection
+                </button>
+                <button
+                  onClick={() => window.open(`https://ig.me/m/${igHandle}`, '_blank')}
+                  className="w-full bg-transparent text-white/60 py-4 text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.3em] hover:text-white hover:border-white/50 transition-all duration-300 border border-white/10"
+                >
+                  Can't find it? DM to source
+                </button>
+              </div>
             </div>
           ) : (
             <div className="space-y-0 divide-y divide-white/5">
@@ -130,7 +150,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
               <span className="serif italic text-3xl text-white">${total.toFixed(2)}</span>
             </div>
 
-            {/* Clipboard hint — shows context before they tap, confirms after */}
             <p className={`text-[10px] font-mono tracking-wider text-center transition-all duration-500 ${copied ? 'text-white/60' : 'text-white/20'}`}>
               {copied
                 ? '✓ order copied — just paste it in the dm.'
