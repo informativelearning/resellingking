@@ -142,6 +142,12 @@ const App: React.FC = () => {
           to   { transform: translateY(0);    opacity: 1; }
         }
         .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes ghostPulse {
+          0%, 100% { opacity: 0.02; filter: blur(2px); }
+          50%      { opacity: 0.08; filter: blur(0px); }
+        }
+        .animate-ghost { animation: ghostPulse 8s ease-in-out infinite; }
       `}</style>
 
       {/* Top Bar */}
@@ -204,7 +210,7 @@ const App: React.FC = () => {
         <Ticker />
 
         {/* Giant Background Logo Watermark */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] opacity-[0.04] pointer-events-none z-0 mix-blend-screen flex justify-center items-center">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] pointer-events-none z-0 mix-blend-screen flex justify-center items-center animate-ghost">
           <img
             src={LOGO}
             alt="Wings Watermark"
