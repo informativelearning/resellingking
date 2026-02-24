@@ -12,6 +12,7 @@ const IG_HANDLE = '661ro_resellz';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState(''); // NEW: Debounced state
   const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState<Category>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -27,6 +28,14 @@ const App: React.FC = () => {
   const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
+  // NEW: Search debounce logic (prevents typing lag)
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300); // Waits 300ms after you stop typing to filter
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
   useEffect(() => {
     try {
       localStorage.setItem('wof_cart', JSON.stringify(cart));
@@ -37,7 +46,6 @@ const App: React.FC = () => {
     setInventory(getMergedInventory());
   }, [showAdmin]);
 
-  // Prevent background scrolling when any modal/sidebar is open
   useEffect(() => {
     const isAnyModalOpen = 
       isCartOpen || 
@@ -75,15 +83,17 @@ const App: React.FC = () => {
 
   const filteredProducts = useMemo(() => {
     return inventory.filter(product => {
+      // Uses the debounced search so it doesn't freeze the screen
+      const searchToUse = debouncedSearch.toLowerCase();
       const matchesSearch =
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.ids.some(id => id.toLowerCase().includes(searchTerm.toLowerCase()));
+        product.name.toLowerCase().includes(searchToUse) ||
+        product.brand.toLowerCase().includes(searchToUse) ||
+        product.ids.some(id => id.toLowerCase().includes(searchToUse));
       const matchesBrand    = filterBrand === 'ALL' || product.brand === filterBrand;
       const matchesCategory = filterCategory === 'All' || product.category === filterCategory;
       return matchesSearch && matchesBrand && matchesCategory;
     });
-  }, [searchTerm, filterBrand, filterCategory, inventory]);
+  }, [debouncedSearch, filterBrand, filterCategory, inventory]);
 
   const handleInquire = () => {
     window.open(`https://instagram.com/${IG_HANDLE}`, '_blank');
@@ -146,18 +156,21 @@ const App: React.FC = () => {
         }
         .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
-        /* ─── NEW: BREATHING ANIMATION ─── */
+        /* ─── PERFORMANCE-OPTIMIZED BREATHING ANIMATION ─── */
+        /* Removed 'filter: blur' which causes massive lag on mobile GPUs */
         @keyframes ghostPulse {
-          0%, 100% { opacity: 0.02; filter: blur(2px); }
-          50%      { opacity: 0.08; filter: blur(0px); }
+          0%, 100% { opacity: 0.02; transform: scale(1.5) translateZ(0); }
+          50%      { opacity: 0.08; transform: scale(1.5) translateZ(0); }
         }
-        .animate-ghost { animation: ghostPulse 8s ease-in-out infinite; }
+        .animate-ghost { 
+          animation: ghostPulse 8s ease-in-out infinite; 
+          will-change: opacity; /* Tells the browser to hardware-accelerate this */
+        }
       `}</style>
 
       {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5 h-[80px] md:h-[88px] flex items-center">
         <div className="max-w-[1800px] w-full mx-auto px-6 md:px-12 flex items-center justify-between">
-          {/* Left: logo + location */}
           <div className="flex items-center gap-4">
             <img
               src={LOGO}
@@ -171,7 +184,6 @@ const App: React.FC = () => {
             </span>
           </div>
 
-          {/* Right: IG handle + cart */}
           <div className="flex items-center gap-5">
             <a
               href={`https://instagram.com/${IG_HANDLE}`}
@@ -209,15 +221,14 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
       <header className="relative z-30 pt-[80px] md:pt-[88px] overflow-hidden">
         <Ticker />
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] pointer-events-none z-0 mix-blend-screen flex justify-center items-center animate-ghost">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] pointer-events-none z-0 mix-blend-screen flex justify-center items-center">
           <img
             src={LOGO}
             alt="Wings Watermark"
-            className="w-full h-auto object-contain scale-150 md:scale-125 filter grayscale contrast-125"
+            className="w-full h-auto object-contain md:scale-125 filter grayscale contrast-125 animate-ghost"
           />
         </div>
 
@@ -240,12 +251,10 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* ─── Sticky Horizontal Filter Bar ─── */}
       <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/95 backdrop-blur-md border-y border-white/10 py-0 transition-all w-full">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
           <div className="flex items-center overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory h-14">
 
-            {/* Search Input */}
             <div className="flex-shrink-0 snap-start relative flex items-center h-full border-r border-white/10 pr-4 mr-4">
               <span className="text-[11px] text-v-red tracking-[0.3em] uppercase font-mono mr-2">
                 Search
@@ -265,7 +274,6 @@ const App: React.FC = () => {
               )}
             </div>
 
-            {/* Brand Modal Trigger */}
             <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
               <button
                 onClick={() => setIsBrandDropdownOpen(true)}
@@ -280,7 +288,6 @@ const App: React.FC = () => {
               </button>
             </div>
 
-            {/* Categories */}
             <div className="flex items-center h-full gap-6">
               {categories.map(cat => (
                 <button
@@ -301,10 +308,8 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Grid Section */}
       <main className="flex-1 px-6 md:px-12 pt-10 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
         
-        {/* Collection Title & Item Count */}
         <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
           <h2 className="serif italic text-3xl md:text-4xl text-white">
             {filterCategory === 'All' ? 'Complete Collection' : filterCategory}
@@ -344,7 +349,6 @@ const App: React.FC = () => {
             <div className="h-16 w-[1px] bg-gradient-to-b from-white/10 via-white/20 to-transparent" />
           </a>
 
-          {/* Decorative text stays small */}
           <div className="flex gap-8 text-[9px] font-light text-white/10 uppercase tracking-[0.4em]">
             <span>Est. 2025</span>
             <span>•</span>
@@ -359,7 +363,6 @@ const App: React.FC = () => {
         </footer>
       </main>
 
-      {/* ─── Brand Selection Modal ─── */}
       {isBrandDropdownOpen && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6">
           <div
@@ -367,7 +370,6 @@ const App: React.FC = () => {
             onClick={() => setIsBrandDropdownOpen(false)}
           />
           <div className="w-full sm:max-w-md bg-v-black border-t sm:border border-white/10 z-10 max-h-[85vh] flex flex-col transform animate-slideUp shadow-2xl rounded-none">
-            {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0 bg-v-black">
               <div>
                 <p className="text-[11px] text-v-red tracking-[0.4em] uppercase font-mono mb-2">Refine Search</p>
@@ -380,7 +382,6 @@ const App: React.FC = () => {
                 ✕
               </button>
             </div>
-            {/* List */}
             <div className="overflow-y-auto overscroll-contain px-0 py-0 hide-scrollbar pb-10 bg-v-black divide-y divide-white/5">
               {brands.map(brand => {
                 const count = inventory.filter(p =>
