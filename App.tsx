@@ -44,15 +44,18 @@ const App: React.FC = () => {
       isBrandDropdownOpen || 
       selectedProduct !== null || 
       showAdmin;
+
     if (isAnyModalOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
+
     return () => {
       document.body.style.overflow = '';
     };
   }, [isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
+
 
   const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
@@ -143,6 +146,7 @@ const App: React.FC = () => {
         }
         .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
+        /* ─── NEW: BREATHING ANIMATION ─── */
         @keyframes ghostPulse {
           0%, 100% { opacity: 0.02; filter: blur(2px); }
           50%      { opacity: 0.08; filter: blur(0px); }
@@ -162,7 +166,7 @@ const App: React.FC = () => {
               style={{ mixBlendMode: 'screen' }}
             />
             <div className="hidden md:block h-8 w-[1px] bg-white/10" />
-            <span className="hidden md:block text-[9px] tracking-[0.5em] uppercase text-white/30 font-light">
+            <span className="hidden md:block text-[10px] tracking-[0.4em] uppercase text-white/30 font-light">
               Wasco, CA
             </span>
           </div>
@@ -178,7 +182,7 @@ const App: React.FC = () => {
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
               </svg>
-              <span className="hidden sm:block text-[9px] tracking-[0.3em] uppercase font-mono group-hover:text-v-red transition-colors">
+              <span className="hidden sm:block text-[10px] tracking-[0.3em] uppercase font-mono group-hover:text-v-red transition-colors">
                 @{IG_HANDLE}
               </span>
             </a>
@@ -187,7 +191,7 @@ const App: React.FC = () => {
               onClick={() => setIsCartOpen(true)}
               className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart"
             >
-              <span className="hidden md:block text-[9px] tracking-[0.4em] uppercase font-medium opacity-0 group-hover/cart:opacity-100 transition-opacity">
+              <span className="hidden md:block text-[10px] tracking-[0.3em] uppercase font-medium opacity-0 group-hover/cart:opacity-100 transition-opacity">
                 bag
               </span>
               <div className="relative">
@@ -195,7 +199,7 @@ const App: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 {totalCartItems > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-v-red text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  <span className="absolute -top-1.5 -right-1.5 bg-v-red text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                     {totalCartItems}
                   </span>
                 )}
@@ -205,11 +209,10 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section (With Giant Ghost Logo) */}
+      {/* Hero Section */}
       <header className="relative z-30 pt-[80px] md:pt-[88px] overflow-hidden">
         <Ticker />
 
-        {/* Giant Background Logo Watermark */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] pointer-events-none z-0 mix-blend-screen flex justify-center items-center animate-ghost">
           <img
             src={LOGO}
@@ -225,7 +228,7 @@ const App: React.FC = () => {
               <span className="block mt-2">Fortune</span>
             </h1>
             <div className="flex flex-col items-center gap-6 pt-4">
-              <p className="text-[10px] md:text-xs tracking-[0.8em] uppercase text-white/40 font-light font-mono">
+              <p className="text-[11px] md:text-xs tracking-[0.5em] uppercase text-white/40 font-light font-mono">
                 661 / Wasco, CA
               </p>
               <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-v-red/50 to-transparent" />
@@ -244,7 +247,7 @@ const App: React.FC = () => {
 
             {/* Search Input */}
             <div className="flex-shrink-0 snap-start relative flex items-center h-full border-r border-white/10 pr-4 mr-4">
-              <span className="text-[10px] text-v-red tracking-[0.4em] uppercase font-mono mr-2">
+              <span className="text-[11px] text-v-red tracking-[0.3em] uppercase font-mono mr-2">
                 Search
               </span>
               <input
@@ -252,12 +255,12 @@ const App: React.FC = () => {
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 placeholder="//"
-                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[10px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none font-mono"
+                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[11px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none font-mono"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-4 text-white/40 text-xs hover:text-white"
+                  className="absolute right-4 text-white/40 text-sm hover:text-white"
                 >✕</button>
               )}
             </div>
@@ -266,14 +269,14 @@ const App: React.FC = () => {
             <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
               <button
                 onClick={() => setIsBrandDropdownOpen(true)}
-                className={`flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${
+                className={`flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${
                   filterBrand !== 'ALL'
                     ? 'text-v-red font-bold'
                     : 'text-white/40 hover:text-white'
                 }`}
               >
                 <span>{filterBrand === 'ALL' ? maisonLabel : filterBrand}</span>
-                <span className="text-[8px]">▼</span>
+                <span className="text-[9px]">▼</span>
               </button>
             </div>
 
@@ -283,7 +286,7 @@ const App: React.FC = () => {
                 <button
                   key={cat}
                   onClick={() => handleCategoryChange(cat)}
-                  className={`flex-shrink-0 snap-start text-[10px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 font-mono ${
+                  className={`flex-shrink-0 snap-start text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 font-mono ${
                     filterCategory === cat
                       ? 'text-white border-white font-bold'
                       : 'text-white/30 border-transparent hover:text-white/60'
@@ -307,7 +310,7 @@ const App: React.FC = () => {
             {filterCategory === 'All' ? 'Complete Collection' : filterCategory}
             {filterBrand !== 'ALL' && <span className="text-white/40 text-xl md:text-2xl ml-3">/ {filterBrand}</span>}
           </h2>
-          <p className="text-[10px] tracking-[0.4em] uppercase text-v-red font-mono mb-1">
+          <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">
             [{filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}]
           </p>
         </div>
@@ -324,8 +327,8 @@ const App: React.FC = () => {
               <img src={LOGO} alt="Wings of Fortune" className="h-20 w-auto filter brightness-110 contrast-110" style={{ mixBlendMode: 'screen' }} />
             </div>
             <div className="space-y-4">
-              <p className="text-[9px] tracking-[0.6em] uppercase text-white/30 font-light">661 / Wasco, CA</p>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-white/20 font-light">based in the valley.</p>
+              <p className="text-[10px] tracking-[0.5em] uppercase text-white/30 font-light">661 / Wasco, CA</p>
+              <p className="text-[11px] tracking-[0.2em] uppercase text-white/20 font-light">based in the valley.</p>
             </div>
           </div>
 
@@ -335,13 +338,14 @@ const App: React.FC = () => {
             rel="noopener noreferrer"
             className="group flex flex-col items-center gap-4"
           >
-            <span className="text-[10px] tracking-[0.5em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">
+            <span className="text-[11px] tracking-[0.4em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">
               @{IG_HANDLE}
             </span>
             <div className="h-16 w-[1px] bg-gradient-to-b from-white/10 via-white/20 to-transparent" />
           </a>
 
-          <div className="flex gap-8 text-[8px] font-light text-white/10 uppercase tracking-[0.5em]">
+          {/* Decorative text stays small */}
+          <div className="flex gap-8 text-[9px] font-light text-white/10 uppercase tracking-[0.4em]">
             <span>Est. 2025</span>
             <span>•</span>
             <span>private collection.</span>
@@ -366,7 +370,7 @@ const App: React.FC = () => {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0 bg-v-black">
               <div>
-                <p className="text-[9px] text-v-red tracking-[0.5em] uppercase font-mono mb-2">Refine Search</p>
+                <p className="text-[11px] text-v-red tracking-[0.4em] uppercase font-mono mb-2">Refine Search</p>
                 <h3 className="text-3xl serif italic text-white">{maisonLabel}</h3>
               </div>
               <button
@@ -392,11 +396,11 @@ const App: React.FC = () => {
                         : 'text-white/50 hover:bg-white/[0.02] hover:text-white border-l-2 border-transparent'
                     }`}
                   >
-                    <span className="text-[11px] tracking-[0.3em] uppercase font-mono group-hover:tracking-[0.4em] transition-all">
+                    <span className="text-xs tracking-[0.2em] uppercase font-mono group-hover:tracking-[0.3em] transition-all">
                       {brand === 'ALL' ? maisonPlaceholder : brand}
                     </span>
                     {brand !== 'ALL' && (
-                      <span className="text-[9px] font-mono text-white/20">
+                      <span className="text-[10px] font-mono text-white/20">
                         [{count}]
                       </span>
                     )}
@@ -435,7 +439,7 @@ const App: React.FC = () => {
       >
         <div className="bg-v-black border border-white/15 px-5 py-3 flex items-center gap-3 shadow-2xl shadow-black/60">
           <span className="w-1.5 h-1.5 rounded-full bg-v-red flex-shrink-0" />
-          <p className="text-[11px] font-mono text-white/70 whitespace-nowrap">
+          <p className="text-xs font-mono text-white/70 whitespace-nowrap">
             <span className="text-white">{toast}</span> added.
           </p>
         </div>

@@ -55,7 +55,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
           <div>
             <h2 className="serif italic text-2xl tracking-tight text-white">Your Bag</h2>
             {cart.length > 0 && (
-              <p className="text-[10px] text-white/30 mt-0.5 font-mono uppercase tracking-widest">
+              <p className="text-[11px] text-white/30 mt-0.5 font-mono uppercase tracking-[0.2em]">
                 {cart.reduce((a, i) => a + i.quantity, 0)} item{cart.reduce((a, i) => a + i.quantity, 0) !== 1 ? 's' : ''}
               </p>
             )}
@@ -81,7 +81,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
                 </svg>
               </div>
               <p className="serif italic text-3xl text-white mb-2">Bag is Empty</p>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-white/40 font-mono mb-10">
+              <p className="text-[11px] tracking-[0.3em] uppercase text-white/40 font-mono mb-10">
                 Let's fix that.
               </p>
               
@@ -94,7 +94,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
                 </button>
                 <button
                   onClick={() => window.open(`https://ig.me/m/${igHandle}`, '_blank')}
-                  className="w-full bg-transparent text-white/60 py-4 text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.3em] hover:text-white hover:border-white/50 transition-all duration-300 border border-white/10"
+                  className="w-full bg-transparent text-white/60 py-4 text-[11px] font-medium uppercase tracking-[0.2em] hover:text-white hover:border-white/50 transition-all duration-300 border border-white/10"
                 >
                   Can't find it? DM to source
                 </button>
@@ -115,12 +115,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
                   )}
                   <div className="flex-1 min-w-0 px-4 py-4 flex flex-col justify-between">
                     <div>
-                      <p className="text-[9px] text-v-red uppercase tracking-[0.3em] font-bold">{item.brand}</p>
+                      <p className="text-[10px] text-v-red uppercase tracking-[0.3em] font-bold">{item.brand}</p>
                       <p className="text-sm serif italic text-white leading-snug mt-0.5">{item.name}</p>
                       {item.selectedSize && (
                         <div className="mt-1.5 inline-flex items-center gap-1.5">
-                          <span className="text-[8px] text-white/30 uppercase tracking-widest">size</span>
-                          <span className="text-[10px] font-bold text-white/70 tracking-wider border border-white/20 px-2 py-0.5">{item.selectedSize}</span>
+                          <span className="text-[9px] text-white/30 uppercase tracking-widest">size</span>
+                          <span className="text-[11px] font-bold text-white/70 tracking-wider border border-white/20 px-2 py-0.5">{item.selectedSize}</span>
                         </div>
                       )}
                     </div>
@@ -132,7 +132,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
                       </div>
                       <div className="flex items-center gap-3">
                         <p className="text-sm font-bold text-white">${(item.price * item.quantity).toFixed(2)}</p>
-                        <button onClick={() => onRemove(item.ids[0], item.selectedSize)} className="text-[9px] text-white/15 hover:text-v-red transition-colors">×</button>
+                        <button onClick={() => onRemove(item.ids[0], item.selectedSize)} className="text-[11px] text-white/15 hover:text-v-red transition-colors">×</button>
                       </div>
                     </div>
                   </div>
@@ -146,11 +146,11 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemo
         {cart.length > 0 && (
           <div className="px-6 py-5 border-t border-white/10 space-y-4 flex-shrink-0">
             <div className="flex justify-between items-baseline">
-              <span className="text-white/30 text-[10px] uppercase tracking-widest font-mono">total</span>
+              <span className="text-white/30 text-[11px] uppercase tracking-[0.2em] font-mono">total</span>
               <span className="serif italic text-3xl text-white">${total.toFixed(2)}</span>
             </div>
 
-            <p className={`text-[10px] font-mono tracking-wider text-center transition-all duration-500 ${copied ? 'text-white/60' : 'text-white/20'}`}>
+            <p className={`text-[11px] font-mono tracking-widest text-center transition-all duration-500 ${copied ? 'text-white/60' : 'text-white/20'}`}>
               {copied
                 ? '✓ order copied — just paste it in the dm.'
                 : 'tapping below copies your order + opens ig.'}
