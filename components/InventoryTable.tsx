@@ -132,6 +132,17 @@ const ProductCard = memo(({
           </div>
         )}
 
+        {/* Quick Add Button — mobile only */}
+        <button
+          onClick={handleAddToCart}
+          className="md:hidden absolute bottom-3 right-3 z-[4] w-10 h-10 flex items-center justify-center bg-v-black/90 backdrop-blur-md border border-white/20 text-white active:bg-v-red active:border-v-red transition-all shadow-2xl"
+          aria-label="Quick Add"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+
         {/* Category tag — non-sneakers only */}
         {!isSneakers && (
           <div className={`absolute top-0 left-0 h-full w-6 sm:w-8 flex items-center justify-center pointer-events-none z-[2] ${
