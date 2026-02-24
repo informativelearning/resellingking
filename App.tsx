@@ -37,6 +37,23 @@ const App: React.FC = () => {
     setInventory(getMergedInventory());
   }, [showAdmin]);
 
+  // Prevent background scrolling when any modal/sidebar is open
+  useEffect(() => {
+    const isAnyModalOpen = 
+      isCartOpen || 
+      isBrandDropdownOpen || 
+      selectedProduct !== null || 
+      showAdmin;
+    if (isAnyModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
+
   const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
   const brands: string[] = useMemo(() => {
