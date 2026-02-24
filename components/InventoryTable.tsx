@@ -106,7 +106,7 @@ const ProductCard = memo(({
 
         {/* Price tag */}
         <div className={`absolute z-[2] ${isSneakers ? 'bottom-3 left-3' : 'top-3 right-3'}`}>
-          <div className={`text-[11px] sm:text-xs font-mono font-bold tracking-wider px-2 py-1 sm:px-3 sm:py-1.5 border ${
+          <div className={`text-xs font-mono font-bold tracking-wider px-2 py-1 sm:px-3 sm:py-1.5 border ${
             isSneakers
               ? 'bg-v-red text-white border-v-red'
               : 'bg-v-black/80 backdrop-blur-sm text-white border-white/10'
@@ -120,12 +120,12 @@ const ProductCard = memo(({
           <div className={`absolute inset-0 transition-opacity duration-400 flex flex-col items-center justify-center gap-3 z-[2] ${
             isSneakers ? 'bg-black/70' : 'bg-gradient-to-t from-black via-black/80 to-transparent'
           } ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-            <span className="text-[9px] sm:text-[10px] tracking-[0.5em] uppercase border border-white/60 px-4 py-2 text-white/90 font-mono">
+            <span className="text-[11px] tracking-[0.4em] uppercase border border-white/60 px-4 py-2 text-white/90 font-mono">
               View Details
             </span>
             <button
               onClick={handleAddToCart}
-              className="bg-v-red text-white px-4 py-2 text-[9px] sm:text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-white hover:text-v-black transition-colors duration-200 font-mono"
+              className="bg-v-red text-white px-4 py-2 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-white hover:text-v-black transition-colors duration-200 font-mono"
             >
               {isApparel || isSneakers ? 'Select Size' : 'Add to Bag'}
             </button>
@@ -148,7 +148,7 @@ const ProductCard = memo(({
           <div className={`absolute top-0 left-0 h-full w-6 sm:w-8 flex items-center justify-center pointer-events-none z-[2] ${
             isTouchDevice ? 'bg-v-black/70 border-r border-white/10' : 'bg-v-black/60 backdrop-blur-sm border-r border-white/10'
           }`}>
-            <span className="whitespace-nowrap -rotate-90 text-[7px] sm:text-[8px] tracking-[0.4em] uppercase font-bold text-white/50">
+            <span className="whitespace-nowrap -rotate-90 text-[9px] tracking-[0.3em] uppercase font-bold text-white/50">
               {product.category}
             </span>
           </div>
@@ -160,15 +160,15 @@ const ProductCard = memo(({
         {!isTouchDevice && (
           <div className="absolute left-0 top-0 w-[2px] h-0 bg-gradient-to-b from-v-red to-transparent group-hover:h-full transition-all duration-500" />
         )}
-        <span className="text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-v-red font-mono font-bold opacity-80">
+        <span className="text-[11px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-v-red font-mono font-bold opacity-80">
           {product.brand}
         </span>
         <h3 className="text-base sm:text-xl serif italic tracking-wide text-white leading-tight">
           {product.name}
         </h3>
         <div className="flex justify-between items-center pt-1.5 border-t border-white/5 mt-1">
-          <span className="text-[8px] sm:text-[9px] tracking-[0.2em] text-white/40 uppercase font-mono">{product.spec}</span>
-          <span className="text-[8px] sm:text-[9px] font-mono text-white/60 tracking-wider uppercase">{product.condition}</span>
+          <span className="text-[10px] tracking-[0.2em] text-white/40 uppercase font-mono">{product.spec}</span>
+          <span className="text-[10px] font-mono text-white/60 tracking-wider uppercase">{product.condition}</span>
         </div>
       </div>
     </div>
@@ -201,13 +201,13 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
         </div>
         <div className="relative z-10 text-center space-y-5">
           <h2 className="text-3xl sm:text-4xl serif italic text-white/50 drop-shadow-lg">Collection Empty</h2>
-          <p className="text-[10px] tracking-[0.4em] uppercase text-v-red font-mono">
+          <p className="text-[11px] tracking-[0.4em] uppercase text-v-red font-mono">
             [ 0 ITEMS FOUND ]
           </p>
           <div className="pt-8">
             <button
               onClick={() => window.open('https://instagram.com/661ro_resellz', '_blank')}
-              className="text-[9px] tracking-[0.3em] uppercase border border-white/20 px-6 py-4 text-white/60 hover:text-white hover:border-white/50 hover:bg-white/5 transition-all duration-300 font-mono"
+              className="text-[11px] tracking-[0.3em] uppercase border border-white/20 px-6 py-4 text-white/60 hover:text-white hover:border-white/50 hover:bg-white/5 transition-all duration-300 font-mono"
             >
               Not in current stock. DM to source.
             </button>

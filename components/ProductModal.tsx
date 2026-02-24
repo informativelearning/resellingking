@@ -176,10 +176,10 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
             {/* Condition pills */}
             <div className="flex gap-3 flex-wrap">
-              <span className="text-[9px] uppercase tracking-[0.3em] border border-white/15 px-3 py-2 text-white/50">
+              <span className="text-[10px] uppercase tracking-[0.3em] border border-white/15 px-3 py-2 text-white/50">
                 {product.condition}
               </span>
-              <span className="text-[9px] uppercase tracking-[0.3em] border border-v-red/40 px-3 py-2 text-v-red/80">
+              <span className="text-[10px] uppercase tracking-[0.3em] border border-v-red/40 px-3 py-2 text-v-red/80">
                 verified auth.
               </span>
             </div>
@@ -187,7 +187,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
             {/* SIZE SELECTOR — apparel only */}
             {isApparel && (
               <div className="space-y-3">
-                <p className={`text-[9px] uppercase tracking-[0.4em] font-mono transition-colors duration-300 ${sizeError ? 'text-v-red' : 'text-white/30'}`}>
+                <p className={`text-[10px] uppercase tracking-[0.4em] font-mono transition-colors duration-300 ${sizeError ? 'text-v-red' : 'text-white/30'}`}>
                   {sizeError ? 'pick a size first.' : 'select size'}
                 </p>
                 <div className="flex gap-2 flex-wrap">
@@ -226,7 +226,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
                 dm for availability
               </button>
 
-              <p className="text-center text-[9px] text-white/20 uppercase tracking-[0.4em] pt-2 italic">
+              <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.4em] pt-2 italic">
                 verified stock // est. 2025
               </p>
             </div>
