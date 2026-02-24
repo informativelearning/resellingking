@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Product } from '../types';
 
 interface ProductModalProps {
@@ -17,16 +17,19 @@ const SNEAKER_SIZES = [
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire, onAddToCart }) => {
   const isApparel = product.category === 'Apparel' || product.category === 'Sneakers';
   const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isSquare, setIsSquare] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
+  
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
     const r = img.naturalWidth / img.naturalHeight;
     setIsSquare(r >= 0.9 && r <= 1.1);
   };
-  const [sizeError, setSizeError] = useState(false);
 
   const handleAddToCart = () => {
     if (isApparel && !selectedSize) {
@@ -37,8 +40,29 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
     onAddToCart(product, selectedSize ?? undefined);
   };
 
-  const nextImage = () => setCurrentImageIndex(prev => (prev + 1) % productImages.length);
-  const prevImage = () => setCurrentImageIndex(prev => (prev - 1 + productImages.length) % productImages.length);
+  // Keep dots synced with swipe scrolling
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const scrollLeft = scrollRef.current.scrollLeft;
+    const width = scrollRef.current.clientWidth;
+    const newIndex = Math.round(scrollLeft / width);
+    if (newIndex !== currentImageIndex) {
+      setCurrentImageIndex(newIndex);
+    }
+  };
+
+  // Programmatically scroll when clicking dots or arrows
+  const scrollToIndex = (index: number) => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollTo({
+      left: index * scrollRef.current.clientWidth,
+      behavior: 'smooth'
+    });
+    setCurrentImageIndex(index);
+  };
+
+  const nextImage = () => scrollToIndex((currentImageIndex + 1) % productImages.length);
+  const prevImage = () => scrollToIndex((currentImageIndex - 1 + productImages.length) % productImages.length);
 
   return (
     <div className="fixed inset-0 z-50 bg-v-black overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
@@ -62,47 +86,56 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       {/* Layout — stack on mobile, side by side on desktop */}
       <div className="flex flex-col md:flex-row md:min-h-[calc(100vh-57px)]">
 
-        {/* Image side */}
-        <div className={`w-full md:w-1/2 relative overflow-hidden flex-shrink-0 ${product.category === "Sneakers" ? "bg-white h-[80vw] min-h-[300px] md:h-auto md:min-h-full" : "bg-v-gray h-[80vw] min-h-[300px] md:h-auto md:min-h-full"}`}>
-          <img
-            src={productImages[currentImageIndex]}
-            alt={`${product.name} - Image ${currentImageIndex + 1}`}
-            className={`w-full h-full transition-all duration-500 ${
-              product.category === 'Sneakers'
-                ? 'object-contain p-6'
-                : isApparel
-                  ? 'object-cover'
-                  : isSquare
-                    ? 'object-cover'
-                    : 'object-contain p-4'
-            }`}
-            onLoad={handleImageLoad}
-            style={product.category === 'Sneakers' ? { filter: 'none' } : {}}
-          />
+        {/* Image side — swipeable */}
+        <div className={`w-full md:w-1/2 relative flex-shrink-0 group ${product.category === "Sneakers" ? "bg-white h-[80vw] min-h-[300px] md:h-auto md:min-h-full" : "bg-v-gray h-[80vw] min-h-[300px] md:h-auto md:min-h-full"}`}>
+          
+          <div 
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar touch-pan-x"
+          >
+            {productImages.map((imgSrc, idx) => (
+              <div key={idx} className="w-full h-full flex-shrink-0 snap-center flex items-center justify-center relative overflow-hidden">
+                <img
+                  src={imgSrc}
+                  alt={`${product.name} - Image ${idx + 1}`}
+                  className={`w-full h-full transition-all duration-500 ${
+                    product.category === 'Sneakers'
+                      ? 'object-contain p-6'
+                      : isApparel
+                        ? 'object-cover'
+                        : isSquare
+                          ? 'object-cover'
+                          : 'object-contain p-4'
+                  }`}
+                  onLoad={handleImageLoad}
+                  style={product.category === 'Sneakers' ? { filter: 'none' } : {}}
+                />
+              </div>
+            ))}
+          </div>
 
           {productImages.length > 1 && (
             <>
-              <button onClick={prevImage} className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-v-red transition-colors text-2xl z-10">‹</button>
-              <button onClick={nextImage} className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-v-red transition-colors text-2xl z-10">›</button>
+              {/* Arrows hidden on mobile, show on hover on desktop */}
+              <button onClick={prevImage} className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 items-center justify-center text-white hover:bg-v-red transition-all duration-300 text-2xl z-10 opacity-0 group-hover:opacity-100">‹</button>
+              <button onClick={nextImage} className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 items-center justify-center text-white hover:bg-v-red transition-all duration-300 text-2xl z-10 opacity-0 group-hover:opacity-100">›</button>
+              
               <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                 {productImages.map((_, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setCurrentImageIndex(idx)}
+                    onClick={() => scrollToIndex(idx)}
                     className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'w-8 bg-v-red' : 'w-1.5 bg-white/30 hover:bg-white/60'}`}
                   />
                 ))}
               </div>
             </>
           )}
-
-
         </div>
 
         {/* Details side */}
-        <div
-          className="w-full md:w-1/2 px-7 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12 md:px-14 md:pt-10 md:pb-16 flex flex-col bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10"
-        >
+        <div className="w-full md:w-1/2 px-7 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12 md:px-14 md:pt-10 md:pb-16 flex flex-col bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10">
           <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
 
             {/* Header */}
@@ -111,16 +144,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
               <h2 className="text-4xl sm:text-5xl md:text-6xl serif italic leading-snug text-white tracking-tight">
                 {(() => {
                   const name = product.name;
-                  // Split on Jordan/Nike/Air keyword to get collab prefix + model
-                  const splitOn = ['Travis Scott x ', 'Fragment x ', 'Nigel Sylvester x ', 'Undefeated x ', 'Nike SB x '];
                   const modelStart = name.search(/Air Jordan|Nike SB|Jordan \d/);
                   if (modelStart > 0) {
                     const prefix = name.slice(0, modelStart).trim().replace(/x\s*$/, '').trim();
                     const model  = name.slice(modelStart);
-                    // Further split model on last word group (colorway)
-                    const colorStart = model.lastIndexOf(' ') !== -1
-                      ? model.search(/\s(Black Cat|Wolf Grey|Cave Stone|Reverse Mocha|Velvet Brown|Medium Olive|Dark Mocha|Cool Grey|Gamma|Cap and Gown|Rare Air|Fire Red|Grape|Pine Green|Navy|Olive|Sail|Brick|Reimagined|Deep Green|OG SP)/)
-                      : -1;
+                    const colorStart = model.search(/\s(Black Cat|Wolf Grey|Cave Stone|Reverse Mocha|Velvet Brown|Medium Olive|Dark Mocha|Cool Grey|Gamma|Cap and Gown|Rare Air|Fire Red|Grape|Pine Green|Navy|Olive|Sail|Brick|Reimagined|Deep Green|OG SP)/);
                     const modelName  = colorStart > 0 ? model.slice(0, colorStart) : model;
                     const colorway   = colorStart > 0 ? model.slice(colorStart) : '';
                     return (
