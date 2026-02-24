@@ -47,11 +47,11 @@ const ProductCard = memo(({
       onClick={() => onProductClick(product)}
       onMouseEnter={() => !isTouchDevice && setIsHovered(true)}
       onMouseLeave={() => !isTouchDevice && setIsHovered(false)}
-      className="group cursor-pointer flex flex-col space-y-3 relative"
+      // ─── NEW: Staggered animation classes applied here ───
+      className="group cursor-pointer flex flex-col space-y-3 relative opacity-0 animate-staggeredFadeIn"
       style={{
-        animation: 'fadeInUp 0.5s ease-out forwards',
-        animationDelay: `${Math.min(idx * 40, 400)}ms`,
-        opacity: 0,
+        // We cap the delay at 600ms so users aren't waiting for the bottom row to load
+        animationDelay: `${Math.min(idx * 75, 600)}ms`,
         contain: 'layout style',
       }}
     >
@@ -216,10 +216,14 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
       </div>
     )}
 
+    {/* ─── NEW: CSS STAGGERED FADE IN ─── */}
     <style>{`
-      @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
+      @keyframes staggeredFadeIn {
+        0% { opacity: 0; transform: translateY(15px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      .animate-staggeredFadeIn {
+        animation: staggeredFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
     `}</style>
   </div>
