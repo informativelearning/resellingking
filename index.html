@@ -48,12 +48,11 @@
         font-family: 'Inter', sans-serif;
         -webkit-font-smoothing: antialiased;
         margin: 0;
-        /* Ensure the body takes full height and acts as a relative container for the grain */
         position: relative;
         min-height: 100vh;
       }
 
-      /* ─── NEW: SHARP FILM GRAIN ─── */
+      /* ─── PERFORMANCE-OPTIMIZED FILM GRAIN ─── */
       body::before {
         content: "";
         position: fixed;
@@ -63,11 +62,11 @@
         height: 100vh;
         z-index: 9999;
         pointer-events: none;
-        /* Increased baseFrequency to 1.5 to make it sharp grain instead of blurry clouds */
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        opacity: 0.06;
-        /* Grayscale removes the rainbow tint, Contrast makes the speckles pop */
-        filter: grayscale(100%) contrast(150%);
+        /* Uses a pre-rendered tiny image instead of calculating SVG math */
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAgICAgICAwMDBAQEBAQEBQUFBQWFwZkOAAAACHRSTlMAMwA0AOMAmB18GAAAAKVJREFUOMut1cENwyAMRUEHFGAA/X+zUoHqH7K13pA27BvveQyYmZqamvqfW2sD996D7O07Y2fO4Oac4e4+kL2tN3JvN+fe90H2PszY3M/Ye/Mbe/tB7n0Yud4D2fu/2Pv32Pv32Pv32Ptf5N7PIvfejdzed+feD7L3PszY3M/Ye/Mbe/tB7n0Yud4D2fu/2Pv32Pv32Pv32Ptf5N7PIvfegAAAAASUVORK5CYII=");
+        background-repeat: repeat;
+        opacity: 0.4;
+        mix-blend-mode: screen; 
       }
 
       h1, h2, h3, .serif {
