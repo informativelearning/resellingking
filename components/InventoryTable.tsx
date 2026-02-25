@@ -49,7 +49,7 @@ const ProductCard = memo(({
       onMouseLeave={() => !isTouchDevice && setIsHovered(false)}
       className="group cursor-pointer flex flex-col space-y-3 relative opacity-0 animate-staggeredFadeIn"
       style={{
-        animationDelay: `${Math.min(idx * (isTouchDevice ? 30 : 60), isTouchDevice ? 300 : 600)}ms`,
+        animationDelay: `${Math.min(idx * (isTouchDevice ? 30 : 150), isTouchDevice ? 300 : 9999)}ms`,
         contain: 'layout style',
       }}
     >
@@ -220,7 +220,7 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
         100% { opacity: 1; transform: translateY(0); }
       }
       .animate-staggeredFadeIn {
-        animation: staggeredFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: staggeredFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
     `}</style>
   </div>
