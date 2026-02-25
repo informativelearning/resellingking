@@ -80,12 +80,14 @@ const ProductCard = memo(({
             <img
               src={CORNER_WING}
               alt=""
-              className="absolute -top-2 -left-2 w-48 h-48 sm:w-56 sm:h-56 object-contain pointer-events-none z-[1] opacity-40"
+              // Increased to w-64/h-64 (sm:w-72), increased opacity to 60, adjusted offset
+              className="absolute -top-4 -left-4 w-64 h-64 sm:w-72 sm:h-72 object-contain pointer-events-none z-[1] opacity-60"
             />
             <img
               src={CORNER_WING}
               alt=""
-              className="absolute -bottom-2 -right-2 w-48 h-48 sm:w-56 sm:h-56 object-contain pointer-events-none z-[1] opacity-40 rotate-180"
+              // Increased to w-64/h-64 (sm:w-72), increased opacity to 60, adjusted offset
+              className="absolute -bottom-4 -right-4 w-64 h-64 sm:w-72 sm:h-72 object-contain pointer-events-none z-[1] opacity-60 rotate-180"
             />
             <div className="relative z-10 flex flex-col items-center">
               <span className="serif italic text-2xl sm:text-3xl text-white/40 leading-none">No Image</span>
