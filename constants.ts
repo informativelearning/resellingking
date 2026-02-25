@@ -244,6 +244,21 @@ const IMAGE_MAP: Record<string, string[]> = {
     "/images/Fear-of-God-Essentials-Hoodie-Coral.jpg",
     "/images/Fear-of-God-Essentials-Hoodie-Coral1.jpg",
   ],
+  "fear of god essentials|essentials sweatpants - desert taupe": [
+    "/images/Fear of God Essentials Essentials Sweatpant 'Desert Taupe'.jpeg",
+    "/images/Fear of God Essentials Essentials Sweatpant 'Desert Taupe'1.jpeg",
+  ],
+  "fear of god essentials|essentials sweatpants - coral": [
+    "/images/Fear of God Essentials Essentials Sweatpants - Coral.jpg",
+    "/images/Fear of God Essentials Essentials Sweatpants - Coral1.jpg",
+  ],
+  "fear of god essentials|essentials sweatpants - dark oatmeal": [
+    "/images/Fear of God Essentials Sweatpants 'Dark Oatmeal'.jpeg",
+    "/images/Fear of God Essentials Sweatpants 'Dark Oatmeal'1.jpeg",
+  ],
+  "fear of god essentials|essentials sweatpants - light oatmeal": [
+    "/images/Fear of God Essentials Sweatpants 'Light Oatmeal'.jpeg",
+  ],
 };
 
 const getImagePaths = (brand: string, name: string): string[] => {
@@ -307,6 +322,10 @@ const rawData: [string, string, string[]][] = [
   ["Fear of God Essentials", "Essentials SS22 Hoodie - Dark Oatmeal", ["S, M, L, XL"]],
   ["Fear of God Essentials", "Essentials SS22 Hoodie - Light Oatmeal",["S, M, L, XL"]],
   ["Fear of God Essentials", "Essentials Hoodie - Coral",             ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Sweatpants - Desert Taupe", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Sweatpants - Coral",        ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Sweatpants - Dark Oatmeal", ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Sweatpants - Light Oatmeal",["S, M, L, XL"]],
 ];
 
 // ---------------------------------------------------------------------------
