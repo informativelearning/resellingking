@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, useEffect, useRef, memo } from 'react';
 import { Product } from '../types';
 
 interface InventoryTableProps {
@@ -24,6 +24,17 @@ const ProductCard = memo(({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSquare, setIsSquare]         = useState(false);
   const [isHovered, setIsHovered]       = useState(false);
+  const [isVisible, setIsVisible]       = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    if (cardRef.current) observer.observe(cardRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const images     = product.images && product.images.length > 0 ? product.images : [product.image];
   const isApparel  = product.category === 'Apparel';
@@ -47,9 +58,10 @@ const ProductCard = memo(({
       onClick={() => onProductClick(product)}
       onMouseEnter={() => !isTouchDevice && setIsHovered(true)}
       onMouseLeave={() => !isTouchDevice && setIsHovered(false)}
-      className="group cursor-pointer flex flex-col space-y-3 relative opacity-0 animate-staggeredFadeIn"
+      ref={cardRef}
+      className={`group cursor-pointer flex flex-col space-y-3 relative ${isVisible ? 'animate-staggeredFadeIn' : 'opacity-0'}`}
       style={{
-        animationDelay: `${Math.min(idx * (isTouchDevice ? 30 : 150), isTouchDevice ? 300 : 9999)}ms`,
+        animationDelay: isVisible ? `${Math.min(idx * (isTouchDevice ? 30 : 250), isTouchDevice ? 300 : 9999)}ms` : '0ms',
         contain: 'layout style',
       }}
     >
@@ -220,7 +232,7 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
         100% { opacity: 1; transform: translateY(0); }
       }
       .animate-staggeredFadeIn {
-        animation: staggeredFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: staggeredFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
     `}</style>
   </div>
