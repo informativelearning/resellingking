@@ -31,6 +31,7 @@ const ProductCard = memo(({
   const isApparel  = product.category === 'Apparel';
   const isSneakers = product.category === 'Sneakers';
   const usesCover  = isApparel && !isSneakers;
+  const isSteal    = isApparel && product.price === 35;
 
   const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
@@ -106,12 +107,19 @@ const ProductCard = memo(({
 
         {/* Price tag */}
         <div className={`absolute z-[2] ${isSneakers ? 'bottom-3 left-3' : 'top-3 right-3'}`}>
-          <div className={`text-xs font-mono font-bold tracking-wider px-2 py-1 sm:px-3 sm:py-1.5 border ${
+          <div className={`flex items-center gap-1.5 text-xs font-mono font-bold tracking-wider px-2 py-1 sm:px-3 sm:py-1.5 border ${
             isSneakers
               ? 'bg-v-red text-white border-v-red'
               : 'bg-v-black/80 backdrop-blur-sm text-white border-white/10'
           } ${isTouchDevice ? '' : 'transition-transform duration-300 group-hover:scale-105'}`}>
-            ${product.price}
+            {isSteal && (
+              <span className="text-white/30 line-through text-[10px] font-normal decoration-v-red/60">
+                $120
+              </span>
+            )}
+            <span className={isSteal ? 'text-v-red' : ''}>
+              ${product.price}
+            </span>
           </div>
         </div>
 
@@ -163,8 +171,13 @@ const ProductCard = memo(({
         <span className="text-[11px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-v-red font-mono font-bold opacity-80">
           {product.brand}
         </span>
-        <h3 className="text-base sm:text-xl serif italic tracking-wide text-white leading-tight">
-          {product.name}
+        <h3 className="text-base sm:text-xl serif italic tracking-wide text-white leading-tight flex items-center flex-wrap gap-x-2 gap-y-1">
+          <span>{product.name}</span>
+          {isSteal && (
+            <span className="text-[9px] font-mono tracking-widest uppercase text-v-red border border-v-red/30 px-1.5 py-0.5 rounded-sm not-italic opacity-90 mt-0.5">
+              Limited
+            </span>
+          )}
         </h3>
         <div className="flex justify-between items-center pt-1.5 border-t border-white/5 mt-1">
           <span className="text-[10px] tracking-[0.2em] text-white/40 uppercase font-mono">{product.spec}</span>

@@ -9,13 +9,14 @@ interface ProductModalProps {
 }
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
-const SNEAKER_SIZES = [
+const SNEAKER_SIZES =[
   '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5',
   '11', '11.5', '12', '12.5', '13', '14'
 ];
 
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire, onAddToCart }) => {
   const isApparel = product.category === 'Apparel' || product.category === 'Sneakers';
+  const isSteal   = product.category === 'Apparel' && product.price === 35;
   const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
   
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -40,24 +41,17 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
     onAddToCart(product, selectedSize ?? undefined);
   };
 
-  // Keep dots synced with swipe scrolling
   const handleScroll = () => {
     if (!scrollRef.current) return;
     const scrollLeft = scrollRef.current.scrollLeft;
     const width = scrollRef.current.clientWidth;
     const newIndex = Math.round(scrollLeft / width);
-    if (newIndex !== currentImageIndex) {
-      setCurrentImageIndex(newIndex);
-    }
+    if (newIndex !== currentImageIndex) setCurrentImageIndex(newIndex);
   };
 
-  // Programmatically scroll when clicking dots or arrows
   const scrollToIndex = (index: number) => {
     if (!scrollRef.current) return;
-    scrollRef.current.scrollTo({
-      left: index * scrollRef.current.clientWidth,
-      behavior: 'smooth'
-    });
+    scrollRef.current.scrollTo({ left: index * scrollRef.current.clientWidth, behavior: 'smooth' });
     setCurrentImageIndex(index);
   };
 
@@ -66,29 +60,23 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
   return (
     <div className="fixed inset-0 z-50 bg-v-black overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
-      {/* Close bar */}
       <div className="sticky top-0 z-10 flex justify-end px-6 py-4 border-b border-white/5 bg-v-black">
         <button
           onClick={onClose}
-          className="text-white hover:text-v-red transition-colors text-xs tracking-[0.5em] uppercase flex items-center gap-2 group px-4 py-2 border border-white/10"
+          className="text-white hover:text-v-red transition-colors text-xs tracking-[0.4em] uppercase flex items-center gap-2 group px-4 py-2 border border-white/10"
         >
           Close <span className="text-xl font-light group-hover:rotate-90 transition-transform inline-block">×</span>
         </button>
       </div>
 
-      {/* Background decor */}
       <div className="fixed top-0 left-0 w-full h-full opacity-5 pointer-events-none overflow-hidden select-none">
         <span className="text-[40vh] font-black serif italic absolute -top-20 -left-20 whitespace-nowrap leading-none">
           {product.brand}
         </span>
       </div>
 
-      {/* Layout — stack on mobile, side by side on desktop */}
       <div className="flex flex-col md:flex-row md:min-h-[calc(100vh-57px)]">
-
-        {/* Image side — swipeable */}
         <div className={`w-full md:w-1/2 relative flex-shrink-0 group ${product.category === "Sneakers" ? "bg-white h-[80vw] min-h-[300px] md:h-auto md:min-h-full" : "bg-v-gray h-[80vw] min-h-[300px] md:h-auto md:min-h-full"}`}>
-          
           <div 
             ref={scrollRef}
             onScroll={handleScroll}
@@ -117,10 +105,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
 
           {productImages.length > 1 && (
             <>
-              {/* Arrows hidden on mobile, show on hover on desktop */}
               <button onClick={prevImage} className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 items-center justify-center text-white hover:bg-v-red transition-all duration-300 text-2xl z-10 opacity-0 group-hover:opacity-100">‹</button>
               <button onClick={nextImage} className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 items-center justify-center text-white hover:bg-v-red transition-all duration-300 text-2xl z-10 opacity-0 group-hover:opacity-100">›</button>
-              
               <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                 {productImages.map((_, idx) => (
                   <button
@@ -134,13 +120,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
           )}
         </div>
 
-        {/* Details side */}
         <div className="w-full md:w-1/2 px-7 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12 md:px-14 md:pt-10 md:pb-16 flex flex-col bg-v-black border-t border-white/10 md:border-t-0 md:border-l md:border-white/10">
-          <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0">
+          <div className="max-w-lg mx-auto space-y-10 pb-8 md:pb-0 z-10 relative">
 
-            {/* Header */}
             <header className="space-y-4">
-              <span className="text-v-red text-[10px] font-bold tracking-[0.6em] uppercase block">{product.brand}</span>
+              <span className="text-v-red text-[11px] font-bold tracking-[0.5em] uppercase block">{product.brand}</span>
               <h2 className="text-4xl sm:text-5xl md:text-6xl serif italic leading-snug text-white tracking-tight">
                 {(() => {
                   const name = product.name;
@@ -162,19 +146,29 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
                   return name;
                 })()}
               </h2>
+              
               <div className="flex gap-4 items-center pt-3">
-                <span className="text-3xl serif italic text-white/80">${product.price}</span>
+                <div className="flex items-baseline gap-3">
+                  <span className={`text-3xl serif italic ${isSteal ? 'text-v-red' : 'text-white/80'}`}>
+                    ${product.price}
+                  </span>
+                  {isSteal && (
+                    <span className="text-xl serif italic text-white/30 line-through decoration-white/20">
+                      $120
+                    </span>
+                  )}
+                </div>
                 <span className="h-[1px] flex-1 bg-white/20"></span>
-                <span className="text-[10px] tracking-[0.3em] uppercase text-white/40">{product.spec}</span>
+                <span className="text-[11px] tracking-[0.3em] uppercase text-white/40">
+                  {product.spec}
+                </span>
               </div>
             </header>
 
-            {/* Description */}
             <p className="text-base sm:text-lg serif italic text-white/80 leading-relaxed">
               {product.details.description}
             </p>
 
-            {/* Condition pills */}
             <div className="flex gap-3 flex-wrap">
               <span className="text-[10px] uppercase tracking-[0.3em] border border-white/15 px-3 py-2 text-white/50">
                 {product.condition}
@@ -182,12 +176,16 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
               <span className="text-[10px] uppercase tracking-[0.3em] border border-v-red/40 px-3 py-2 text-v-red/80">
                 verified auth.
               </span>
+              {isSteal && (
+                <span className="text-[10px] uppercase tracking-[0.3em] border border-v-red px-3 py-2 text-v-red">
+                  Limited Allocation
+                </span>
+              )}
             </div>
 
-            {/* SIZE SELECTOR — apparel only */}
             {isApparel && (
               <div className="space-y-3">
-                <p className={`text-[10px] uppercase tracking-[0.4em] font-mono transition-colors duration-300 ${sizeError ? 'text-v-red' : 'text-white/30'}`}>
+                <p className={`text-[10px] uppercase tracking-[0.3em] font-mono transition-colors duration-300 ${sizeError ? 'text-v-red' : 'text-white/30'}`}>
                   {sizeError ? 'pick a size first.' : 'select size'}
                 </p>
                 <div className="flex gap-2 flex-wrap">
@@ -210,27 +208,25 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
               </div>
             )}
 
-            {/* CTAs */}
             <div className="space-y-3 pt-4">
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-v-red text-white py-5 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black active:scale-[0.98] transition-all duration-300 border border-v-red"
+                className="w-full bg-v-red text-white py-5 text-xs font-bold uppercase tracking-[0.4em] hover:bg-white hover:text-v-black active:scale-[0.98] transition-all duration-300 border border-v-red"
               >
                 add to bag
               </button>
 
               <button
                 onClick={onInquire}
-                className="w-full bg-transparent text-white py-5 text-xs font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-v-black active:scale-[0.98] transition-all duration-300 border border-white/20"
+                className="w-full bg-transparent text-white py-5 text-xs font-bold uppercase tracking-[0.4em] hover:bg-white hover:text-v-black active:scale-[0.98] transition-all duration-300 border border-white/20"
               >
                 dm for availability
               </button>
 
-              <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.4em] pt-2 italic">
+              <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.3em] pt-2 italic">
                 verified stock // est. 2025
               </p>
             </div>
-
           </div>
         </div>
       </div>
