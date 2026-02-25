@@ -154,7 +154,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
                   </span>
                   {isSteal && (
                     <span className="text-xl serif italic text-white/30 line-through decoration-white/20">
-                      $120
+                      $60
                     </span>
                   )}
                 </div>
