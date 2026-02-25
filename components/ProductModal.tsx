@@ -88,11 +88,23 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       <div className="flex flex-col md:flex-row md:min-h-[calc(100vh-57px)]">
         <div className={`w-full md:w-1/2 relative flex-shrink-0 group ${product.category === "Sneakers" && !hasNoImages ? "bg-white h-[80vw] min-h-[300px] md:h-auto md:min-h-full" : "bg-v-gray h-[80vw] min-h-[300px] md:h-auto md:min-h-full"}`}>
           
-          {/* No Image Fallback or Image Carousel */}
+          {/* No Image Fallback with Wings */}
           {hasNoImages ? (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0a] border-b md:border-b-0 md:border-r border-white/10 p-8 text-center min-h-[300px]">
-              <span className="serif italic text-4xl md:text-5xl text-white/30 leading-none">No Image</span>
-              <span className="text-[10px] font-mono tracking-[0.4em] text-v-red uppercase mt-4">Available</span>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0a] border-b md:border-b-0 md:border-r border-white/10 p-8 text-center min-h-[300px] relative overflow-hidden">
+              <img
+                src="/images/corner-wing.png"
+                alt=""
+                className="absolute -top-2 -left-2 w-48 h-48 sm:w-56 sm:h-56 object-contain pointer-events-none z-[1] opacity-40"
+              />
+              <img
+                src="/images/corner-wing.png"
+                alt=""
+                className="absolute -bottom-2 -right-2 w-48 h-48 sm:w-56 sm:h-56 object-contain pointer-events-none z-[1] opacity-40 rotate-180"
+              />
+              <div className="relative z-10 flex flex-col items-center">
+                <span className="serif italic text-4xl md:text-5xl text-white/30 leading-none">No Image</span>
+                <span className="text-[10px] font-mono tracking-[0.4em] text-v-red uppercase mt-4">Available</span>
+              </div>
             </div>
           ) : (
             <div 
