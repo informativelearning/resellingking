@@ -798,7 +798,7 @@ export const INVENTORY: Product[] = [...rawData.map(([brand, name, volumes]) => 
     brand:     normalizedBrand,
     name:      normalizedName,
     spec,
-    condition: category === 'Apparel' ? 'New with Tags' : 'Sealed',
+    condition: category === 'Apparel' ? 'New' : 'Sealed',
     stock:     Math.floor(Math.random() * 15) + 3,
     price:     category === 'Apparel' ? 35 : 70,
     category,
