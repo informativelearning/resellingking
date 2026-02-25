@@ -74,11 +74,23 @@ const ProductCard = memo(({
           }`} />
         )}
 
-        {/* No image fallback - Clean Minimal Version */}
+        {/* No image fallback */}
         {imgError || hasNoImages ? (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0a] border border-white/5 p-4 text-center z-0">
-            <span className="serif italic text-2xl sm:text-3xl text-white/40 leading-none">No Image</span>
-            <span className="text-[10px] font-mono tracking-[0.4em] text-v-red uppercase mt-3">Available</span>
+          <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0a] border border-white/5 p-4 text-center z-0 relative overflow-hidden">
+            <img
+              src={CORNER_WING}
+              alt=""
+              className="absolute -top-2 -left-2 w-48 h-48 sm:w-56 sm:h-56 object-contain pointer-events-none z-[1] opacity-40"
+            />
+            <img
+              src={CORNER_WING}
+              alt=""
+              className="absolute -bottom-2 -right-2 w-48 h-48 sm:w-56 sm:h-56 object-contain pointer-events-none z-[1] opacity-40 rotate-180"
+            />
+            <div className="relative z-10 flex flex-col items-center">
+              <span className="serif italic text-2xl sm:text-3xl text-white/40 leading-none">No Image</span>
+              <span className="text-[10px] font-mono tracking-[0.4em] text-v-red uppercase mt-3">Available</span>
+            </div>
           </div>
         ) : (
           <img
