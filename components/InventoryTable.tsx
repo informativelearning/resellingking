@@ -228,12 +228,11 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
 
     <style>{`
       @keyframes staggeredFadeIn {
-        0%   { opacity: 0; transform: scale(0.97); }
-        15%  { opacity: 1; transform: scale(1.01); }
-        100% { opacity: 1; transform: scale(1); }
+        0%   { opacity: 0; }
+        100% { opacity: 1; }
       }
       .animate-staggeredFadeIn {
-        animation: staggeredFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: staggeredFadeIn 2s ease-in-out forwards;
       }
     `}</style>
   </div>
