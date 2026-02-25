@@ -332,10 +332,12 @@ const rawData: [string, string, string[]][] = [
 // TICKER CONTENT
 // ---------------------------------------------------------------------------
 export const DISCOUNTS = [
-  "CURATED LUXURY COLLECTION",
   "FRAGRANCE • STREETWEAR • LUXURY",
-  "AUTHENTICITY VERIFIED",
+  "ESSENTIAL HOODIES $35 LIMITED ASF",
+  "AUTHENTIC",
+  "QUALITY SAYS EVERYTHING",
   "ANYTHING ANYWHERE",
+  "DM IF WHAT YOU WANT ISN'T HERE",
 ];
 
 // ---------------------------------------------------------------------------
@@ -798,7 +800,7 @@ export const INVENTORY: Product[] = [...rawData.map(([brand, name, volumes]) => 
     spec,
     condition: category === 'Apparel' ? 'New with Tags' : 'Sealed',
     stock:     Math.floor(Math.random() * 15) + 3,
-    price:     category === 'Apparel' ? 60 : 70,
+    price:     category === 'Apparel' ? 35 : 70,
     category,
     image:     images[0],
     images,
