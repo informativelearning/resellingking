@@ -9,7 +9,7 @@ interface InventoryTableProps {
 
 const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
 const LOGO = '/images/wingsofofrtune2.png';
-const CORNER_WING = '/images/corner-wing.jpg';
+const CORNER_WING = '/images/corner-wing.png';
 
 const ProductCard = memo(({
   product,
