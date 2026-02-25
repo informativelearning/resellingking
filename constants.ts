@@ -266,7 +266,7 @@ const getImagePaths = (brand: string, name: string): string[] => {
   const images = IMAGE_MAP[key];
   if (!images) {
     console.warn(`No images mapped for: ${brand} - ${name}`);
-    return ["/images/placeholder.jpg"];
+    return [];
   }
   return images;
 };
@@ -312,6 +312,18 @@ const rawData: [string, string, string[]][] = [
   ["Giorgio Armani", "Emporio Armani Stronger With You Absolutely", ["100ml"]],
   ["Giorgio Armani", "Emporio Armani Stronger With You Intensely",  ["100ml"]],
   ["Giorgio Armani", "My Way",                                      ["90ml"]],
+
+  // VERSACE
+  ["Versace", "Eros Eau de Parfum",                    ["100ml"]],
+  ["Versace", "Eros Eau de Toilette",                  ["100ml"]],
+  ["Versace", "Eros Parfum",                           ["100ml"]],
+  ["Versace", "Eros Flame Eau de Parfum",              ["100ml"]],
+  ["Versace", "Eros Energy Pour Homme Eau de Parfum",  ["100ml"]],
+  ["Versace", "Man Eau Fraîche Eau de Toilette",       ["100ml"]],
+  ["Versace", "Eau Fraîche Extreme Pour Homme",        ["100ml"]],
+  ["Versace", "Pour Femme Dylan Blue Parfum",          ["100ml"]],
+  ["Versace", "Dylan Blush Pink Pour Femme",           ["100ml"]],
+  ["Versace", "Crystal Emerald Pour Femme",            ["90ml"]],
 
   // FEAR OF GOD ESSENTIALS
   ["Fear of God Essentials", "Essentials SS22 Stretch Limo Hoodie",   ["S, M, L, XL"]],
@@ -798,7 +810,7 @@ export const INVENTORY: Product[] = [...rawData.map(([brand, name, volumes]) => 
     brand:     normalizedBrand,
     name:      normalizedName,
     spec,
-    condition: category === 'Apparel' ? 'New' : 'Sealed',
+    condition: category === 'Apparel' ? 'New with Tags' : 'Sealed',
     stock:     Math.floor(Math.random() * 15) + 3,
     price:     category === 'Apparel' ? 35 : 70,
     category,
