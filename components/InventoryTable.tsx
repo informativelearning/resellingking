@@ -61,7 +61,7 @@ const ProductCard = memo(({
       ref={cardRef}
       className={`group cursor-pointer flex flex-col space-y-3 relative ${isVisible ? 'animate-staggeredFadeIn' : 'opacity-0'}`}
       style={{
-        animationDelay: isVisible ? `${Math.min(idx * (isTouchDevice ? 30 : 1500), isTouchDevice ? 300 : 9999)}ms` : '0ms',
+        animationDelay: isVisible ? `${Math.min(idx * (isTouchDevice ? 30 : 2500), isTouchDevice ? 300 : 9999)}ms` : '0ms',
         contain: 'layout style',
       }}
     >
@@ -228,11 +228,12 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
 
     <style>{`
       @keyframes staggeredFadeIn {
-        0% { opacity: 0; transform: translateY(10px); }
-        100% { opacity: 1; transform: translateY(0); }
+        0%   { opacity: 0; transform: scale(0.97); }
+        15%  { opacity: 1; transform: scale(1.01); }
+        100% { opacity: 1; transform: scale(1); }
       }
       .animate-staggeredFadeIn {
-        animation: staggeredFadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: staggeredFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
     `}</style>
   </div>
