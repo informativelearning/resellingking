@@ -9,7 +9,7 @@ interface InventoryTableProps {
 
 const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
 const LOGO = '/images/wingsofofrtune2.png';
-const CORNER_WING = '/images/corner-wing.png'; // ─── NEW: Added Wing Graphic
+const CORNER_WING = '/images/corner-wing.png';
 
 const ProductCard = memo(({
   product,
@@ -24,12 +24,13 @@ const ProductCard = memo(({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSquare, setIsSquare]         = useState(false);
-  const[isHovered, setIsHovered]       = useState(false);
+  const [isHovered, setIsHovered]       = useState(false);
   const [imageLoaded, setImageLoaded]   = useState(false);
-  const [imgError, setImgError]         = useState(false); // ─── NEW: Tracks broken images
+  const [imgError, setImgError]         = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const images     = product.images && product.images.length > 0 ? product.images : [product.image];
+  const hasNoImages = !product.image && (!product.images || product.images.length === 0);
   const isApparel  = product.category === 'Apparel';
   const isSneakers = product.category === 'Sneakers';
   const usesCover  = isApparel && !isSneakers;
@@ -40,23 +41,23 @@ const ProductCard = memo(({
     const ratio = img.naturalWidth / img.naturalHeight;
     if (ratio >= 0.9 && ratio <= 1.1) setIsSquare(true);
     setImageLoaded(true);
-  },[]);
+  }, []);
 
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     if (isApparel || isSneakers) onProductClick(product);
     else onAddToCart(product);
-  },[isApparel, isSneakers, product, onProductClick, onAddToCart]);
+  }, [isApparel, isSneakers, product, onProductClick, onAddToCart]);
 
   return (
     <div
       onClick={() => onProductClick(product)}
       onMouseEnter={() => !isTouchDevice && setIsHovered(true)}
       onMouseLeave={() => !isTouchDevice && setIsHovered(false)}
-      className={`group cursor-pointer flex flex-col space-y-3 relative ${imageLoaded ? 'animate-staggeredFadeIn' : 'opacity-0'}`}
+      className={`group cursor-pointer flex flex-col space-y-3 relative ${imageLoaded || hasNoImages ? 'animate-staggeredFadeIn' : 'opacity-0'}`}
       style={{
         contain: 'layout style',
-        animationDelay: `${Math.min(idx * 40, 400)}ms`, // Added your original delay back just in case!
+        animationDelay: `${Math.min(idx * 40, 400)}ms`,
       }}
     >
       {/* Image Container */}
@@ -66,36 +67,30 @@ const ProductCard = memo(({
           : 'aspect-[3/4] bg-v-gray border border-white/5'
       }`}>
 
-        {/* Gradient overlay — fragrances/apparel only (Hidden if imgError) */}
+        {/* Gradient overlay — fragrances/apparel only */}
         {!isSneakers && !imgError && (
           <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1] ${
             isTouchDevice ? 'opacity-50' : 'opacity-60 transition-opacity duration-500 group-hover:opacity-30'
           }`} />
         )}
 
-        {/* ─── NEW: "NO IMAGE AVAILABLE" FALLBACK STATE ─── */}
-        {imgError ? (
+        {/* No image fallback */}
+        {imgError || hasNoImages ? (
           <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0a] border border-white/5 p-4 text-center z-0 relative overflow-hidden">
-             
-             {/* TOP LEFT WING */}
-             <img 
-               src={CORNER_WING} 
-               alt="" 
-               className="absolute -top-4 -left-4 w-28 h-28 sm:w-32 sm:h-32 pointer-events-none z-[1] invert opacity-40 mix-blend-screen"
-             />
-             
-             {/* BOTTOM RIGHT WING (Rotated 180 degrees) */}
-             <img 
-               src={CORNER_WING} 
-               alt="" 
-               className="absolute -bottom-4 -right-4 w-28 h-28 sm:w-32 sm:h-32 pointer-events-none z-[1] invert opacity-40 mix-blend-screen rotate-180"
-             />
-
-             {/* TEXT CONTENT */}
-             <div className="relative z-10 flex flex-col items-center">
-                <span className="serif italic text-2xl sm:text-3xl text-white/40 leading-none">No Image</span>
-                <span className="text-[10px] font-mono tracking-[0.4em] text-v-red uppercase mt-3">Available</span>
-             </div>
+            <img
+              src={CORNER_WING}
+              alt=""
+              className="absolute -top-4 -left-4 w-28 h-28 sm:w-32 sm:h-32 pointer-events-none z-[1] invert opacity-40 mix-blend-screen"
+            />
+            <img
+              src={CORNER_WING}
+              alt=""
+              className="absolute -bottom-4 -right-4 w-28 h-28 sm:w-32 sm:h-32 pointer-events-none z-[1] invert opacity-40 mix-blend-screen rotate-180"
+            />
+            <div className="relative z-10 flex flex-col items-center">
+              <span className="serif italic text-2xl sm:text-3xl text-white/40 leading-none">No Image</span>
+              <span className="text-[10px] font-mono tracking-[0.4em] text-v-red uppercase mt-3">Available</span>
+            </div>
           </div>
         ) : (
           <img
@@ -104,10 +99,7 @@ const ProductCard = memo(({
             loading="lazy"
             decoding="async"
             onLoad={handleImageLoad}
-            onError={() => {
-              setImgError(true);
-              setImageLoaded(true); // Forces the card to fade in even if the image breaks!
-            }}
+            onError={() => { setImgError(true); setImageLoaded(true); }}
             className={`w-full h-full ${
               isSneakers
                 ? 'object-contain p-3'
@@ -121,7 +113,7 @@ const ProductCard = memo(({
           />
         )}
 
-        {/* Image dots (Hidden if imgError) */}
+        {/* Image dots */}
         {!imgError && images.length > 1 && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1 z-[3]">
             {images.map((_, dotIdx) => (
@@ -146,13 +138,9 @@ const ProductCard = memo(({
               : 'bg-v-black/80 backdrop-blur-sm text-white border-white/10'
           } ${isTouchDevice ? '' : 'transition-transform duration-300 group-hover:scale-105'}`}>
             {isSteal && (
-              <span className="text-white/30 line-through text-[10px] font-normal decoration-v-red/60">
-                $120
-              </span>
+              <span className="text-white/30 line-through text-[10px] font-normal decoration-v-red/60">$120</span>
             )}
-            <span className={isSteal ? 'text-v-red' : ''}>
-              ${product.price}
-            </span>
+            <span className={isSteal ? 'text-v-red' : ''}>${product.price}</span>
           </div>
         </div>
 
@@ -239,17 +227,11 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
     {products.length === 0 && (
       <div className="py-32 flex flex-col items-center justify-center relative overflow-hidden border border-white/5 bg-white/[0.01]">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[500px] opacity-[0.05] pointer-events-none mix-blend-screen flex justify-center items-center">
-          <img
-            src={LOGO}
-            alt="Wings"
-            className="w-full h-auto object-contain scale-[1.5] filter grayscale contrast-125"
-          />
+          <img src={LOGO} alt="Wings" className="w-full h-auto object-contain scale-[1.5] filter grayscale contrast-125" />
         </div>
         <div className="relative z-10 text-center space-y-5">
           <h2 className="text-3xl sm:text-4xl serif italic text-white/50 drop-shadow-lg">Collection Empty</h2>
-          <p className="text-[11px] tracking-[0.4em] uppercase text-v-red font-mono">
-            [ 0 ITEMS FOUND ]
-          </p>
+          <p className="text-[11px] tracking-[0.4em] uppercase text-v-red font-mono">[ 0 ITEMS FOUND ]</p>
           <div className="pt-8">
             <button
               onClick={() => window.open('https://instagram.com/661ro_resellz', '_blank')}

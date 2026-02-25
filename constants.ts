@@ -814,7 +814,7 @@ export const INVENTORY: Product[] = [...rawData.map(([brand, name, volumes]) => 
     stock:     Math.floor(Math.random() * 15) + 3,
     price:     category === 'Apparel' ? 35 : 70,
     category,
-    image:     images[0],
+    image:     images[0] ?? '',
     images,
     details:   DEFAULT_DETAILS(category),
   };
