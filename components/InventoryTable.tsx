@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef, memo } from 'react';
+import React, { useState, useCallback, useRef, memo } from 'react';
 import { Product } from '../types';
 
 interface InventoryTableProps {
@@ -24,17 +24,8 @@ const ProductCard = memo(({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSquare, setIsSquare]         = useState(false);
   const [isHovered, setIsHovered]       = useState(false);
-  const [isVisible, setIsVisible]       = useState(false);
+  const [imageLoaded, setImageLoaded]   = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-    if (cardRef.current) observer.observe(cardRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   const images     = product.images && product.images.length > 0 ? product.images : [product.image];
   const isApparel  = product.category === 'Apparel';
@@ -45,6 +36,7 @@ const ProductCard = memo(({
     const img = e.currentTarget;
     const ratio = img.naturalWidth / img.naturalHeight;
     if (ratio >= 0.9 && ratio <= 1.1) setIsSquare(true);
+    setImageLoaded(true);
   }, []);
 
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
@@ -58,10 +50,8 @@ const ProductCard = memo(({
       onClick={() => onProductClick(product)}
       onMouseEnter={() => !isTouchDevice && setIsHovered(true)}
       onMouseLeave={() => !isTouchDevice && setIsHovered(false)}
-      ref={cardRef}
-      className={`group cursor-pointer flex flex-col space-y-3 relative ${isVisible ? 'animate-staggeredFadeIn' : 'opacity-0'}`}
+      className={`group cursor-pointer flex flex-col space-y-3 relative ${imageLoaded ? 'animate-staggeredFadeIn' : 'opacity-0'}`}
       style={{
-        animationDelay: isVisible ? `${Math.min(idx * (isTouchDevice ? 30 : 2500), isTouchDevice ? 300 : 9999)}ms` : '0ms',
         contain: 'layout style',
       }}
     >
@@ -228,11 +218,12 @@ const InventoryTable: React.FC<InventoryTableProps> = ({ products, onProductClic
 
     <style>{`
       @keyframes staggeredFadeIn {
-        0%   { opacity: 0; }
-        100% { opacity: 1; }
+        0%   { opacity: 0; transform: translateY(16px) scale(0.96); }
+        60%  { opacity: 1; transform: translateY(-2px) scale(1.01); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
       }
       .animate-staggeredFadeIn {
-        animation: staggeredFadeIn 2s ease-in-out forwards;
+        animation: staggeredFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
     `}</style>
   </div>
