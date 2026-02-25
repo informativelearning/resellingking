@@ -9,6 +9,7 @@ interface InventoryTableProps {
 
 const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
 const LOGO = '/images/wingsofofrtune2.png';
+const CORNER_WING = '/images/corner-wing.png'; // ─── NEW: Added Wing Graphic
 
 const ProductCard = memo(({
   product,
@@ -23,8 +24,9 @@ const ProductCard = memo(({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSquare, setIsSquare]         = useState(false);
-  const [isHovered, setIsHovered]       = useState(false);
+  const[isHovered, setIsHovered]       = useState(false);
   const [imageLoaded, setImageLoaded]   = useState(false);
+  const [imgError, setImgError]         = useState(false); // ─── NEW: Tracks broken images
   const cardRef = useRef<HTMLDivElement>(null);
 
   const images     = product.images && product.images.length > 0 ? product.images : [product.image];
@@ -38,13 +40,13 @@ const ProductCard = memo(({
     const ratio = img.naturalWidth / img.naturalHeight;
     if (ratio >= 0.9 && ratio <= 1.1) setIsSquare(true);
     setImageLoaded(true);
-  }, []);
+  },[]);
 
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     if (isApparel || isSneakers) onProductClick(product);
     else onAddToCart(product);
-  }, [isApparel, isSneakers, product, onProductClick, onAddToCart]);
+  },[isApparel, isSneakers, product, onProductClick, onAddToCart]);
 
   return (
     <div
@@ -54,6 +56,7 @@ const ProductCard = memo(({
       className={`group cursor-pointer flex flex-col space-y-3 relative ${imageLoaded ? 'animate-staggeredFadeIn' : 'opacity-0'}`}
       style={{
         contain: 'layout style',
+        animationDelay: `${Math.min(idx * 40, 400)}ms`, // Added your original delay back just in case!
       }}
     >
       {/* Image Container */}
@@ -63,33 +66,63 @@ const ProductCard = memo(({
           : 'aspect-[3/4] bg-v-gray border border-white/5'
       }`}>
 
-        {/* Gradient overlay — fragrances/apparel only */}
-        {!isSneakers && (
+        {/* Gradient overlay — fragrances/apparel only (Hidden if imgError) */}
+        {!isSneakers && !imgError && (
           <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[1] ${
             isTouchDevice ? 'opacity-50' : 'opacity-60 transition-opacity duration-500 group-hover:opacity-30'
           }`} />
         )}
 
-        <img
-          src={images[currentIndex]}
-          alt={product.name}
-          loading="lazy"
-          decoding="async"
-          onLoad={handleImageLoad}
-          className={`w-full h-full ${
-            isSneakers
-              ? 'object-contain p-3'
-              : usesCover || isSquare
-                ? 'object-cover'
-                : 'object-contain p-2'
-          } ${isTouchDevice ? '' : 'transition-transform duration-700 group-hover:scale-105'}`}
-          style={{
-            filter: isSneakers ? 'contrast(1.08) saturate(0.95)' : 'brightness(0.92) contrast(1.05)',
-          }}
-        />
+        {/* ─── NEW: "NO IMAGE AVAILABLE" FALLBACK STATE ─── */}
+        {imgError ? (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0a] border border-white/5 p-4 text-center z-0 relative overflow-hidden">
+             
+             {/* TOP LEFT WING */}
+             <img 
+               src={CORNER_WING} 
+               alt="" 
+               className="absolute -top-4 -left-4 w-28 h-28 sm:w-32 sm:h-32 pointer-events-none z-[1] invert opacity-40 mix-blend-screen"
+             />
+             
+             {/* BOTTOM RIGHT WING (Rotated 180 degrees) */}
+             <img 
+               src={CORNER_WING} 
+               alt="" 
+               className="absolute -bottom-4 -right-4 w-28 h-28 sm:w-32 sm:h-32 pointer-events-none z-[1] invert opacity-40 mix-blend-screen rotate-180"
+             />
 
-        {/* Image dots */}
-        {images.length > 1 && (
+             {/* TEXT CONTENT */}
+             <div className="relative z-10 flex flex-col items-center">
+                <span className="serif italic text-2xl sm:text-3xl text-white/40 leading-none">No Image</span>
+                <span className="text-[10px] font-mono tracking-[0.4em] text-v-red uppercase mt-3">Available</span>
+             </div>
+          </div>
+        ) : (
+          <img
+            src={images[currentIndex]}
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
+            onLoad={handleImageLoad}
+            onError={() => {
+              setImgError(true);
+              setImageLoaded(true); // Forces the card to fade in even if the image breaks!
+            }}
+            className={`w-full h-full ${
+              isSneakers
+                ? 'object-contain p-3'
+                : usesCover || isSquare
+                  ? 'object-cover'
+                  : 'object-contain p-2'
+            } ${isTouchDevice ? '' : 'transition-transform duration-700 group-hover:scale-105'}`}
+            style={{
+              filter: isSneakers ? 'contrast(1.08) saturate(0.95)' : 'brightness(0.92) contrast(1.05)',
+            }}
+          />
+        )}
+
+        {/* Image dots (Hidden if imgError) */}
+        {!imgError && images.length > 1 && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1 z-[3]">
             {images.map((_, dotIdx) => (
               <button
