@@ -8,7 +8,7 @@ interface ProductModalProps {
   onAddToCart: (product: Product, selectedSize?: string) => void;
 }
 
-const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
+const SIZES =['XS', 'S', 'M', 'L', 'XL'];
 const SNEAKER_SIZES =[
   '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5',
   '11', '11.5', '12', '12.5', '13', '14'
@@ -17,11 +17,14 @@ const SNEAKER_SIZES =[
 const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire, onAddToCart }) => {
   const isApparel = product.category === 'Apparel' || product.category === 'Sneakers';
   const isSteal   = product.category === 'Apparel' && product.price === 35;
-  const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  
+  // Calculate if images exist
+  const hasNoImages = !product.image && (!product.images || product.images.length === 0);
+  const productImages = hasNoImages ?[] : (product.images && product.images.length > 0 ? product.images : [product.image]);
   
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [isSquare, setIsSquare] = useState(false);
+  const[isSquare, setIsSquare] = useState(false);
   const [sizeError, setSizeError] = useState(false);
   
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -55,8 +58,15 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
     setCurrentImageIndex(index);
   };
 
-  const nextImage = () => scrollToIndex((currentImageIndex + 1) % productImages.length);
-  const prevImage = () => scrollToIndex((currentImageIndex - 1 + productImages.length) % productImages.length);
+  const nextImage = () => {
+    if (productImages.length === 0) return;
+    scrollToIndex((currentImageIndex + 1) % productImages.length);
+  };
+  
+  const prevImage = () => {
+    if (productImages.length === 0) return;
+    scrollToIndex((currentImageIndex - 1 + productImages.length) % productImages.length);
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-v-black overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
@@ -76,34 +86,44 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onInquire
       </div>
 
       <div className="flex flex-col md:flex-row md:min-h-[calc(100vh-57px)]">
-        <div className={`w-full md:w-1/2 relative flex-shrink-0 group ${product.category === "Sneakers" ? "bg-white h-[80vw] min-h-[300px] md:h-auto md:min-h-full" : "bg-v-gray h-[80vw] min-h-[300px] md:h-auto md:min-h-full"}`}>
-          <div 
-            ref={scrollRef}
-            onScroll={handleScroll}
-            className="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar touch-pan-x"
-          >
-            {productImages.map((imgSrc, idx) => (
-              <div key={idx} className="w-full h-full flex-shrink-0 snap-center flex items-center justify-center relative overflow-hidden">
-                <img
-                  src={imgSrc}
-                  alt={`${product.name} - Image ${idx + 1}`}
-                  className={`w-full h-full transition-all duration-500 ${
-                    product.category === 'Sneakers'
-                      ? 'object-contain p-6'
-                      : isApparel
-                        ? 'object-cover'
-                        : isSquare
+        <div className={`w-full md:w-1/2 relative flex-shrink-0 group ${product.category === "Sneakers" && !hasNoImages ? "bg-white h-[80vw] min-h-[300px] md:h-auto md:min-h-full" : "bg-v-gray h-[80vw] min-h-[300px] md:h-auto md:min-h-full"}`}>
+          
+          {/* No Image Fallback or Image Carousel */}
+          {hasNoImages ? (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0a] border-b md:border-b-0 md:border-r border-white/10 p-8 text-center min-h-[300px]">
+              <span className="serif italic text-4xl md:text-5xl text-white/30 leading-none">No Image</span>
+              <span className="text-[10px] font-mono tracking-[0.4em] text-v-red uppercase mt-4">Available</span>
+            </div>
+          ) : (
+            <div 
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar touch-pan-x"
+            >
+              {productImages.map((imgSrc, idx) => (
+                <div key={idx} className="w-full h-full flex-shrink-0 snap-center flex items-center justify-center relative overflow-hidden">
+                  <img
+                    src={imgSrc}
+                    alt={`${product.name} - Image ${idx + 1}`}
+                    className={`w-full h-full transition-all duration-500 ${
+                      product.category === 'Sneakers'
+                        ? 'object-contain p-6'
+                        : isApparel
                           ? 'object-cover'
-                          : 'object-contain p-4'
-                  }`}
-                  onLoad={handleImageLoad}
-                  style={product.category === 'Sneakers' ? { filter: 'none' } : {}}
-                />
-              </div>
-            ))}
-          </div>
+                          : isSquare
+                            ? 'object-cover'
+                            : 'object-contain p-4'
+                    }`}
+                    onLoad={handleImageLoad}
+                    style={product.category === 'Sneakers' ? { filter: 'none' } : {}}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
 
-          {productImages.length > 1 && (
+          {/* Carousel Controls */}
+          {!hasNoImages && productImages.length > 1 && (
             <>
               <button onClick={prevImage} className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 items-center justify-center text-white hover:bg-v-red transition-all duration-300 text-2xl z-10 opacity-0 group-hover:opacity-100">‹</button>
               <button onClick={nextImage} className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-v-black/70 backdrop-blur-sm border border-white/20 items-center justify-center text-white hover:bg-v-red transition-all duration-300 text-2xl z-10 opacity-0 group-hover:opacity-100">›</button>
