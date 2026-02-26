@@ -12,27 +12,26 @@ const IG_HANDLE = '661ro_resellz';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState(''); // NEW: Debounced state
+  const[debouncedSearch, setDebouncedSearch] = useState('');
   const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState<Category>('All');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const[selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('wof_cart');
       return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
+    } catch { return[]; }
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
+  const[isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const[toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
-  // NEW: Search debounce logic (prevents typing lag)
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchTerm);
-    }, 300); // Waits 300ms after you stop typing to filter
+    }, 300);
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
@@ -62,10 +61,9 @@ const App: React.FC = () => {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
+  },[isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
 
-
-  const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
+  const categories: Category[] =['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
   const brands: string[] = useMemo(() => {
     const source =
@@ -81,9 +79,11 @@ const App: React.FC = () => {
     setFilterBrand('ALL');
   };
 
+  // Determine if the user is actively filtering (so we show exact results rather than curated sections)
+  const isFiltering = debouncedSearch !== '' || filterCategory !== 'All' || filterBrand !== 'ALL';
+
   const filteredProducts = useMemo(() => {
     return inventory.filter(product => {
-      // Uses the debounced search so it doesn't freeze the screen
       const searchToUse = debouncedSearch.toLowerCase();
       const matchesSearch =
         product.name.toLowerCase().includes(searchToUse) ||
@@ -94,6 +94,12 @@ const App: React.FC = () => {
       return matchesSearch && matchesBrand && matchesCategory;
     });
   }, [debouncedSearch, filterBrand, filterCategory, inventory]);
+
+  // Curated Section Arrays
+  const latestAdded = useMemo(() => [...inventory].reverse().slice(0, 4), [inventory]);
+  const fragrances = useMemo(() => inventory.filter(p => p.category === 'Fragrance'),[inventory]);
+  const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
+  const apparel = useMemo(() => inventory.filter(p => p.category === 'Apparel'), [inventory]);
 
   const handleInquire = () => {
     window.open(`https://instagram.com/${IG_HANDLE}`, '_blank');
@@ -156,15 +162,13 @@ const App: React.FC = () => {
         }
         .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
-        /* ─── PERFORMANCE-OPTIMIZED BREATHING ANIMATION ─── */
-        /* Removed 'filter: blur' which causes massive lag on mobile GPUs */
         @keyframes ghostPulse {
           0%, 100% { opacity: 0.02; transform: scale(1.5) translateZ(0); }
           50%      { opacity: 0.08; transform: scale(1.5) translateZ(0); }
         }
         .animate-ghost { 
           animation: ghostPulse 8s ease-in-out infinite; 
-          will-change: opacity; /* Tells the browser to hardware-accelerate this */
+          will-change: opacity; 
         }
       `}</style>
 
@@ -172,49 +176,22 @@ const App: React.FC = () => {
       <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5 h-[80px] md:h-[88px] flex items-center">
         <div className="max-w-[1800px] w-full mx-auto px-6 md:px-12 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <img
-              src={LOGO}
-              alt="Wings of Fortune"
-              className="h-12 md:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110 contrast-110"
-              style={{ mixBlendMode: 'screen' }}
-            />
+            <img src={LOGO} alt="Wings of Fortune" className="h-12 md:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110 contrast-110" style={{ mixBlendMode: 'screen' }} />
             <div className="hidden md:block h-8 w-[1px] bg-white/10" />
-            <span className="hidden md:block text-[10px] tracking-[0.4em] uppercase text-white/30 font-light">
-              Wasco, CA
-            </span>
+            <span className="hidden md:block text-[10px] tracking-[0.4em] uppercase text-white/30 font-light">Wasco, CA</span>
           </div>
 
           <div className="flex items-center gap-5">
-            <a
-              href={`https://instagram.com/${IG_HANDLE}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-white/30 hover:text-white transition-colors duration-300 group"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              <span className="hidden sm:block text-[10px] tracking-[0.3em] uppercase font-mono group-hover:text-v-red transition-colors">
-                @{IG_HANDLE}
-              </span>
+            <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/30 hover:text-white transition-colors duration-300 group">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              <span className="hidden sm:block text-[10px] tracking-[0.3em] uppercase font-mono group-hover:text-v-red transition-colors">@{IG_HANDLE}</span>
             </a>
             <div className="w-[1px] h-5 bg-white/10" />
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart"
-            >
-              <span className="hidden md:block text-[10px] tracking-[0.3em] uppercase font-medium opacity-0 group-hover/cart:opacity-100 transition-opacity">
-                bag
-              </span>
+            <button onClick={() => setIsCartOpen(true)} className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart">
+              <span className="hidden md:block text-[10px] tracking-[0.3em] uppercase font-medium opacity-0 group-hover/cart:opacity-100 transition-opacity">bag</span>
               <div className="relative">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                {totalCartItems > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-v-red text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                    {totalCartItems}
-                  </span>
-                )}
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                {totalCartItems > 0 && <span className="absolute -top-1.5 -right-1.5 bg-v-red text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{totalCartItems}</span>}
               </div>
             </button>
           </div>
@@ -225,11 +202,7 @@ const App: React.FC = () => {
         <Ticker />
 
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] pointer-events-none z-0 mix-blend-screen flex justify-center items-center">
-          <img
-            src={LOGO}
-            alt="Wings Watermark"
-            className="w-full h-auto object-contain md:scale-125 filter grayscale contrast-125 animate-ghost"
-          />
+          <img src={LOGO} alt="Wings Watermark" className="w-full h-auto object-contain md:scale-125 filter grayscale contrast-125 animate-ghost" />
         </div>
 
         <div className="px-6 md:px-12 flex flex-col items-center gap-12 max-w-[1400px] mx-auto w-full relative z-10 mt-16 mb-16">
@@ -239,13 +212,9 @@ const App: React.FC = () => {
               <span className="block mt-2">Fortune</span>
             </h1>
             <div className="flex flex-col items-center gap-6 pt-4">
-              <p className="text-[11px] md:text-xs tracking-[0.5em] uppercase text-white/40 font-light font-mono">
-                661 / Wasco, CA
-              </p>
+              <p className="text-[11px] md:text-xs tracking-[0.5em] uppercase text-white/40 font-light font-mono">661 / Wasco, CA</p>
               <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-v-red/50 to-transparent" />
-              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed serif italic">
-                quick. cheap. no bs.
-              </p>
+              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed serif italic">quick. cheap. no bs.</p>
             </div>
           </div>
         </div>
@@ -256,33 +225,13 @@ const App: React.FC = () => {
           <div className="flex items-center overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory h-14">
 
             <div className="flex-shrink-0 snap-start relative flex items-center h-full border-r border-white/10 pr-4 mr-4">
-              <span className="text-[11px] text-v-red tracking-[0.3em] uppercase font-mono mr-2">
-                Search
-              </span>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                placeholder="//"
-                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[11px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none font-mono"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-4 text-white/40 text-sm hover:text-white"
-                >✕</button>
-              )}
+              <span className="text-[11px] text-v-red tracking-[0.3em] uppercase font-mono mr-2">Search</span>
+              <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="//" className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[11px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none font-mono" />
+              {searchTerm && <button onClick={() => setSearchTerm('')} className="absolute right-4 text-white/40 text-sm hover:text-white">✕</button>}
             </div>
 
             <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
-              <button
-                onClick={() => setIsBrandDropdownOpen(true)}
-                className={`flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${
-                  filterBrand !== 'ALL'
-                    ? 'text-v-red font-bold'
-                    : 'text-white/40 hover:text-white'
-                }`}
-              >
+              <button onClick={() => setIsBrandDropdownOpen(true)} className={`flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${filterBrand !== 'ALL' ? 'text-v-red font-bold' : 'text-white/40 hover:text-white'}`}>
                 <span>{filterBrand === 'ALL' ? maisonLabel : filterBrand}</span>
                 <span className="text-[9px]">▼</span>
               </button>
@@ -290,15 +239,7 @@ const App: React.FC = () => {
 
             <div className="flex items-center h-full gap-6">
               {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => handleCategoryChange(cat)}
-                  className={`flex-shrink-0 snap-start text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 font-mono ${
-                    filterCategory === cat
-                      ? 'text-white border-white font-bold'
-                      : 'text-white/30 border-transparent hover:text-white/60'
-                  }`}
-                >
+                <button key={cat} onClick={() => handleCategoryChange(cat)} className={`flex-shrink-0 snap-start text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 font-mono ${filterCategory === cat ? 'text-white border-white font-bold' : 'text-white/30 border-transparent hover:text-white/60'}`}>
                   {cat}
                 </button>
               ))}
@@ -310,21 +251,69 @@ const App: React.FC = () => {
 
       <main className="flex-1 px-6 md:px-12 pt-10 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
         
-        <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
-          <h2 className="serif italic text-3xl md:text-4xl text-white">
-            {filterCategory === 'All' ? 'Complete Collection' : filterCategory}
-            {filterBrand !== 'ALL' && <span className="text-white/40 text-xl md:text-2xl ml-3">/ {filterBrand}</span>}
-          </h2>
-          <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">
-            [{filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}]
-          </p>
-        </div>
+        {isFiltering ? (
+          <>
+            <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
+              <h2 className="serif italic text-3xl md:text-4xl text-white">
+                {filterCategory === 'All' ? 'Search Results' : filterCategory}
+                {filterBrand !== 'ALL' && <span className="text-white/40 text-xl md:text-2xl ml-3">/ {filterBrand}</span>}
+              </h2>
+              <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}]
+              </p>
+            </div>
+            <InventoryTable products={filteredProducts} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+          </>
+        ) : (
+          <div className="space-y-32">
+            
+            {/* Section 1: Latest Added */}
+            {latestAdded.length > 0 && (
+              <section>
+                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+                  <div>
+                    <h2 className="serif italic text-3xl md:text-4xl text-white">Latest Added</h2>
+                    <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mt-2">Newest items to hit the vault.</p>
+                  </div>
+                </div>
+                <InventoryTable products={latestAdded} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+              </section>
+            )}
 
-        <InventoryTable
-          products={filteredProducts}
-          onProductClick={setSelectedProduct}
-          onAddToCart={addToCart}
-        />
+            {/* Section 2: Fragrances */}
+            {fragrances.length > 0 && (
+              <section>
+                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+                  <h2 className="serif italic text-3xl md:text-4xl text-white">All Our Fragrances</h2>
+                  <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{fragrances.length} Items]</p>
+                </div>
+                <InventoryTable products={fragrances} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+              </section>
+            )}
+
+            {/* Section 3: Sneakers */}
+            {sneakers.length > 0 && (
+              <section>
+                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+                  <h2 className="serif italic text-3xl md:text-4xl text-white">Sneakers</h2>
+                  <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{sneakers.length} Items]</p>
+                </div>
+                <InventoryTable products={sneakers} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+              </section>
+            )}
+
+            {/* Section 4: Apparel */}
+            {apparel.length > 0 && (
+              <section>
+                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+                  <h2 className="serif italic text-3xl md:text-4xl text-white">Apparel</h2>
+                  <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{apparel.length} Items]</p>
+                </div>
+                <InventoryTable products={apparel} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+              </section>
+            )}
+
+          </div>
+        )}
 
         <footer className="mt-40 mb-20 py-24 border-t border-white/5 flex flex-col items-center gap-16">
           <div className="text-center space-y-8">
@@ -337,15 +326,8 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <a
-            href={`https://instagram.com/${IG_HANDLE}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex flex-col items-center gap-4"
-          >
-            <span className="text-[11px] tracking-[0.4em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">
-              @{IG_HANDLE}
-            </span>
+          <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-4">
+            <span className="text-[11px] tracking-[0.4em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">@{IG_HANDLE}</span>
             <div className="h-16 w-[1px] bg-gradient-to-b from-white/10 via-white/20 to-transparent" />
           </a>
 
@@ -354,57 +336,29 @@ const App: React.FC = () => {
             <span>•</span>
             <span>private collection.</span>
             <span>•</span>
-            <span
-              className="cursor-default select-none"
-              onClick={() => setShowAdmin(true)}
-              style={{ WebkitTapHighlightColor: 'transparent' }}
-            >661</span>
+            <span className="cursor-default select-none" onClick={() => setShowAdmin(true)} style={{ WebkitTapHighlightColor: 'transparent' }}>661</span>
           </div>
         </footer>
       </main>
 
       {isBrandDropdownOpen && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6">
-          <div
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
-            onClick={() => setIsBrandDropdownOpen(false)}
-          />
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={() => setIsBrandDropdownOpen(false)} />
           <div className="w-full sm:max-w-md bg-v-black border-t sm:border border-white/10 z-10 max-h-[85vh] flex flex-col transform animate-slideUp shadow-2xl rounded-none">
             <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0 bg-v-black">
               <div>
                 <p className="text-[11px] text-v-red tracking-[0.4em] uppercase font-mono mb-2">Refine Search</p>
                 <h3 className="text-3xl serif italic text-white">{maisonLabel}</h3>
               </div>
-              <button
-                onClick={() => setIsBrandDropdownOpen(false)}
-                className="text-white/40 hover:text-v-red transition-colors text-xl font-light px-4 py-2 border border-white/10"
-              >
-                ✕
-              </button>
+              <button onClick={() => setIsBrandDropdownOpen(false)} className="text-white/40 hover:text-v-red transition-colors text-xl font-light px-4 py-2 border border-white/10">✕</button>
             </div>
             <div className="overflow-y-auto overscroll-contain px-0 py-0 hide-scrollbar pb-10 bg-v-black divide-y divide-white/5">
               {brands.map(brand => {
-                const count = inventory.filter(p =>
-                  p.brand === brand && (filterCategory === 'All' || p.category === filterCategory)
-                ).length;
+                const count = inventory.filter(p => p.brand === brand && (filterCategory === 'All' || p.category === filterCategory)).length;
                 return (
-                  <button
-                    key={brand}
-                    onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }}
-                    className={`w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-200 group ${
-                      filterBrand === brand
-                        ? 'bg-white/5 border-l-2 border-v-red text-white'
-                        : 'text-white/50 hover:bg-white/[0.02] hover:text-white border-l-2 border-transparent'
-                    }`}
-                  >
-                    <span className="text-xs tracking-[0.2em] uppercase font-mono group-hover:tracking-[0.3em] transition-all">
-                      {brand === 'ALL' ? maisonPlaceholder : brand}
-                    </span>
-                    {brand !== 'ALL' && (
-                      <span className="text-[10px] font-mono text-white/20">
-                        [{count}]
-                      </span>
-                    )}
+                  <button key={brand} onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }} className={`w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-200 group ${filterBrand === brand ? 'bg-white/5 border-l-2 border-v-red text-white' : 'text-white/50 hover:bg-white/[0.02] hover:text-white border-l-2 border-transparent'}`}>
+                    <span className="text-xs tracking-[0.2em] uppercase font-mono group-hover:tracking-[0.3em] transition-all">{brand === 'ALL' ? maisonPlaceholder : brand}</span>
+                    {brand !== 'ALL' && <span className="text-[10px] font-mono text-white/20">[{count}]</span>}
                   </button>
                 );
               })}
@@ -414,30 +368,15 @@ const App: React.FC = () => {
       )}
 
       {selectedProduct && (
-        <ProductModal
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onInquire={handleInquire}
-          onAddToCart={addToCart}
-        />
+        <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onInquire={handleInquire} onAddToCart={addToCart} />
       )}
 
-      <CartSidebar
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-        onRemove={removeFromCart}
-        onUpdateQty={updateCartQuantity}
-        igHandle={IG_HANDLE}
-      />
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} onRemove={removeFromCart} onUpdateQty={updateCartQuantity} igHandle={IG_HANDLE} />
 
       {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
       <Analytics />
 
-      <div
-        style={{ transition: 'opacity 0.5s, transform 0.5s' }}
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] pointer-events-none ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
-      >
+      <div style={{ transition: 'opacity 0.5s, transform 0.5s' }} className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] pointer-events-none ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
         <div className="bg-v-black border border-white/15 px-5 py-3 flex items-center gap-3 shadow-2xl shadow-black/60">
           <span className="w-1.5 h-1.5 rounded-full bg-v-red flex-shrink-0" />
           <p className="text-xs font-mono text-white/70 whitespace-nowrap">
