@@ -1,8 +1,9 @@
-name: Build for CodeHS
+name: Build Single HTML for CodeHS
 
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,11 +20,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build the Project
+      - name: Build Single HTML
         run: npm run build
 
-      - name: Upload Build Folder
+      - name: Upload index.html
         uses: actions/upload-artifact@v4
         with:
-          name: codehs-ready-files
-          path: dist/
+          name: codehs-index-html
+          path: dist/index.html
