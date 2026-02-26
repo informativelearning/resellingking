@@ -272,7 +272,7 @@ const App: React.FC = () => {
                 <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
                   <div>
                     <h2 className="serif italic text-3xl md:text-4xl text-white">Latest Added</h2>
-                    <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mt-2">Newest items to hit the vault.</p>
+                    <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mt-2">Adding daily.</p>
                   </div>
                 </div>
                 <InventoryTable products={latestAdded} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
