@@ -23,23 +23,23 @@ const getBrandInitials = (b: string) => {
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const[debouncedSearch, setDebouncedSearch] = useState('');
-  const [filterBrand, setFilterBrand] = useState('ALL');
-  const[filterCategory, setFilterCategory] = useState<Category>('All');
-  const[selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const[filterBrand, setFilterBrand] = useState('ALL');
+  const [filterCategory, setFilterCategory] = useState<Category>('All');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('wof_cart');
-      return saved ? JSON.parse(saved) : [];
+      return saved ? JSON.parse(saved) :[];
     } catch { 
-      return[]; 
+      return []; 
     }
   });
 
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const[isCartOpen, setIsCartOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
-  const[showAdmin, setShowAdmin] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
@@ -83,7 +83,7 @@ const App: React.FC = () => {
       ? inventory 
       : inventory.filter(p => p.category === filterCategory);
     const unique = Array.from(new Set(source.map(p => p.brand))).sort();
-    return ['ALL', ...unique];
+    return['ALL', ...unique];
   }, [filterCategory, inventory]);
 
   const handleCategoryChange = (cat: Category) => {
@@ -132,11 +132,11 @@ const App: React.FC = () => {
   const valentino = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('valentino')), [fragrances]);
   const creed = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('creed')), [fragrances]);
   const ysl = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('yves saint laurent')), [fragrances]);
-  const armani = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('giorgio armani')), [fragrances]);
+  const armani = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('giorgio armani')),[fragrances]);
   const versace = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('versace')), [fragrances]);
 
   const mainBrands =['azzaro', 'valentino', 'creed', 'yves saint laurent', 'giorgio armani', 'versace'];
-  const otherFragrances = useMemo(() => fragrances.filter(p => !mainBrands.some(b => p.brand.toLowerCase().includes(b))),[fragrances, mainBrands]);
+  const otherFragrances = useMemo(() => fragrances.filter(p => !mainBrands.some(b => p.brand.toLowerCase().includes(b))), [fragrances, mainBrands]);
 
   const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
   const apparel = useMemo(() => inventory.filter(p => p.category === 'Apparel'), [inventory]);
@@ -382,9 +382,12 @@ const App: React.FC = () => {
                         </div>
                         <InventoryTable products={azzaro.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
                         {azzaro.length > 4 && (
-                          <div className="mt-8 flex justify-center">
-                            <button onClick={() => handleViewBrand('Fragrance', azzaro[0].brand)} className="px-6 py-3 border border-amber-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-amber-50/60 hover:text-amber-50 hover:bg-amber-900/20 transition-all">
-                              View All {azzaro[0].brand} (+{azzaro.length - 4})
+                          <div className="mt-10 flex justify-center">
+                            <button 
+                              onClick={() => handleViewBrand('Fragrance', azzaro[0].brand)} 
+                              className="px-8 py-3 border border-amber-500/30 bg-amber-500/5 text-xs font-mono tracking-[0.3em] uppercase text-amber-100 hover:bg-amber-500/20 hover:border-amber-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(217,119,6,0.1)]"
+                            >
+                              View All {azzaro[0].brand} (+{azzaro.length - 4} Scents)
                             </button>
                           </div>
                         )}
@@ -402,9 +405,12 @@ const App: React.FC = () => {
                         </div>
                         <InventoryTable products={valentino.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
                         {valentino.length > 4 && (
-                          <div className="mt-8 flex justify-center">
-                            <button onClick={() => handleViewBrand('Fragrance', valentino[0].brand)} className="px-6 py-3 border border-pink-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-pink-50/60 hover:text-pink-50 hover:bg-pink-900/20 transition-all">
-                              View All {valentino[0].brand} (+{valentino.length - 4})
+                          <div className="mt-10 flex justify-center">
+                            <button 
+                              onClick={() => handleViewBrand('Fragrance', valentino[0].brand)} 
+                              className="px-8 py-3 border border-pink-500/30 bg-pink-500/5 text-xs font-mono tracking-[0.3em] uppercase text-pink-100 hover:bg-pink-500/20 hover:border-pink-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(236,72,153,0.1)]"
+                            >
+                              View All {valentino[0].brand} (+{valentino.length - 4} Scents)
                             </button>
                           </div>
                         )}
@@ -422,9 +428,12 @@ const App: React.FC = () => {
                         </div>
                         <InventoryTable products={creed.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
                         {creed.length > 4 && (
-                          <div className="mt-8 flex justify-center">
-                            <button onClick={() => handleViewBrand('Fragrance', creed[0].brand)} className="px-6 py-3 border border-yellow-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-yellow-50/60 hover:text-yellow-50 hover:bg-yellow-900/20 transition-all">
-                              View All {creed[0].brand} (+{creed.length - 4})
+                          <div className="mt-10 flex justify-center">
+                            <button 
+                              onClick={() => handleViewBrand('Fragrance', creed[0].brand)} 
+                              className="px-8 py-3 border border-yellow-500/30 bg-yellow-500/5 text-xs font-mono tracking-[0.3em] uppercase text-yellow-100 hover:bg-yellow-500/20 hover:border-yellow-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.1)]"
+                            >
+                              View All {creed[0].brand} (+{creed.length - 4} Scents)
                             </button>
                           </div>
                         )}
@@ -442,9 +451,12 @@ const App: React.FC = () => {
                         </div>
                         <InventoryTable products={ysl.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
                         {ysl.length > 4 && (
-                          <div className="mt-8 flex justify-center">
-                            <button onClick={() => handleViewBrand('Fragrance', ysl[0].brand)} className="px-6 py-3 border border-purple-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-purple-50/60 hover:text-purple-50 hover:bg-purple-900/20 transition-all">
-                              View All {ysl[0].brand} (+{ysl.length - 4})
+                          <div className="mt-10 flex justify-center">
+                            <button 
+                              onClick={() => handleViewBrand('Fragrance', ysl[0].brand)} 
+                              className="px-8 py-3 border border-purple-500/30 bg-purple-500/5 text-xs font-mono tracking-[0.3em] uppercase text-purple-100 hover:bg-purple-500/20 hover:border-purple-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.1)]"
+                            >
+                              View All {ysl[0].brand} (+{ysl.length - 4} Scents)
                             </button>
                           </div>
                         )}
@@ -462,9 +474,12 @@ const App: React.FC = () => {
                         </div>
                         <InventoryTable products={armani.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
                         {armani.length > 4 && (
-                          <div className="mt-8 flex justify-center">
-                            <button onClick={() => handleViewBrand('Fragrance', armani[0].brand)} className="px-6 py-3 border border-blue-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-blue-50/60 hover:text-blue-50 hover:bg-blue-900/20 transition-all">
-                              View All {armani[0].brand} (+{armani.length - 4})
+                          <div className="mt-10 flex justify-center">
+                            <button 
+                              onClick={() => handleViewBrand('Fragrance', armani[0].brand)} 
+                              className="px-8 py-3 border border-blue-500/30 bg-blue-500/5 text-xs font-mono tracking-[0.3em] uppercase text-blue-100 hover:bg-blue-500/20 hover:border-blue-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
+                            >
+                              View All {armani[0].brand} (+{armani.length - 4} Scents)
                             </button>
                           </div>
                         )}
@@ -482,9 +497,12 @@ const App: React.FC = () => {
                         </div>
                         <InventoryTable products={versace.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
                         {versace.length > 4 && (
-                          <div className="mt-8 flex justify-center">
-                            <button onClick={() => handleViewBrand('Fragrance', versace[0].brand)} className="px-6 py-3 border border-emerald-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-emerald-50/60 hover:text-emerald-50 hover:bg-emerald-900/20 transition-all">
-                              View All {versace[0].brand} (+{versace.length - 4})
+                          <div className="mt-10 flex justify-center">
+                            <button 
+                              onClick={() => handleViewBrand('Fragrance', versace[0].brand)} 
+                              className="px-8 py-3 border border-emerald-500/30 bg-emerald-500/5 text-xs font-mono tracking-[0.3em] uppercase text-emerald-100 hover:bg-emerald-500/20 hover:border-emerald-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                            >
+                              View All {versace[0].brand} (+{versace.length - 4} Scents)
                             </button>
                           </div>
                         )}
@@ -500,8 +518,8 @@ const App: React.FC = () => {
                       </div>
                       <InventoryTable products={otherFragrances.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
                       {otherFragrances.length > 4 && (
-                        <div className="mt-8 flex justify-center">
-                          <button onClick={() => handleViewAll('Fragrance')} className="px-6 py-3 border border-white/10 text-[10px] font-mono tracking-[0.3em] uppercase text-white/50 hover:text-white hover:bg-white/5 transition-all">
+                        <div className="mt-10 flex justify-center">
+                          <button onClick={() => handleViewAll('Fragrance')} className="px-8 py-3 border border-white/20 text-xs font-mono tracking-[0.3em] uppercase text-white/60 hover:text-white hover:bg-white/5 transition-all">
                             View {otherFragrances.length - 4} More Fragrances
                           </button>
                         </div>
@@ -509,38 +527,44 @@ const App: React.FC = () => {
                     </div>
                   )}
                 </div>
-
-                <div className="flex justify-center pt-10 relative z-10">
-                  <button onClick={() => handleViewAll('Fragrance')} className="px-8 py-4 border border-white/20 text-[11px] font-mono tracking-[0.3em] uppercase text-white/60 hover:text-white hover:border-white/50 hover:bg-white/5 transition-all">
-                    Explore All Fragrances
-                  </button>
-                </div>
               </section>
             )}
 
-            {/* Section 3: Sneakers */}
+            {/* Section 3: Sneakers (Complex, Vivid, On-Brand Vault) */}
             {sneakers.length > 0 && (
-              <section className="relative p-6 md:p-16 rounded-xl overflow-hidden border border-v-red/20 my-16 bg-[#0a0a0a]">
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(211,0,0,0.02)_10px,rgba(211,0,0,0.02)_20px)] pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none opacity-80" />
+              <section className="relative px-6 py-20 md:px-16 md:py-32 my-24 border-y border-white/5 bg-v-black overflow-hidden group">
+                {/* Deep Red Spotlight */}
+                <div className="absolute -top-[20%] -right-[10%] w-[70vw] h-[70vw] max-w-[800px] max-h-[800px] bg-v-red/10 blur-[120px] rounded-full pointer-events-none mix-blend-screen transition-transform duration-1000 group-hover:scale-110" />
                 
-                <div className="relative z-10">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-v-red/30 pb-6 gap-4">
-                    <div>
-                      <h2 className="serif italic text-5xl md:text-6xl text-white">Sneakers</h2>
-                      <p className="text-[10px] tracking-[0.4em] uppercase text-white/40 font-mono mt-3">Curated Grails & Daily Steals</p>
-                    </div>
+                {/* Subtle Tech Grid Masked */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:3vw_3vw] md:bg-[size:40px_40px] pointer-events-none[mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]" />
+
+                {/* Huge Faint Watermark */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] md:text-[14rem] font-black italic text-white/[0.015] whitespace-nowrap pointer-events-none serif select-none tracking-tighter">
+                  DEADSTOCK
+                </div>
+                
+                <div className="relative z-10 max-w-[1800px] mx-auto">
+                  <div className="flex flex-col items-center text-center mb-16 space-y-4">
+                    <span className="text-v-red text-[10px] tracking-[0.5em] uppercase font-mono border border-v-red/30 px-4 py-1.5 bg-v-red/5">Grail Status</span>
+                    <h2 className="serif italic text-5xl md:text-7xl text-white">Sneakers</h2>
                   </div>
                   
                   <InventoryTable products={sneakers.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
 
                   {sneakers.length > 4 && (
-                    <div className="flex justify-center mt-12 pt-6 relative z-20">
-                      <button onClick={() => handleViewAll('Sneakers')} className="group flex flex-col items-center gap-3">
-                        <span className="text-[11px] tracking-[0.4em] uppercase font-mono text-v-red border border-v-red/40 bg-v-red/5 px-8 py-4 group-hover:bg-v-red group-hover:text-white transition-all duration-300">
-                          + {sneakers.length - 4} More Pairs
-                        </span>
-                        <span className="text-[10px] text-white/30 font-mono tracking-widest group-hover:text-white/60 transition-colors">See all Jordans & more</span>
+                    <div className="flex justify-center mt-16 pt-8 relative z-20">
+                      <button 
+                        onClick={() => handleViewAll('Sneakers')} 
+                        className="group relative px-10 py-5 bg-v-black border border-v-red/40 hover:border-v-red transition-all duration-500 overflow-hidden"
+                      >
+                        <div className="absolute inset-0 bg-v-red/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                        <div className="relative flex flex-col items-center gap-2">
+                          <span className="text-xs tracking-[0.4em] uppercase font-mono text-white group-hover:text-v-red transition-colors shadow-black">
+                            Unlock The Vault
+                          </span>
+                          <span className="text-[10px] text-white/40 font-mono tracking-widest">+ {sneakers.length - 4} More Pairs</span>
+                        </div>
                       </button>
                     </div>
                   )}
@@ -548,26 +572,32 @@ const App: React.FC = () => {
               </section>
             )}
 
-            {/* Section 4: Apparel */}
+            {/* Section 4: Apparel (Brutalist, Monochromatic, High Contrast) */}
             {apparel.length > 0 && (
-              <section className="p-6 md:p-16 rounded-xl bg-[#080808] border border-white/5 my-16 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white opacity-[0.02] blur-[120px] rounded-full pointer-events-none" />
+              <section className="relative px-6 py-20 md:px-16 md:py-28 my-16 bg-[#030303] border border-white/5 rounded-3xl mx-0 md:mx-6 shadow-[inset_0_0_100px_rgba(0,0,0,1)] overflow-hidden group">
+                {/* Minimalist Topographic or Glow effect */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white/[0.015] blur-[80px] rounded-full pointer-events-none" />
                 
-                <div className="relative z-10">
-                  <div className="flex flex-col items-center justify-center text-center mb-16 border-b border-white/5 pb-10">
-                    <h2 className="serif italic text-5xl md:text-6xl text-white/90">Apparel</h2>
-                    <p className="text-[11px] tracking-[0.3em] uppercase text-white/30 font-mono mt-4">Essential Fits. Zero BS.</p>
+                {/* Faint side text */}
+                <div className="absolute top-1/2 -left-10 -translate-y-1/2 -rotate-90 text-[8rem] font-black italic text-white/[0.01] whitespace-nowrap pointer-events-none serif select-none">
+                  APPAREL
+                </div>
+
+                <div className="relative z-10 max-w-[1800px] mx-auto">
+                  <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-white/10 pb-8 gap-6">
+                    <div>
+                      <h2 className="serif italic text-5xl md:text-6xl text-white/90">Apparel</h2>
+                      <p className="text-[11px] tracking-[0.3em] uppercase text-white/30 font-mono mt-4">Essential Fits. Zero BS.</p>
+                    </div>
+                    {apparel.length > 4 && (
+                      <button onClick={() => handleViewAll('Apparel')} className="px-6 py-3 border border-white/10 text-xs font-mono tracking-[0.3em] uppercase text-white/50 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all whitespace-nowrap">
+                        View All (+{apparel.length - 4})
+                      </button>
+                    )}
                   </div>
                   
                   <InventoryTable products={apparel.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-
-                  {apparel.length > 4 && (
-                    <div className="flex justify-center mt-12">
-                      <button onClick={() => handleViewAll('Apparel')} className="px-8 py-4 border border-white/10 text-[11px] font-mono tracking-[0.3em] uppercase text-white/50 hover:text-white hover:border-white/30 transition-all">
-                        View All Apparel (+{apparel.length - 4})
-                      </button>
-                    </div>
-                  )}
                 </div>
               </section>
             )}
