@@ -24,7 +24,7 @@ const getBrandInitials = (b: string) => {
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const[filterBrand, setFilterBrand] = useState('ALL');
+  const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState<Category>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
@@ -40,7 +40,7 @@ const App: React.FC = () => {
   const[isCartOpen, setIsCartOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const[toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
   // Search Debounce
@@ -74,16 +74,16 @@ const App: React.FC = () => {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
+  },[isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
 
-  const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
+  const categories: Category[] =['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
   const brands: string[] = useMemo(() => {
     const source = filterCategory === 'All' 
       ? inventory 
       : inventory.filter(p => p.category === filterCategory);
     const unique = Array.from(new Set(source.map(p => p.brand))).sort();
-    return['ALL', ...unique];
+    return ['ALL', ...unique];
   }, [filterCategory, inventory]);
 
   const handleCategoryChange = (cat: Category) => {
@@ -120,7 +120,7 @@ const App: React.FC = () => {
       
       return matchesSearch && matchesBrand && matchesCategory;
     });
-  },[debouncedSearch, filterBrand, filterCategory, inventory]);
+  }, [debouncedSearch, filterBrand, filterCategory, inventory]);
 
   // Curated Sections for the Homepage
   const latestAdded = useMemo(() => [...inventory].reverse().slice(0, 4), [inventory]);
@@ -132,7 +132,7 @@ const App: React.FC = () => {
   const valentino = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('valentino')), [fragrances]);
   const creed = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('creed')), [fragrances]);
   const ysl = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('yves saint laurent')), [fragrances]);
-  const armani = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('giorgio armani')),[fragrances]);
+  const armani = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('giorgio armani')), [fragrances]);
   const versace = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('versace')), [fragrances]);
 
   const mainBrands =['azzaro', 'valentino', 'creed', 'yves saint laurent', 'giorgio armani', 'versace'];
@@ -157,7 +157,7 @@ const App: React.FC = () => {
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1, selectedSize }];
+      return[...prev, { ...product, quantity: 1, selectedSize }];
     });
     
     const label = selectedSize ? `${product.name} (${selectedSize})` : product.name;
@@ -527,44 +527,59 @@ const App: React.FC = () => {
                     </div>
                   )}
                 </div>
+
+                <div className="flex justify-center pt-10 relative z-10">
+                  <button onClick={() => handleViewAll('Fragrance')} className="px-8 py-4 border border-white/20 text-[11px] font-mono tracking-[0.3em] uppercase text-white/60 hover:text-white hover:border-white/50 hover:bg-white/5 transition-all">
+                    Explore All Fragrances
+                  </button>
+                </div>
               </section>
             )}
 
-            {/* Section 3: Sneakers (Complex, Vivid, On-Brand Vault) */}
+            {/* Section 3: Sneakers (Refined, Brutalist, Architectural) */}
             {sneakers.length > 0 && (
-              <section className="relative px-6 py-20 md:px-16 md:py-32 my-24 border-y border-white/5 bg-v-black overflow-hidden group">
-                {/* Deep Red Spotlight */}
-                <div className="absolute -top-[20%] -right-[10%] w-[70vw] h-[70vw] max-w-[800px] max-h-[800px] bg-v-red/10 blur-[120px] rounded-full pointer-events-none mix-blend-screen transition-transform duration-1000 group-hover:scale-110" />
-                
-                {/* Subtle Tech Grid Masked */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:3vw_3vw] md:bg-[size:40px_40px] pointer-events-none[mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]" />
+              <section className="relative my-24 border-y border-white/10 bg-[#050505] overflow-hidden">
+                {/* Subtle cinematic lighting */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-white/[0.02] blur-[100px] rounded-full pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-v-red/[0.03] blur-[120px] rounded-full pointer-events-none" />
 
-                {/* Huge Faint Watermark */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] md:text-[14rem] font-black italic text-white/[0.015] whitespace-nowrap pointer-events-none serif select-none tracking-tighter">
-                  DEADSTOCK
-                </div>
-                
-                <div className="relative z-10 max-w-[1800px] mx-auto">
-                  <div className="flex flex-col items-center text-center mb-16 space-y-4">
-                    <span className="text-v-red text-[10px] tracking-[0.5em] uppercase font-mono border border-v-red/30 px-4 py-1.5 bg-v-red/5">Grail Status</span>
-                    <h2 className="serif italic text-5xl md:text-7xl text-white">Sneakers</h2>
+                {/* Structural lines */}
+                <div className="absolute top-0 left-6 md:left-12 bottom-0 w-[1px] bg-gradient-to-b from-white/10 via-white/5 to-transparent pointer-events-none hidden md:block" />
+                <div className="absolute top-0 right-6 md:right-12 bottom-0 w-[1px] bg-gradient-to-b from-white/10 via-white/5 to-transparent pointer-events-none hidden md:block" />
+
+                <div className="relative z-10 px-6 py-20 md:px-16 md:py-28 max-w-[1800px] mx-auto">
+                  {/* Header Area */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8 border-b border-white/10 pb-8">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <span className="w-8 h-[1px] bg-v-red"></span>
+                        <span className="text-[10px] tracking-[0.5em] uppercase text-v-red font-mono font-bold">The Archive</span>
+                      </div>
+                      <h2 className="serif italic text-6xl md:text-8xl text-white tracking-tighter leading-none">
+                        Sneakers
+                      </h2>
+                    </div>
+                    <div className="md:text-right max-w-sm">
+                      <p className="text-[11px] tracking-[0.2em] uppercase text-white/40 font-mono leading-relaxed">
+                        Curated grails. Verified authentic. Zero compromises.
+                      </p>
+                    </div>
                   </div>
                   
+                  {/* Products */}
                   <InventoryTable products={sneakers.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
 
+                  {/* Button */}
                   {sneakers.length > 4 && (
-                    <div className="flex justify-center mt-16 pt-8 relative z-20">
+                    <div className="flex justify-center mt-16 pt-8">
                       <button 
                         onClick={() => handleViewAll('Sneakers')} 
-                        className="group relative px-10 py-5 bg-v-black border border-v-red/40 hover:border-v-red transition-all duration-500 overflow-hidden"
+                        className="group flex flex-col items-center gap-4"
                       >
-                        <div className="absolute inset-0 bg-v-red/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-                        <div className="relative flex flex-col items-center gap-2">
-                          <span className="text-xs tracking-[0.4em] uppercase font-mono text-white group-hover:text-v-red transition-colors shadow-black">
-                            Unlock The Vault
-                          </span>
-                          <span className="text-[10px] text-white/40 font-mono tracking-widest">+ {sneakers.length - 4} More Pairs</span>
-                        </div>
+                        <div className="w-[1px] h-12 bg-gradient-to-b from-white/20 to-white/0 group-hover:from-v-red group-hover:to-v-red/0 transition-all duration-500" />
+                        <span className="text-[11px] tracking-[0.4em] uppercase font-mono text-white/70 border border-white/10 px-10 py-5 hover:bg-white hover:text-v-black hover:border-white transition-all duration-300">
+                          View All Grails (+{sneakers.length - 4})
+                        </span>
                       </button>
                     </div>
                   )}
@@ -572,18 +587,12 @@ const App: React.FC = () => {
               </section>
             )}
 
-            {/* Section 4: Apparel (Brutalist, Monochromatic, High Contrast) */}
+            {/* Section 4: Apparel (Clean, Monochromatic, High Contrast) */}
             {apparel.length > 0 && (
-              <section className="relative px-6 py-20 md:px-16 md:py-28 my-16 bg-[#030303] border border-white/5 rounded-3xl mx-0 md:mx-6 shadow-[inset_0_0_100px_rgba(0,0,0,1)] overflow-hidden group">
-                {/* Minimalist Topographic or Glow effect */}
+              <section className="relative px-6 py-20 md:px-16 md:py-28 my-16 bg-[#030303] border border-white/5 rounded-3xl mx-0 md:mx-6 overflow-hidden group">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white/[0.015] blur-[80px] rounded-full pointer-events-none" />
                 
-                {/* Faint side text */}
-                <div className="absolute top-1/2 -left-10 -translate-y-1/2 -rotate-90 text-[8rem] font-black italic text-white/[0.01] whitespace-nowrap pointer-events-none serif select-none">
-                  APPAREL
-                </div>
-
                 <div className="relative z-10 max-w-[1800px] mx-auto">
                   <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-white/10 pb-8 gap-6">
                     <div>
