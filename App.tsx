@@ -7,10 +7,10 @@ import CartSidebar from './components/CartSidebar';
 import AdminPanel, { getMergedInventory } from './components/AdminPanel';
 import { Product, Category, CartItem } from './types';
 
-const LOGO = '/images/wingsofofrtuning.png';
+// IMPORTANT: Use the CDN for the logo
+const LOGO = 'https://cdn.jsdelivr.net/gh/informativelearning/resellingking@main/public/images/wingsofofrtuning.png';
 const IG_HANDLE = '661ro_resellz';
 
-// This helper generates the sleek monogram for the brand filter
 const getBrandInitials = (b: string) => {
   if (b === 'ALL') return '✵';
   if (b.toLowerCase().includes('yves')) return 'YSL';
@@ -23,18 +23,18 @@ const getBrandInitials = (b: string) => {
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const[debouncedSearch, setDebouncedSearch] = useState('');
   const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState<Category>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const[cart, setCart] = useState<CartItem[]>(() => {
+  const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('wof_cart');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return[]; }
+      return saved ? JSON.parse(saved) :[];
+    } catch { return []; }
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const[isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
+  const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
@@ -54,33 +54,18 @@ const App: React.FC = () => {
 
   useEffect(() => {
     setInventory(getMergedInventory());
-  }, [showAdmin]);
+  },[showAdmin]);
 
   useEffect(() => {
-    const isAnyModalOpen = 
-      isCartOpen || 
-      isBrandDropdownOpen || 
-      selectedProduct !== null || 
-      showAdmin;
-
-    if (isAnyModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    return () => {
-      document.body.style.overflow = '';
-    };
+    const isAnyModalOpen = isCartOpen || isBrandDropdownOpen || selectedProduct !== null || showAdmin;
+    document.body.style.overflow = isAnyModalOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
   }, [isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
 
   const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
   const brands: string[] = useMemo(() => {
-    const source =
-      filterCategory === 'All'
-        ? inventory
-        : inventory.filter(p => p.category === filterCategory);
+    const source = filterCategory === 'All' ? inventory : inventory.filter(p => p.category === filterCategory);
     const unique = Array.from(new Set(source.map(p => p.brand))).sort();
     return ['ALL', ...unique];
   }, [filterCategory, inventory]);
@@ -103,8 +88,9 @@ const App: React.FC = () => {
       const matchesCategory = filterCategory === 'All' || product.category === filterCategory;
       return matchesSearch && matchesBrand && matchesCategory;
     });
-  },[debouncedSearch, filterBrand, filterCategory, inventory]);
+  }, [debouncedSearch, filterBrand, filterCategory, inventory]);
 
+  // Curated Section Arrays
   const latestAdded = useMemo(() => [...inventory].reverse().slice(0, 4), [inventory]);
   const fragrances = useMemo(() => inventory.filter(p => p.category === 'Fragrance'), [inventory]);
   const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
@@ -116,15 +102,9 @@ const App: React.FC = () => {
 
   const addToCart = (product: Product, selectedSize?: string) => {
     setCart(prev => {
-      const existing = prev.find(item =>
-        item.ids[0] === product.ids[0] && item.selectedSize === selectedSize
-      );
+      const existing = prev.find(item => item.ids[0] === product.ids[0] && item.selectedSize === selectedSize);
       if (existing) {
-        return prev.map(item =>
-          item.ids[0] === product.ids[0] && item.selectedSize === selectedSize
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        return prev.map(item => item.ids[0] === product.ids[0] && item.selectedSize === selectedSize ? { ...item, quantity: item.quantity + 1 } : item);
       }
       return[...prev, { ...product, quantity: 1, selectedSize }];
     });
@@ -135,45 +115,31 @@ const App: React.FC = () => {
   };
 
   const removeFromCart = (productId: string, selectedSize?: string) => {
-    setCart(prev => prev.filter(item =>
-      !(item.ids[0] === productId && item.selectedSize === selectedSize)
-    ));
+    setCart(prev => prev.filter(item => !(item.ids[0] === productId && item.selectedSize === selectedSize)));
   };
 
   const updateCartQuantity = (productId: string, delta: number, selectedSize?: string) => {
     setCart(prev =>
-      prev
-        .map(item => {
-          if (item.ids[0] !== productId || item.selectedSize !== selectedSize) return item;
-          const newQty = item.quantity + delta;
-          if (newQty <= 0) return null;
-          if (newQty > item.stock) return item;
-          return { ...item, quantity: newQty };
-        })
-        .filter(Boolean) as CartItem[]
+      prev.map(item => {
+        if (item.ids[0] !== productId || item.selectedSize !== selectedSize) return item;
+        const newQty = item.quantity + delta;
+        if (newQty <= 0) return null;
+        if (newQty > item.stock) return item;
+        return { ...item, quantity: newQty };
+      }).filter(Boolean) as CartItem[]
     );
   };
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const maisonLabel = 'Brand';
-  const maisonPlaceholder = 'All Items';
-
   return (
     <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
-      
       <style>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes slideUp {
-          from { transform: translateY(100%); opacity: 0; }
-          to   { transform: translateY(0);    opacity: 1; }
-        }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes ghostPulse {
-          0%, 100% { opacity: 0.02; transform: scale(1.5) translateZ(0); }
-          50%      { opacity: 0.08; transform: scale(1.5) translateZ(0); }
-        }
+        @keyframes ghostPulse { 0%, 100% { opacity: 0.02; transform: scale(1.5) translateZ(0); } 50% { opacity: 0.08; transform: scale(1.5) translateZ(0); } }
         .animate-ghost { animation: ghostPulse 8s ease-in-out infinite; will-change: opacity; }
       `}</style>
 
@@ -185,10 +151,8 @@ const App: React.FC = () => {
             <div className="hidden md:block h-8 w-[1px] bg-white/10" />
             <span className="hidden md:block text-[10px] tracking-[0.4em] uppercase text-white/30 font-light">Wasco, CA</span>
           </div>
-
           <div className="flex items-center gap-5">
             <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/30 hover:text-white transition-colors duration-300 group">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
               <span className="hidden sm:block text-[10px] tracking-[0.3em] uppercase font-mono group-hover:text-v-red transition-colors">@{IG_HANDLE}</span>
             </a>
             <div className="w-[1px] h-5 bg-white/10" />
@@ -203,6 +167,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
+      {/* Hero */}
       <header className="relative z-30 pt-[80px] md:pt-[88px] overflow-hidden">
         <Ticker />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] pointer-events-none z-0 mix-blend-screen flex justify-center items-center">
@@ -220,6 +185,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
+      {/* Filter Bar */}
       <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/95 backdrop-blur-md border-y border-white/10 py-0 transition-all w-full">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
           <div className="flex items-center overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory h-14">
@@ -230,7 +196,7 @@ const App: React.FC = () => {
             </div>
             <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
               <button onClick={() => setIsBrandDropdownOpen(true)} className={`flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${filterBrand !== 'ALL' ? 'text-v-red font-bold' : 'text-white/40 hover:text-white'}`}>
-                <span>{filterBrand === 'ALL' ? maisonLabel : filterBrand}</span><span className="text-[9px]">▼</span>
+                <span>{filterBrand === 'ALL' ? 'Brand' : filterBrand}</span><span className="text-[9px]">▼</span>
               </button>
             </div>
             <div className="flex items-center h-full gap-6">
@@ -243,7 +209,6 @@ const App: React.FC = () => {
       </div>
 
       <main className="flex-1 px-6 md:px-12 pt-10 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
-        
         {isFiltering ? (
           <>
             <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
@@ -268,6 +233,7 @@ const App: React.FC = () => {
                 <InventoryTable products={latestAdded} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
               </section>
             )}
+
             {fragrances.length > 0 && (
               <section>
                 <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
@@ -277,6 +243,7 @@ const App: React.FC = () => {
                 <InventoryTable products={fragrances} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
               </section>
             )}
+
             {sneakers.length > 0 && (
               <section>
                 <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
@@ -286,6 +253,7 @@ const App: React.FC = () => {
                 <InventoryTable products={sneakers} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
               </section>
             )}
+
             {apparel.length > 0 && (
               <section>
                 <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
@@ -298,6 +266,7 @@ const App: React.FC = () => {
           </div>
         )}
 
+        {/* Footer */}
         <footer className="mt-40 mb-20 py-24 border-t border-white/5 flex flex-col items-center gap-16">
           <div className="text-center space-y-8">
             <div className="mb-12 flex justify-center opacity-15 hover:opacity-30 transition-opacity duration-700">
@@ -313,12 +282,13 @@ const App: React.FC = () => {
             <div className="h-16 w-[1px] bg-gradient-to-b from-white/10 via-white/20 to-transparent" />
           </a>
           <div className="flex gap-8 text-[9px] font-light text-white/10 uppercase tracking-[0.4em]">
-            <span>Est. 2025</span><span>•</span><span>private collection.</span><span>•</span><span className="cursor-default select-none" onClick={() => setShowAdmin(true)} style={{ WebkitTapHighlightColor: 'transparent' }}>661</span>
+            <span>Est. 2025</span><span>•</span><span>private collection.</span><span>•</span>
+            <span className="cursor-default select-none" onClick={() => setShowAdmin(true)} style={{ WebkitTapHighlightColor: 'transparent' }}>661</span>
           </div>
         </footer>
       </main>
 
-      {/* Brand Modal with Custom Luxury Monograms */}
+      {/* Brand Modal */}
       {isBrandDropdownOpen && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={() => setIsBrandDropdownOpen(false)} />
@@ -326,7 +296,7 @@ const App: React.FC = () => {
             <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0 bg-v-black">
               <div>
                 <p className="text-[11px] text-v-red tracking-[0.4em] uppercase font-mono mb-2">Refine Search</p>
-                <h3 className="text-3xl serif italic text-white">{maisonLabel}</h3>
+                <h3 className="text-3xl serif italic text-white">Brand</h3>
               </div>
               <button onClick={() => setIsBrandDropdownOpen(false)} className="text-white/40 hover:text-v-red transition-colors text-xl font-light px-4 py-2 border border-white/10">✕</button>
             </div>
@@ -336,11 +306,10 @@ const App: React.FC = () => {
                 return (
                   <button key={brand} onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }} className={`w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-200 group ${filterBrand === brand ? 'bg-white/5 border-l-2 border-v-red text-white' : 'text-white/50 hover:bg-white/[0.02] hover:text-white border-l-2 border-transparent'}`}>
                     <div className="flex items-center gap-4">
-                      {/* Luxury Monogram Avatar */}
                       <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] text-[10px] font-serif italic text-white/70 shadow-inner group-hover:border-white/30 transition-colors">
                         {getBrandInitials(brand)}
                       </div>
-                      <span className="text-xs tracking-[0.2em] uppercase font-mono group-hover:tracking-[0.3em] transition-all">{brand === 'ALL' ? maisonPlaceholder : brand}</span>
+                      <span className="text-xs tracking-[0.2em] uppercase font-mono group-hover:tracking-[0.3em] transition-all">{brand === 'ALL' ? 'All Items' : brand}</span>
                     </div>
                     {brand !== 'ALL' && <span className="text-[10px] font-mono text-white/20">[{count}]</span>}
                   </button>
@@ -354,6 +323,7 @@ const App: React.FC = () => {
       {selectedProduct && <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onInquire={handleInquire} onAddToCart={addToCart} />}
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} onRemove={removeFromCart} onUpdateQty={updateCartQuantity} igHandle={IG_HANDLE} />
       {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
+      <Analytics />
       
       <div style={{ transition: 'opacity 0.5s, transform 0.5s' }} className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] pointer-events-none ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
         <div className="bg-v-black border border-white/15 px-5 py-3 flex items-center gap-3 shadow-2xl shadow-black/60">
