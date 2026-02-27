@@ -1,9 +1,5 @@
 import { Product, Category, ProductDetails } from './types';
 
-// The CDN path is crucial for CodeHS to pull images directly from your GitHub
-export const CDN = 'https://cdn.jsdelivr.net/gh/informativelearning/resellingking@main/public';
-const img = (path: string) => path ? CDN + path : '';
-
 const DEFAULT_DETAILS = (category: string): ProductDetails => {
   if (category === 'Apparel') {
     return {
@@ -272,47 +268,46 @@ const getImagePaths = (brand: string, name: string): string[] => {
     console.warn(`No images mapped for: ${brand} - ${name}`);
     return[];
   }
-  return images.map(img);
+  return images;
 };
 
 // ---------------------------------------------------------------------------
 // RAW INVENTORY DATA
 // ---------------------------------------------------------------------------
-const rawData: [string, string, string[]][] =[
-  // AZZARO
-  ["Azzaro", "The Most Wanted",        ["100ml"]],["Azzaro", "The Most Wanted Parfum", ["100ml"]],["Azzaro", "Wanted by Night",        ["100ml"]],
-  ["Azzaro", "Wanted Eau de Parfum",["100ml"]],
-  ["Azzaro", "Forever Wanted Elixir",["100ml"]],
+const rawData:[string, string, string[]][] = [
+  // AZZARO["Azzaro", "The Most Wanted",        ["100ml"]],["Azzaro", "The Most Wanted Parfum", ["100ml"]],
+  ["Azzaro", "Wanted by Night",["100ml"]],
+  ["Azzaro", "Wanted Eau de Parfum",   ["100ml"]],
+  ["Azzaro", "Forever Wanted Elixir",  ["100ml"]],
 
-  // VALENTINO["Valentino", "Uomo Born in Roma Green Stravaganza", ["100ml"]],["Valentino", "Born in Roma Extradose Donna",        ["100ml"]],
-  ["Valentino", "Donna Born in Roma",["100ml"]],
+  // VALENTINO
+  ["Valentino", "Uomo Born in Roma Green Stravaganza",["100ml"]],
+  ["Valentino", "Born in Roma Extradose Donna",["100ml"]],
+  ["Valentino", "Donna Born in Roma",                  ["100ml"]],
   ["Valentino", "Donna Born in Roma Green Stravaganza",["100ml"]],
-  ["Valentino", "Uomo Born in Roma Intense",["100ml"]],
-  ["Valentino", "Uomo Born in Roma Coral Fantasy",["100ml"]],
-  ["Valentino", "Uomo Born in Roma",                   ["100ml"]],
-  ["Valentino", "Donna Born in Roma Intense",          ["100ml"]],
+  ["Valentino", "Uomo Born in Roma Intense",           ["100ml"]],["Valentino", "Uomo Born in Roma Coral Fantasy",     ["100ml"]],["Valentino", "Uomo Born in Roma",                   ["100ml"]],["Valentino", "Donna Born in Roma Intense",          ["100ml"]],
 
-  // CREED
-  ["Creed", "Aventus",          ["100ml"]],["Creed", "Absolu Aventus",   ["100ml"]],["Creed", "Delphinus",        ["100ml"]],
-  ["Creed", "Eladaria",["75ml"]],
+  // CREED["Creed", "Aventus",          ["100ml"]],["Creed", "Absolu Aventus",   ["100ml"]],
+  ["Creed", "Delphinus",["100ml"]],
+  ["Creed", "Eladaria",         ["75ml"]],
   ["Creed", "Green Irish Tweed",["100ml"]],
 
   // YVES SAINT LAURENT
-  ["Yves Saint Laurent", "Black Opium",["90ml"]],
-  ["Yves Saint Laurent", "Mon Paris",              ["90ml"]],["Yves Saint Laurent", "MYSLF Eau de Parfum",    ["100ml"]],["Yves Saint Laurent", "MYSLF Le Parfum",        ["100ml"]],["Yves Saint Laurent", "Y Eau de Parfum",        ["100ml"]],["Yves Saint Laurent", "Y Eau de Parfum Intense",["100ml"]],
+  ["Yves Saint Laurent", "Black Opium",            ["90ml"]],["Yves Saint Laurent", "Mon Paris",              ["90ml"]],["Yves Saint Laurent", "MYSLF Eau de Parfum",    ["100ml"]],["Yves Saint Laurent", "MYSLF Le Parfum",        ["100ml"]],["Yves Saint Laurent", "Y Eau de Parfum",        ["100ml"]],
+  ["Yves Saint Laurent", "Y Eau de Parfum Intense",["100ml"]],
 
-  // GIORGIO ARMANI["Giorgio Armani", "Acqua di Giò Profumo",                       ["125ml"]],["Giorgio Armani", "Emporio Armani Stronger With You Absolutely", ["100ml"]],["Giorgio Armani", "Emporio Armani Stronger With You Intensely",  ["100ml"]],
-  ["Giorgio Armani", "My Way",                                      ["90ml"]],
+  // GIORGIO ARMANI["Giorgio Armani", "Acqua di Giò Profumo",                       ["125ml"]],["Giorgio Armani", "Emporio Armani Stronger With You Absolutely", ["100ml"]],["Giorgio Armani", "Emporio Armani Stronger With You Intensely",  ["100ml"]],["Giorgio Armani", "My Way",                                      ["90ml"]],
 
-  // VERSACE
-  ["Versace", "Eros Eau de Parfum",                    ["100ml"]],["Versace", "Eros Eau de Toilette",                  ["100ml"]],["Versace", "Eros Parfum",                           ["100ml"]],["Versace", "Eros Flame Eau de Parfum",              ["100ml"]],["Versace", "Eros Energy Pour Homme Eau de Parfum",  ["100ml"]],["Versace", "Man Eau Fraîche Eau de Toilette",       ["100ml"]],["Versace", "Eau Fraîche Extreme Pour Homme",        ["100ml"]],["Versace", "Pour Femme Dylan Blue Parfum",          ["100ml"]],["Versace", "Dylan Blush Pink Pour Femme",           ["100ml"]],
-  ["Versace", "Crystal Emerald Pour Femme",["90ml"]],
+  // VERSACE["Versace", "Eros Eau de Parfum",                    ["100ml"]],["Versace", "Eros Eau de Toilette",                  ["100ml"]],["Versace", "Eros Parfum",                           ["100ml"]],
+  ["Versace", "Eros Flame Eau de Parfum",["100ml"]],["Versace", "Eros Energy Pour Homme Eau de Parfum",  ["100ml"]],["Versace", "Man Eau Fraîche Eau de Toilette",       ["100ml"]],["Versace", "Eau Fraîche Extreme Pour Homme",        ["100ml"]],
+  ["Versace", "Pour Femme Dylan Blue Parfum",["100ml"]],
+  ["Versace", "Dylan Blush Pink Pour Femme",["100ml"]],
+  ["Versace", "Crystal Emerald Pour Femme",            ["90ml"]],
 
-  // FEAR OF GOD ESSENTIALS["Fear of God Essentials", "Essentials SS22 Stretch Limo Hoodie",   ["S, M, L, XL"]],["Fear of God Essentials", "Essentials 1977 Hoodie - Iron",         ["S, M, L, XL"]],
-  ["Fear of God Essentials", "Essentials Hoodie - Desert Taupe",["S, M, L, XL"]],
-  ["Fear of God Essentials", "Essentials Hoodie - Eggshell",["S, M, L, XL"]],
-  ["Fear of God Essentials", "Essentials Hoodie - Sycamore",["S, M, L, XL"]],["Fear of God Essentials", "Essentials SS22 Hoodie - Dark Oatmeal", ["S, M, L, XL"]],["Fear of God Essentials", "Essentials SS22 Hoodie - Light Oatmeal",["S, M, L, XL"]],["Fear of God Essentials", "Essentials Hoodie - Coral",             ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Sweatpants - Desert Taupe", ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Sweatpants - Coral",        ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Sweatpants - Dark Oatmeal", ["S, M, L, XL"]],
-  ["Fear of God Essentials", "Essentials Sweatpants - Light Oatmeal",["S, M, L, XL"]],
+  // FEAR OF GOD ESSENTIALS["Fear of God Essentials", "Essentials SS22 Stretch Limo Hoodie",   ["S, M, L, XL"]],["Fear of God Essentials", "Essentials 1977 Hoodie - Iron",         ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Hoodie - Desert Taupe",      ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Hoodie - Eggshell",          ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials Hoodie - Sycamore",          ["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials SS22 Hoodie - Dark Oatmeal",["S, M, L, XL"]],
+  ["Fear of God Essentials", "Essentials SS22 Hoodie - Light Oatmeal",["S, M, L, XL"]],["Fear of God Essentials", "Essentials Hoodie - Coral",             ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Sweatpants - Desert Taupe", ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Sweatpants - Coral",        ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Sweatpants - Dark Oatmeal", ["S, M, L, XL"]],["Fear of God Essentials", "Essentials Sweatpants - Light Oatmeal",["S, M, L, XL"]],
 ];
 
 // ---------------------------------------------------------------------------
@@ -337,14 +332,14 @@ const isApparel = (brand: string): boolean =>
 // ---------------------------------------------------------------------------
 // SNEAKERS
 // ---------------------------------------------------------------------------
-const SNEAKERS: Product[] =[
+const SNEAKERS: Product[] = [
   {
-    ids: ['DD0587-002-ogsp'],
+    ids:['DD0587-002-ogsp'],
     brand: 'Jordan',
     name: 'Air Jordan 4 Retro OG SP',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Air Jordan 4 Retro OG SP.jpeg'),
+    image: '/images/Air Jordan 4 Retro OG SP.jpeg',
     images:[
       '/images/Air Jordan 4 Retro OG SP.jpeg',
       '/images/Air Jordan 4 Retro OG SP1.jpeg',
@@ -352,7 +347,7 @@ const SNEAKERS: Product[] =[
       '/images/Air Jordan 4 Retro OG SP3.jpeg',
       '/images/Air Jordan 4 Retro OG SP4.jpeg',
       '/images/Air Jordan 4 Retro OG SP5.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 4 Retro OG SP. New, verified authentic.' },
   },
   {
@@ -361,7 +356,7 @@ const SNEAKERS: Product[] =[
     name: 'Air Jordan 5 Retro Wolf Grey (2026)',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img("/images/Jordan 5 Retro 'Wolf Grey' 2026.jpeg"),
+    image: "/images/Jordan 5 Retro 'Wolf Grey' 2026.jpeg",
     images:[
       "/images/Jordan 5 Retro 'Wolf Grey' 2026.jpeg",
       "/images/Jordan 5 Retro 'Wolf Grey' 20261.jpeg",
@@ -374,8 +369,9 @@ const SNEAKERS: Product[] =[
       "/images/Jordan 5 Retro 'Wolf Grey' 20268.png",
       "/images/Jordan 5 Retro 'Wolf Grey' 20269.jpeg",
       "/images/Jordan 5 Retro 'Wolf Grey' 202610.jpeg",
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 5 Retro Wolf Grey 2026. New, verified authentic.' },
+
   },
   {
     ids:['CT8012-005'],
@@ -383,7 +379,7 @@ const SNEAKERS: Product[] =[
     name: 'Air Jordan 11 Retro Cool Grey (2021)',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Air Jordan 11 Cool Grey (2021).jpeg'),
+    image: '/images/Air Jordan 11 Cool Grey (2021).jpeg',
     images:[
       '/images/Air Jordan 11 Cool Grey (2021).jpeg',
       '/images/Air Jordan 11 Cool Grey (2021)1.jpeg',
@@ -394,16 +390,16 @@ const SNEAKERS: Product[] =[
       '/images/Air Jordan 11 Cool Grey (2021)6.jpeg',
       '/images/Air Jordan 11 Cool Grey (2021)7.jpeg',
       '/images/Air Jordan 11 Cool Grey (2021)8.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 11 Retro Cool Grey 2021. New, verified authentic.' },
   },
   {
-    ids: ['HQ7978-101'],
+    ids:['HQ7978-101'],
     brand: 'Jordan',
     name: 'Air Jordan 5 OG Black Tongue Fire Red',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img("/images/Air Jordan 5 Fire Red 'Black Tongue'.png"),
+    image: "/images/Air Jordan 5 Fire Red 'Black Tongue'.png",
     images:[
       "/images/Air Jordan 5 Fire Red 'Black Tongue'.png",
       "/images/Air Jordan 5 Fire Red 'Black Tongue'1.png",
@@ -411,7 +407,7 @@ const SNEAKERS: Product[] =[
       "/images/Air Jordan 5 Fire Red 'Black Tongue'3.png",
       "/images/Air Jordan 5 Fire Red 'Black Tongue'4.png",
       "/images/Air Jordan 5 Fire Red 'Black Tongue'5.png",
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 5 OG Black Tongue Fire Red. New, verified authentic.' },
   },
   {
@@ -420,14 +416,14 @@ const SNEAKERS: Product[] =[
     name: 'Air Jordan 4 Retro Cave Stone',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/AIR JORDAN 4 RETRO CAVE STONE AND BLACK.jpg'),
+    image: '/images/AIR JORDAN 4 RETRO CAVE STONE AND BLACK.jpg',
     images:[
       '/images/AIR JORDAN 4 RETRO CAVE STONE AND BLACK.jpg',
       '/images/AIR JORDAN 4 RETRO CAVE STONE AND BLACK1.jpg',
       '/images/AIR JORDAN 4 RETRO CAVE STONE AND BLACK2.jpg',
       '/images/AIR JORDAN 4 RETRO CAVE STONE AND BLACK3.jpg',
       '/images/AIR JORDAN 4 RETRO CAVE STONE AND BLACK4.jpg',
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 4 Retro Cave Stone. New, verified authentic.' },
   },
   {
@@ -436,7 +432,7 @@ const SNEAKERS: Product[] =[
     name: 'Nike SB x Air Jordan 4 Navy',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Nike SB x Air Jordan 4 Navy.png'),
+    image: '/images/Nike SB x Air Jordan 4 Navy.png',
     images:[
       '/images/Nike SB x Air Jordan 4 Navy.png',
       '/images/Nike SB x Air Jordan 4 Navy2.png',
@@ -445,16 +441,16 @@ const SNEAKERS: Product[] =[
       '/images/Nike SB x Air Jordan 4 Navy5.png',
       '/images/Nike SB x Air Jordan 4 Navy6.png',
       '/images/Nike SB x Air Jordan 4 Navy7.png',
-    ].map(img),
+    ],
     details: { description: 'Nike SB x Air Jordan 4 Navy. New, verified authentic.' },
   },
   {
-    ids: ['CT8532-001'],
+    ids:['CT8532-001'],
     brand: 'Jordan',
     name: 'Air Jordan 3 Retro Black Cat (2025)',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Jordan 3 Retro Black Cat (2025).jpeg'),
+    image: '/images/Jordan 3 Retro Black Cat (2025).jpeg',
     images:[
       '/images/Jordan 3 Retro Black Cat (2025).jpeg',
       '/images/Jordan 3 Retro Black Cat (2025)1.jpeg',
@@ -465,7 +461,7 @@ const SNEAKERS: Product[] =[
       '/images/Jordan 3 Retro Black Cat (2025)6.jpeg',
       '/images/Jordan 3 Retro Black Cat (2025)7.jpeg',
       '/images/Jordan 3 Retro Black Cat (2025)8.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 3 Retro Black Cat 2025. New, verified authentic.' },
   },
   {
@@ -474,7 +470,7 @@ const SNEAKERS: Product[] =[
     name: 'Air Jordan 4 Retro Black Cat',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img("/images/Air Jordan 4 Retro 'Black Cat' 2025.jpeg"),
+    image: "/images/Air Jordan 4 Retro 'Black Cat' 2025.jpeg",
     images:[
       "/images/Air Jordan 4 Retro 'Black Cat' 2025.jpeg",
       "/images/Air Jordan 4 Retro 'Black Cat' 20251.jpeg",
@@ -485,16 +481,16 @@ const SNEAKERS: Product[] =[
       "/images/Air Jordan 4 Retro 'Black Cat' 20256.jpeg",
       "/images/Air Jordan 4 Retro 'Black Cat' 20257.jpeg",
       "/images/Air Jordan 4 Retro 'Black Cat' 20258.jpeg",
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 4 Retro Black Cat. New, verified authentic.' },
   },
   {
-    ids:['378037-005'],
+    ids: ['378037-005'],
     brand: 'Jordan',
     name: 'Air Jordan 11 Retro Cap and Gown',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Jordan 11 RetroCap and Gown.jpeg'),
+    image: '/images/Jordan 11 RetroCap and Gown.jpeg',
     images:[
       '/images/Jordan 11 RetroCap and Gown.jpeg',
       '/images/Jordan 11 RetroCap and Gown2.jpeg',
@@ -504,7 +500,7 @@ const SNEAKERS: Product[] =[
       '/images/Jordan 11 RetroCap and Gown6.jpeg',
       '/images/Jordan 11 RetroCap and Gown7.jpeg',
       '/images/Jordan 11 RetroCap and Gown8.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 11 Retro Cap and Gown. New, verified authentic.' },
   },
   {
@@ -513,23 +509,23 @@ const SNEAKERS: Product[] =[
     name: 'Air Jordan 11 Retro Gamma Blue (2025)',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img("/images/Air Jordan 11 'Gamma'.png"),
+    image: "/images/Air Jordan 11 'Gamma'.png",
     images:[
       "/images/Air Jordan 11 'Gamma'.png",
       "/images/Air Jordan 11 'Gamma'2.png",
       "/images/Air Jordan 11 'Gamma'3.png",
       "/images/Air Jordan 11 'Gamma'4.png",
       "/images/Air Jordan 11 'Gamma'5.png",
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 11 Retro Gamma Blue 2025. New, verified authentic.' },
   },
   {
-    ids:['DR5415-103'],
+    ids: ['DR5415-103'],
     brand: 'Jordan',
     name: 'Nike SB x Air Jordan 4 Pine Green',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Nike SB x Air Jordan 4 Retro SP Pine Green .jpeg'),
+    image: '/images/Nike SB x Air Jordan 4 Retro SP Pine Green .jpeg',
     images:[
       '/images/Nike SB x Air Jordan 4 Retro SP Pine Green .jpeg',
       '/images/Nike SB x Air Jordan 4 Retro SP Pine Green 1.jpeg',
@@ -541,7 +537,7 @@ const SNEAKERS: Product[] =[
       '/images/Nike SB x Air Jordan 4 Retro SP Pine Green 8.jpeg',
       '/images/Nike SB x Air Jordan 4 Retro SP Pine Green 9.jpeg',
       '/images/Nike SB x Air Jordan 4 Retro SP Pine Green 10.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Nike SB x Air Jordan 4 Pine Green. New, verified authentic.' },
   },
   {
@@ -550,7 +546,7 @@ const SNEAKERS: Product[] =[
     name: 'Air Jordan 11 Retro Rare Air',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Jordan 11 RetroRare Air.png'),
+    image: '/images/Jordan 11 RetroRare Air.png',
     images:[
       '/images/Jordan 11 RetroRare Air.png',
       '/images/Jordan 11 RetroRare Air1.png',
@@ -558,7 +554,7 @@ const SNEAKERS: Product[] =[
       '/images/Jordan 11 RetroRare Air3.png',
       '/images/Jordan 11 RetroRare Air4.png',
       '/images/Jordan 11 RetroRare Air5.png',
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 11 Retro Rare Air. New, verified authentic.' },
   },
   {
@@ -567,7 +563,7 @@ const SNEAKERS: Product[] =[
     name: 'Air Jordan 5 OG Grape',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Jordan 5 Retro Grape (2025).jpeg'),
+    image: '/images/Jordan 5 Retro Grape (2025).jpeg',
     images:[
       '/images/Jordan 5 Retro Grape (2025).jpeg',
       '/images/Jordan 5 Retro Grape (2025)1.jpeg',
@@ -575,7 +571,7 @@ const SNEAKERS: Product[] =[
       '/images/Jordan 5 Retro Grape (2025)4.jpeg',
       '/images/Jordan 5 Retro Grape (2025)5.jpeg',
       '/images/Jordan 5 Retro Grape (2025)6.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 5 OG Grape 2025. New, verified authentic.' },
   },
   {
@@ -584,7 +580,7 @@ const SNEAKERS: Product[] =[
     name: 'Nigel Sylvester x Air Jordan 4 Brick by Brick Firewood Orange',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Air Jordan 4 Retro OG SP Nigel Sylvester Brick by Brick.jpeg'),
+    image: '/images/Air Jordan 4 Retro OG SP Nigel Sylvester Brick by Brick.jpeg',
     images:[
       '/images/Air Jordan 4 Retro OG SP Nigel Sylvester Brick by Brick.jpeg',
       '/images/Air Jordan 4 Retro OG SP Nigel Sylvester Brick by Brick1.jpeg',
@@ -595,16 +591,16 @@ const SNEAKERS: Product[] =[
       '/images/Air Jordan 4 Retro OG SP Nigel Sylvester Brick by Brick6.jpeg',
       '/images/Air Jordan 4 Retro OG SP Nigel Sylvester Brick by Brick7.jpeg',
       '/images/Air Jordan 4 Retro OG SP Nigel Sylvester Brick by Brick8.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Nigel Sylvester x Air Jordan 4 Brick by Brick Firewood Orange. New, verified authentic.' },
   },
   {
-    ids: ['HF3975-001'],
+    ids:['HF3975-001'],
     brand: 'Jordan',
     name: 'Air Jordan 5 OG Black Metallic Reimagined',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Jordan 5 Retro OG Black Metallic Reimagined.jpeg'),
+    image: '/images/Jordan 5 Retro OG Black Metallic Reimagined.jpeg',
     images:[
       '/images/Jordan 5 Retro OG Black Metallic Reimagined.jpeg',
       '/images/Jordan 5 Retro OG Black Metallic Reimagined1.jpeg',
@@ -615,7 +611,7 @@ const SNEAKERS: Product[] =[
       '/images/Jordan 5 Retro OG Black Metallic Reimagined6.jpeg',
       '/images/Jordan 5 Retro OG Black Metallic Reimagined7.jpeg',
       '/images/Jordan 5 Retro OG Black Metallic Reimagined8.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Air Jordan 5 OG Black Metallic Reimagined. New, verified authentic.' },
   },
   {
@@ -624,7 +620,7 @@ const SNEAKERS: Product[] =[
     name: 'Undefeated x Air Jordan 4 Retro Deep Green (2025)',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Undefeated x Air Jordan 4 Retro 2025.jpeg'),
+    image: '/images/Undefeated x Air Jordan 4 Retro 2025.jpeg',
     images:[
       '/images/Undefeated x Air Jordan 4 Retro 2025.jpeg',
       '/images/Undefeated x Air Jordan 4 Retro 20251.jpeg',
@@ -636,7 +632,7 @@ const SNEAKERS: Product[] =[
       '/images/Undefeated x Air Jordan 4 Retro 20257.jpeg',
       '/images/Undefeated x Air Jordan 4 Retro 20258.jpeg',
       '/images/Undefeated x Air Jordan 4 Retro 20259.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Undefeated x Air Jordan 4 Retro 2025 Deep Green. New, verified authentic.' },
   },
   {
@@ -645,7 +641,7 @@ const SNEAKERS: Product[] =[
     name: 'Travis Scott x Air Jordan 1 Low OG Reverse Mocha',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img("/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'.jpeg"),
+    image: "/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'.jpeg",
     images:[
       "/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'1.jpeg",
@@ -657,7 +653,7 @@ const SNEAKERS: Product[] =[
       "/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'7.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'8.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro Low OG 'Reverse Mocha'9.jpeg",
-    ].map(img),
+    ],
     details: { description: 'Travis Scott x Air Jordan 1 Low OG Reverse Mocha (Sail/University Red/Ridgerock). New, verified authentic.' },
   },
   {
@@ -666,7 +662,7 @@ const SNEAKERS: Product[] =[
     name: 'Travis Scott x Air Jordan 1 Low OG Olive',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img("/images/Travis Scott x Wmns Air Jordan 1 Retro Low OG SP 'Olive'.jpeg"),
+    image: "/images/Travis Scott x Wmns Air Jordan 1 Retro Low OG SP 'Olive'.jpeg",
     images:[
       "/images/Travis Scott x Wmns Air Jordan 1 Retro Low OG SP 'Olive'.jpeg",
       "/images/Travis Scott x Wmns Air Jordan 1 Retro Low OG SP 'Olive'1.jpeg",
@@ -677,16 +673,16 @@ const SNEAKERS: Product[] =[
       "/images/Travis Scott x Wmns Air Jordan 1 Retro Low OG SP 'Olive'6.jpeg",
       "/images/Travis Scott x Wmns Air Jordan 1 Retro Low OG SP 'Olive'7.jpeg",
       "/images/Travis Scott x Wmns Air Jordan 1 Retro Low OG SP 'Olive'8.jpeg",
-    ].map(img),
+    ],
     details: { description: 'Travis Scott x Air Jordan 1 Low OG Olive. New, verified authentic.' },
   },
   {
-    ids: ['DM7866-140'],
+    ids:['DM7866-140'],
     brand: 'Jordan',
     name: 'Fragment Design x Travis Scott x Air Jordan 1 Low',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Fragment Design x Travis Scott x Air Jordan 1 Retro Low.jpeg'),
+    image: '/images/Fragment Design x Travis Scott x Air Jordan 1 Retro Low.jpeg',
     images:[
       '/images/Fragment Design x Travis Scott x Air Jordan 1 Retro Low.jpeg',
       '/images/Fragment Design x Travis Scott x Air Jordan 1 Retro Low1.jpeg',
@@ -695,16 +691,16 @@ const SNEAKERS: Product[] =[
       '/images/Fragment Design x Travis Scott x Air Jordan 1 Retro Low4.jpeg',
       '/images/Fragment Design x Travis Scott x Air Jordan 1 Retro Low5.jpeg',
       '/images/Fragment Design x Travis Scott x Air Jordan 1 Retro Low6.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Fragment Design x Travis Scott x Air Jordan 1 Retro Low. New, verified authentic.' },
   },
   {
-    ids: ['DM7866-202'],
+    ids:['DM7866-202'],
     brand: 'Jordan',
     name: 'Travis Scott x Air Jordan 1 Low OG Velvet Brown',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img("/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'.jpeg"),
+    image: "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'.jpeg",
     images:[
       "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'1.jpeg",
@@ -713,7 +709,7 @@ const SNEAKERS: Product[] =[
       "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'4.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'5.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro Low OG SP 'Velvet Brown'6.jpeg",
-    ].map(img),
+    ],
     details: { description: 'Travis Scott x Air Jordan 1 Low OG Velvet Brown. New, verified authentic.' },
   },
   {
@@ -722,7 +718,7 @@ const SNEAKERS: Product[] =[
     name: 'Travis Scott x Air Jordan 1 Low OG Medium Olive',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive.jpeg'),
+    image: '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive.jpeg',
     images:[
       '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive.jpeg',
       '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive1.jpeg',
@@ -730,7 +726,7 @@ const SNEAKERS: Product[] =[
       '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive3.jpeg',
       '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive4.jpeg',
       '/images/Jordan 1 Retro Low OG SP Travis Scott Medium Olive5.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Travis Scott x Air Jordan 1 Low OG Medium Olive. New, verified authentic.' },
   },
   {
@@ -739,7 +735,7 @@ const SNEAKERS: Product[] =[
     name: 'Travis Scott x Air Jordan 1 Low OG Mocha',
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img('/images/Jordan 1 Retro Low OG SP Travis Scott Mocha.jpeg'),
+    image: '/images/Jordan 1 Retro Low OG SP Travis Scott Mocha.jpeg',
     images:[
       '/images/Jordan 1 Retro Low OG SP Travis Scott Mocha.jpeg',
       '/images/Jordan 1 Retro Low OG SP Travis Scott Mocha1.jpeg',
@@ -748,48 +744,45 @@ const SNEAKERS: Product[] =[
       '/images/Jordan 1 Retro Low OG SP Travis Scott Mocha4.jpeg',
       '/images/Jordan 1 Retro Low OG SP Travis Scott Mocha5.jpeg',
       '/images/Jordan 1 Retro Low OG SP Travis Scott Mocha6.jpeg',
-    ].map(img),
+    ],
     details: { description: 'Travis Scott x Air Jordan 1 Low OG Mocha. New, verified authentic.' },
   },
   {
-    ids:['CD4487-100'],
+    ids: ['CD4487-100'],
     brand: 'Jordan',
     name: "Travis Scott x Air Jordan 1 High OG Mocha",
     price: 180, spec: 'Various Sizes', category: 'Sneakers' as Category,
     condition: 'New', stock: 10,
-    image: img("/images/Travis Scott x Air Jordan 1 Retro High OG 'Mocha'.jpeg"),
+    image: "/images/Travis Scott x Air Jordan 1 Retro High OG 'Mocha'.jpeg",
     images:[
       "/images/Travis Scott x Air Jordan 1 Retro High OG 'Mocha'.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro High OG 'Mocha'1.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro High OG 'Mocha'2.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro High OG 'Mocha'3.jpeg",
       "/images/Travis Scott x Air Jordan 1 Retro High OG 'Mocha'5.jpeg",
-    ].map(img),
+    ],
     details: { description: "Travis Scott x Air Jordan 1 Retro High OG Mocha. New, verified authentic." },
   },
 ];
 
-export const INVENTORY: Product[] = [
-  ...rawData.map(([brand, name, volumes]) => {
-    const normalizedBrand = brand.trim();
-    const normalizedName  = name.trim();
-    const spec            = volumes.length > 1 ? `${volumes.join(', ')} options` : volumes[0];
-    const category: Category = isApparel(normalizedBrand) ? 'Apparel' : 'Fragrance';
-    const images          = getImagePaths(normalizedBrand, normalizedName);
+export const INVENTORY: Product[] = [...rawData.map(([brand, name, volumes]) => {
+  const normalizedBrand = brand.trim();
+  const normalizedName  = name.trim();
+  const spec            = volumes.length > 1 ? `${volumes.join(', ')} options` : volumes[0];
+  const category: Category = isApparel(normalizedBrand) ? 'Apparel' : 'Fragrance';
+  const images          = getImagePaths(normalizedBrand, normalizedName);
 
-    return {
-      ids:[`${normalizedBrand}|${normalizedName}`.toLowerCase()],
-      brand:     normalizedBrand,
-      name:      normalizedName,
-      spec,
-      condition: category === 'Apparel' ? 'New with Tags' : 'Sealed',
-      stock:     Math.floor(Math.random() * 15) + 3,
-      price:     category === 'Apparel' ? 35 : 70,
-      category,
-      image:     images[0] ?? '',
-      images,
-      details:   DEFAULT_DETAILS(category),
-    };
-  }),
-  ...SNEAKERS
-];
+  return {
+    ids:[`${normalizedBrand}|${normalizedName}`.toLowerCase()],
+    brand:     normalizedBrand,
+    name:      normalizedName,
+    spec,
+    condition: category === 'Apparel' ? 'New with Tags' : 'Sealed',
+    stock:     Math.floor(Math.random() * 15) + 3,
+    price:     category === 'Apparel' ? 35 : 70,
+    category,
+    image:     images[0] ?? '',
+    images,
+    details:   DEFAULT_DETAILS(category),
+  };
+}), ...SNEAKERS];
