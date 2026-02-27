@@ -337,7 +337,7 @@ const App: React.FC = () => {
             {fragrances.length > 0 && (
               <section className="p-6 md:p-12 -mx-6 md:-mx-12 rounded-xl" style={{background: 'radial-gradient(circle at center, rgba(30,41,59,0.3) 0%, transparent 100%)'}}>
                 <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
-                  <h2 className="serif italic text-3xl md:text-4xl text-white">The Fragrance Vault</h2>
+                  <h2 className="serif italic text-3xl md:text-4xl text-white">Fragrances</h2>
                   <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{fragrances.length} Items]</p>
                 </div>
                 <InventoryTable products={fragrances} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
@@ -348,7 +348,7 @@ const App: React.FC = () => {
             {sneakers.length > 0 && (
               <section className="p-6 md:p-12 -mx-6 md:-mx-12 rounded-xl border-t border-v-red/10" style={{background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(211,0,0,0.02) 10px, rgba(211,0,0,0.02) 20px)'}}>
                 <div className="flex items-end justify-between mb-8 border-b border-v-red/30 pb-4">
-                  <h2 className="serif italic text-3xl md:text-4xl text-white">Sneaker Graveyard</h2>
+                  <h2 className="serif italic text-3xl md:text-4xl text-white">Sneakers</h2>
                   <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{sneakers.length} Items]</p>
                 </div>
                 <InventoryTable products={sneakers} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
@@ -359,7 +359,7 @@ const App: React.FC = () => {
             {apparel.length > 0 && (
               <section className="p-6 md:p-12 -mx-6 md:-mx-12 rounded-xl border-t border-white/5 bg-gradient-to-b from-[#0a0a0a] to-[#111111]">
                 <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
-                  <h2 className="serif italic text-3xl md:text-4xl text-white">Essentials / Apparel</h2>
+                  <h2 className="serif italic text-3xl md:text-4xl text-white">Apparel</h2>
                   <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{apparel.length} Items]</p>
                 </div>
                 <InventoryTable products={apparel} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
