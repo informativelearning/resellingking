@@ -1,3 +1,4 @@
+--- START OF FILE resellingking-main/App.tsx ---
 import React, { useState, useMemo, useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import Ticker from './components/Ticker';
@@ -22,7 +23,7 @@ const getBrandInitials = (b: string) => {
 };
 
 const App: React.FC = () => {
-  const[searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [filterBrand, setFilterBrand] = useState('ALL');
   const[filterCategory, setFilterCategory] = useState<Category>('All');
@@ -40,7 +41,7 @@ const App: React.FC = () => {
   const[isCartOpen, setIsCartOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-  const[toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
   // Search Debounce
@@ -74,7 +75,7 @@ const App: React.FC = () => {
     return () => {
       document.body.style.overflow = '';
     };
-  },[isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
+  }, [isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
 
   const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
@@ -89,6 +90,13 @@ const App: React.FC = () => {
   const handleCategoryChange = (cat: Category) => {
     setFilterCategory(cat);
     setFilterBrand('ALL');
+  };
+
+  const handleViewAll = (cat: Category) => {
+    setFilterCategory(cat);
+    setFilterBrand('ALL');
+    setSearchTerm('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // If the user is searching or filtering, we switch out of "Lookbook" mode
@@ -106,11 +114,24 @@ const App: React.FC = () => {
       
       return matchesSearch && matchesBrand && matchesCategory;
     });
-  }, [debouncedSearch, filterBrand, filterCategory, inventory]);
+  },[debouncedSearch, filterBrand, filterCategory, inventory]);
 
   // Curated Sections for the Homepage
   const latestAdded = useMemo(() => [...inventory].reverse().slice(0, 4), [inventory]);
+  
+  // Comprehensive Fragrance Breakdown
   const fragrances = useMemo(() => inventory.filter(p => p.category === 'Fragrance'), [inventory]);
+  
+  const azzaro = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('azzaro')), [fragrances]);
+  const valentino = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('valentino')), [fragrances]);
+  const creed = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('creed')), [fragrances]);
+  const ysl = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('yves saint laurent')), [fragrances]);
+  const armani = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('giorgio armani')), [fragrances]);
+  const versace = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('versace')), [fragrances]);
+
+  const mainBrands =['azzaro', 'valentino', 'creed', 'yves saint laurent', 'giorgio armani', 'versace'];
+  const otherFragrances = useMemo(() => fragrances.filter(p => !mainBrands.some(b => p.brand.toLowerCase().includes(b))), [fragrances, mainBrands]);
+
   const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
   const apparel = useMemo(() => inventory.filter(p => p.category === 'Apparel'), [inventory]);
 
@@ -256,7 +277,7 @@ const App: React.FC = () => {
       </header>
 
       {/* Sticky Filter Bar */}
-      <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/95 backdrop-blur-md border-y border-white/10 py-0 transition-all w-full">
+      <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/95 backdrop-blur-md border-y border-white/10 py-0 transition-all w-full shadow-2xl">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
           <div className="flex items-center overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory h-14">
 
@@ -302,7 +323,7 @@ const App: React.FC = () => {
         
         {isFiltering ? (
           <>
-            {/* Standard Filter View */}
+            {/* Standard Filter View (For returning / searching users) */}
             <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
               <h2 className="serif italic text-3xl md:text-4xl text-white">
                 {filterCategory === 'All' ? 'Search Results' : filterCategory}
@@ -318,11 +339,11 @@ const App: React.FC = () => {
             />
           </>
         ) : (
-          <div className="space-y-32">
+          <div className="space-y-16 md:space-y-32">
             
             {/* Section 1: Latest Added */}
             {latestAdded.length > 0 && (
-              <section>
+              <section className="mb-10">
                 <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
                   <div>
                     <h2 className="serif italic text-3xl md:text-4xl text-white">Latest Added</h2>
@@ -333,36 +354,166 @@ const App: React.FC = () => {
               </section>
             )}
 
-            {/* Section 2: Fragrances */}
+            {/* Section 2: Fragrance Grails */}
             {fragrances.length > 0 && (
-              <section className="p-6 md:p-12 -mx-6 md:-mx-12 rounded-xl" style={{background: 'radial-gradient(circle at center, rgba(30,41,59,0.3) 0%, transparent 100%)'}}>
-                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
-                  <h2 className="serif italic text-3xl md:text-4xl text-white">Fragrances</h2>
-                  <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{fragrances.length} Items]</p>
+              <section className="relative pt-12 pb-24 border-t border-white/5 space-y-16 md:space-y-24">
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0f1115] via-transparent to-transparent pointer-events-none -mx-6 md:-mx-12 z-0" />
+                
+                <div className="relative z-10 text-center space-y-4 mb-16">
+                  <h2 className="serif italic text-5xl md:text-7xl text-white drop-shadow-lg">The Fragrance Vault</h2>
+                  <p className="text-[11px] tracking-[0.4em] uppercase text-v-red font-mono">[{fragrances.length}+ Authentic Scents]</p>
                 </div>
-                <InventoryTable products={fragrances} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+
+                <div className="space-y-12 md:space-y-16 relative z-10">
+                  
+                  {/* Azzaro Sub-section (Amber / Gunmetal Vibe) */}
+                  {azzaro.length > 0 && (
+                    <div className="relative p-6 md:p-10 rounded-2xl border border-amber-900/20 overflow-hidden bg-amber-950/5">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(217,119,6,0.07)_0%,_transparent_60%)] pointer-events-none" />
+                      <div className="relative z-10">
+                        <div className="flex items-end justify-between mb-8 border-b border-amber-900/30 pb-4">
+                          <h3 className="serif italic text-3xl md:text-4xl text-amber-50">Azzaro</h3>
+                        </div>
+                        <InventoryTable products={azzaro.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Valentino Sub-section (Pink / Rose Vibe) */}
+                  {valentino.length > 0 && (
+                    <div className="relative p-6 md:p-10 rounded-2xl border border-pink-900/20 overflow-hidden bg-pink-950/5">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(236,72,153,0.07)_0%,_transparent_60%)] pointer-events-none" />
+                      <div className="relative z-10">
+                        <div className="flex items-end justify-between mb-8 border-b border-pink-900/30 pb-4">
+                          <h3 className="serif italic text-3xl md:text-4xl text-pink-50">Valentino</h3>
+                        </div>
+                        <InventoryTable products={valentino.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Creed Sub-section (Gold / Regal Vibe) */}
+                  {creed.length > 0 && (
+                    <div className="relative p-6 md:p-10 rounded-2xl border border-yellow-900/20 overflow-hidden bg-yellow-950/5">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(234,179,8,0.07)_0%,_transparent_60%)] pointer-events-none" />
+                      <div className="relative z-10">
+                        <div className="flex items-end justify-between mb-8 border-b border-yellow-900/30 pb-4">
+                          <h3 className="serif italic text-3xl md:text-4xl text-yellow-50">Creed</h3>
+                        </div>
+                        <InventoryTable products={creed.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Yves Saint Laurent Sub-section (Purple / Deep Vibe) */}
+                  {ysl.length > 0 && (
+                    <div className="relative p-6 md:p-10 rounded-2xl border border-purple-900/20 overflow-hidden bg-purple-950/5">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(168,85,247,0.07)_0%,_transparent_60%)] pointer-events-none" />
+                      <div className="relative z-10">
+                        <div className="flex items-end justify-between mb-8 border-b border-purple-900/30 pb-4">
+                          <h3 className="serif italic text-3xl md:text-4xl text-purple-50">Yves Saint Laurent</h3>
+                        </div>
+                        <InventoryTable products={ysl.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Giorgio Armani Sub-section (Blue / Aquatic Vibe) */}
+                  {armani.length > 0 && (
+                    <div className="relative p-6 md:p-10 rounded-2xl border border-blue-900/20 overflow-hidden bg-blue-950/5">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(59,130,246,0.07)_0%,_transparent_60%)] pointer-events-none" />
+                      <div className="relative z-10">
+                        <div className="flex items-end justify-between mb-8 border-b border-blue-900/30 pb-4">
+                          <h3 className="serif italic text-3xl md:text-4xl text-blue-50">Giorgio Armani</h3>
+                        </div>
+                        <InventoryTable products={armani.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Versace Sub-section (Emerald / Green Vibe) */}
+                  {versace.length > 0 && (
+                    <div className="relative p-6 md:p-10 rounded-2xl border border-emerald-900/20 overflow-hidden bg-emerald-950/5">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(16,185,129,0.07)_0%,_transparent_60%)] pointer-events-none" />
+                      <div className="relative z-10">
+                        <div className="flex items-end justify-between mb-8 border-b border-emerald-900/30 pb-4">
+                          <h3 className="serif italic text-3xl md:text-4xl text-emerald-50">Versace</h3>
+                        </div>
+                        <InventoryTable products={versace.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Other Fragrances (Fallback) */}
+                  {otherFragrances.length > 0 && (
+                    <div className="relative">
+                      <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+                        <h3 className="serif italic text-3xl md:text-4xl text-white/80">More Fragrances</h3>
+                      </div>
+                      <InventoryTable products={otherFragrances.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-center pt-10 relative z-10">
+                  <button onClick={() => handleViewAll('Fragrance')} className="px-8 py-4 border border-white/20 text-[11px] font-mono tracking-[0.3em] uppercase text-white/60 hover:text-white hover:border-white/50 hover:bg-white/5 transition-all">
+                    Explore All Fragrances
+                  </button>
+                </div>
               </section>
             )}
 
             {/* Section 3: Sneakers */}
             {sneakers.length > 0 && (
-              <section className="p-6 md:p-12 -mx-6 md:-mx-12 rounded-xl border-t border-v-red/10" style={{background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(211,0,0,0.02) 10px, rgba(211,0,0,0.02) 20px)'}}>
-                <div className="flex items-end justify-between mb-8 border-b border-v-red/30 pb-4">
-                  <h2 className="serif italic text-3xl md:text-4xl text-white">Sneakers</h2>
-                  <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{sneakers.length} Items]</p>
+              <section className="relative p-6 md:p-16 rounded-xl overflow-hidden border border-v-red/20 my-16 bg-[#0a0a0a]">
+                <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(211,0,0,0.02)_10px,rgba(211,0,0,0.02)_20px)] pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none opacity-80" />
+                
+                <div className="relative z-10">
+                  <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-v-red/30 pb-6 gap-4">
+                    <div>
+                      <h2 className="serif italic text-5xl md:text-6xl text-white">Sneakers</h2>
+                      <p className="text-[10px] tracking-[0.4em] uppercase text-white/40 font-mono mt-3">Curated Grails & Daily Steals</p>
+                    </div>
+                  </div>
+                  
+                  <InventoryTable products={sneakers.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+
+                  {sneakers.length > 4 && (
+                    <div className="flex justify-center mt-12 pt-6 relative z-20">
+                      <button onClick={() => handleViewAll('Sneakers')} className="group flex flex-col items-center gap-3">
+                        <span className="text-[11px] tracking-[0.4em] uppercase font-mono text-v-red border border-v-red/40 bg-v-red/5 px-8 py-4 group-hover:bg-v-red group-hover:text-white transition-all duration-300">
+                          + {sneakers.length - 4} More Pairs
+                        </span>
+                        <span className="text-[10px] text-white/30 font-mono tracking-widest group-hover:text-white/60 transition-colors">See all Jordans & more</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <InventoryTable products={sneakers} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
               </section>
             )}
 
             {/* Section 4: Apparel */}
             {apparel.length > 0 && (
-              <section className="p-6 md:p-12 -mx-6 md:-mx-12 rounded-xl border-t border-white/5 bg-gradient-to-b from-[#0a0a0a] to-[#111111]">
-                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
-                  <h2 className="serif italic text-3xl md:text-4xl text-white">Apparel</h2>
-                  <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{apparel.length} Items]</p>
+              <section className="p-6 md:p-16 rounded-xl bg-[#080808] border border-white/5 my-16 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white opacity-[0.02] blur-[120px] rounded-full pointer-events-none" />
+                
+                <div className="relative z-10">
+                  <div className="flex flex-col items-center justify-center text-center mb-16 border-b border-white/5 pb-10">
+                    <h2 className="serif italic text-5xl md:text-6xl text-white/90">Apparel</h2>
+                    <p className="text-[11px] tracking-[0.3em] uppercase text-white/30 font-mono mt-4">Essential Fits. Zero BS.</p>
+                  </div>
+                  
+                  <InventoryTable products={apparel.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+
+                  {apparel.length > 4 && (
+                    <div className="flex justify-center mt-12">
+                      <button onClick={() => handleViewAll('Apparel')} className="px-8 py-4 border border-white/10 text-[11px] font-mono tracking-[0.3em] uppercase text-white/50 hover:text-white hover:border-white/30 transition-all">
+                        View All Apparel (+{apparel.length - 4})
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <InventoryTable products={apparel} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
               </section>
             )}
 
