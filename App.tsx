@@ -23,23 +23,23 @@ const getBrandInitials = (b: string) => {
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const[debouncedSearch, setDebouncedSearch] = useState('');
   const [filterBrand, setFilterBrand] = useState('ALL');
   const[filterCategory, setFilterCategory] = useState<Category>('All');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const[selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('wof_cart');
       return saved ? JSON.parse(saved) : [];
     } catch { 
-      return []; 
+      return[]; 
     }
   });
 
-  const[isCartOpen, setIsCartOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
-  const [showAdmin, setShowAdmin] = useState(false);
+  const[showAdmin, setShowAdmin] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
 
@@ -98,6 +98,13 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleViewBrand = (cat: Category, exactBrand: string) => {
+    setFilterCategory(cat);
+    setFilterBrand(exactBrand);
+    setSearchTerm('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // If the user is searching or filtering, we switch out of "Lookbook" mode
   const isFiltering = debouncedSearch !== '' || filterCategory !== 'All' || filterBrand !== 'ALL';
 
@@ -129,7 +136,7 @@ const App: React.FC = () => {
   const versace = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('versace')), [fragrances]);
 
   const mainBrands =['azzaro', 'valentino', 'creed', 'yves saint laurent', 'giorgio armani', 'versace'];
-  const otherFragrances = useMemo(() => fragrances.filter(p => !mainBrands.some(b => p.brand.toLowerCase().includes(b))), [fragrances, mainBrands]);
+  const otherFragrances = useMemo(() => fragrances.filter(p => !mainBrands.some(b => p.brand.toLowerCase().includes(b))),[fragrances, mainBrands]);
 
   const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
   const apparel = useMemo(() => inventory.filter(p => p.category === 'Apparel'), [inventory]);
@@ -150,7 +157,7 @@ const App: React.FC = () => {
             : item
         );
       }
-      return[...prev, { ...product, quantity: 1, selectedSize }];
+      return [...prev, { ...product, quantity: 1, selectedSize }];
     });
     
     const label = selectedSize ? `${product.name} (${selectedSize})` : product.name;
@@ -374,6 +381,13 @@ const App: React.FC = () => {
                           <h3 className="serif italic text-3xl md:text-4xl text-amber-50">Azzaro</h3>
                         </div>
                         <InventoryTable products={azzaro.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                        {azzaro.length > 4 && (
+                          <div className="mt-8 flex justify-center">
+                            <button onClick={() => handleViewBrand('Fragrance', azzaro[0].brand)} className="px-6 py-3 border border-amber-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-amber-50/60 hover:text-amber-50 hover:bg-amber-900/20 transition-all">
+                              View All {azzaro[0].brand} (+{azzaro.length - 4})
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -387,6 +401,13 @@ const App: React.FC = () => {
                           <h3 className="serif italic text-3xl md:text-4xl text-pink-50">Valentino</h3>
                         </div>
                         <InventoryTable products={valentino.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                        {valentino.length > 4 && (
+                          <div className="mt-8 flex justify-center">
+                            <button onClick={() => handleViewBrand('Fragrance', valentino[0].brand)} className="px-6 py-3 border border-pink-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-pink-50/60 hover:text-pink-50 hover:bg-pink-900/20 transition-all">
+                              View All {valentino[0].brand} (+{valentino.length - 4})
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -400,6 +421,13 @@ const App: React.FC = () => {
                           <h3 className="serif italic text-3xl md:text-4xl text-yellow-50">Creed</h3>
                         </div>
                         <InventoryTable products={creed.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                        {creed.length > 4 && (
+                          <div className="mt-8 flex justify-center">
+                            <button onClick={() => handleViewBrand('Fragrance', creed[0].brand)} className="px-6 py-3 border border-yellow-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-yellow-50/60 hover:text-yellow-50 hover:bg-yellow-900/20 transition-all">
+                              View All {creed[0].brand} (+{creed.length - 4})
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -413,6 +441,13 @@ const App: React.FC = () => {
                           <h3 className="serif italic text-3xl md:text-4xl text-purple-50">Yves Saint Laurent</h3>
                         </div>
                         <InventoryTable products={ysl.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                        {ysl.length > 4 && (
+                          <div className="mt-8 flex justify-center">
+                            <button onClick={() => handleViewBrand('Fragrance', ysl[0].brand)} className="px-6 py-3 border border-purple-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-purple-50/60 hover:text-purple-50 hover:bg-purple-900/20 transition-all">
+                              View All {ysl[0].brand} (+{ysl.length - 4})
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -426,6 +461,13 @@ const App: React.FC = () => {
                           <h3 className="serif italic text-3xl md:text-4xl text-blue-50">Giorgio Armani</h3>
                         </div>
                         <InventoryTable products={armani.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                        {armani.length > 4 && (
+                          <div className="mt-8 flex justify-center">
+                            <button onClick={() => handleViewBrand('Fragrance', armani[0].brand)} className="px-6 py-3 border border-blue-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-blue-50/60 hover:text-blue-50 hover:bg-blue-900/20 transition-all">
+                              View All {armani[0].brand} (+{armani.length - 4})
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -439,6 +481,13 @@ const App: React.FC = () => {
                           <h3 className="serif italic text-3xl md:text-4xl text-emerald-50">Versace</h3>
                         </div>
                         <InventoryTable products={versace.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                        {versace.length > 4 && (
+                          <div className="mt-8 flex justify-center">
+                            <button onClick={() => handleViewBrand('Fragrance', versace[0].brand)} className="px-6 py-3 border border-emerald-900/30 text-[10px] font-mono tracking-[0.3em] uppercase text-emerald-50/60 hover:text-emerald-50 hover:bg-emerald-900/20 transition-all">
+                              View All {versace[0].brand} (+{versace.length - 4})
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -450,6 +499,13 @@ const App: React.FC = () => {
                         <h3 className="serif italic text-3xl md:text-4xl text-white/80">More Fragrances</h3>
                       </div>
                       <InventoryTable products={otherFragrances.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+                      {otherFragrances.length > 4 && (
+                        <div className="mt-8 flex justify-center">
+                          <button onClick={() => handleViewAll('Fragrance')} className="px-6 py-3 border border-white/10 text-[10px] font-mono tracking-[0.3em] uppercase text-white/50 hover:text-white hover:bg-white/5 transition-all">
+                            View {otherFragrances.length - 4} More Fragrances
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
