@@ -1,4 +1,3 @@
---- START OF FILE resellingking-main/App.tsx ---
 import React, { useState, useMemo, useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import Ticker from './components/Ticker';
