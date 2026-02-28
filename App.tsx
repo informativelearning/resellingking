@@ -148,7 +148,10 @@ const App: React.FC = () => {
           Wings of Fortune
         </h1>
         <p className="relative z-10 text-[11px] mt-3 text-[#a19f99] uppercase tracking-[0.3em] font-sans">
-          661 Local Plug • Clothes, Sneakers & Colognes
+          661 • Clothes, Sneakers & Colognes
+        </p>
+        <p className="relative z-10 text-[11px] mt-2 text-[#52525b] uppercase tracking-[0.25em] font-sans">
+          quick. cheap. no bs.
         </p>
       </header>
 
@@ -255,40 +258,6 @@ const App: React.FC = () => {
 
           </div>
         )}
-
-        {/* How to Order Section */}
-        <section className="mt-32 pt-20 relative">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-[#52525b] to-transparent"></div>
-          <div className="flex flex-col md:flex-row gap-16 max-w-5xl mx-auto items-center">
-            <div className="w-full md:w-2/5 flex-shrink-0 relative">
-              <div className="absolute inset-0 bg-[#0c0c0e]/20 rounded-2xl z-10"></div>
-              <img src={PLUG_PHOTO} alt="Local Delivery" className="w-full aspect-square object-cover grayscale opacity-80 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
-            </div>
-            <div className="w-full md:w-3/5 flex flex-col justify-center">
-              <h2 className="text-3xl font-serif italic text-[#e8e6e1] mb-4">How It Works</h2>
-              <p className="text-[#a19f99] text-sm mb-12 max-w-xl leading-relaxed font-sans">
-                All local to the 661. We meet up and hand you your stuff — no shipping, no hassle.
-              </p>
-              <div className="space-y-6">
-                <div className="bg-[#161619]/40 p-6 rounded-xl shadow-inner backdrop-blur-sm">
-                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">Step 1</span>
-                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">Add to Cart</h3>
-                  <p className="text-[#71717a] text-sm leading-relaxed">Pick what you want and add it to your cart.</p>
-                </div>
-                <div className="bg-[#161619]/40 p-6 rounded-xl shadow-inner backdrop-blur-sm">
-                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">Step 2</span>
-                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">Hit Checkout</h3>
-                  <p className="text-[#71717a] text-sm leading-relaxed">Your order gets copied automatically — then paste it in our Instagram DMs.</p>
-                </div>
-                <div className="bg-[#161619]/40 p-6 rounded-xl shadow-inner backdrop-blur-sm">
-                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">Step 3</span>
-                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">Meet Up & Pay</h3>
-                  <p className="text-[#71717a] text-sm leading-relaxed">We link up locally. Check your stuff out in person, then pay. Simple.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
       </main>
 
