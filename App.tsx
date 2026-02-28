@@ -1,30 +1,18 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import Ticker from './components/Ticker';
-import InventoryTable from './components/InventoryTable';
-import ProductModal from './components/ProductModal';
-import CartSidebar from './components/CartSidebar';
-import AdminPanel, { getMergedInventory } from './components/AdminPanel';
 import { Product, Category, CartItem } from './types';
+import AdminPanel, { getMergedInventory } from './components/AdminPanel';
 
-const LOGO = 'https://cdn.jsdelivr.net/gh/informativelearning/resellingking@main/public/images/wingsofofrtuning.png';
 const IG_HANDLE = '661ro_resellz';
 
-// Generates the luxury monograms for the brand dropdown
-const getBrandInitials = (b: string) => {
-  if (b === 'ALL') return '✵';
-  if (b.toLowerCase().includes('yves')) return 'YSL';
-  if (b.toLowerCase().includes('fear')) return 'FOG';
-  if (b.toLowerCase().includes('giorgio')) return 'GA';
-  if (b.toLowerCase().includes('jordan')) return 'J';
-  if (b.toLowerCase().includes('azzaro')) return 'AZ';
-  return b.charAt(0).toUpperCase();
-};
+// Replace this with a picture of yourself for the "Meet the Plug" section!
+const PLUG_PHOTO = '/images/plug-photo.jpg'; 
+const ENGRAVING_WATERMARK = '/images/corner-wing.png';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [filterBrand, setFilterBrand] = useState('ALL');
+  const[filterBrand, setFilterBrand] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState<Category>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
@@ -37,679 +25,393 @@ const App: React.FC = () => {
     }
   });
 
-  const[isCartOpen, setIsCartOpen] = useState(false);
-  const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-  const[toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
+  const[copied, setCopied] = useState(false);
 
-  // Search Debounce
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, 300);
+    const handler = setTimeout(() => setDebouncedSearch(searchTerm), 300);
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Save Cart
   useEffect(() => {
-    try {
-      localStorage.setItem('wof_cart', JSON.stringify(cart));
-    } catch {}
+    try { localStorage.setItem('wof_cart', JSON.stringify(cart)); } catch {}
   }, [cart]);
 
-  // Load Inventory
   useEffect(() => {
     setInventory(getMergedInventory());
   }, [showAdmin]);
 
-  // Prevent scrolling when modals are open
   useEffect(() => {
-    const isAnyModalOpen = isCartOpen || isBrandDropdownOpen || selectedProduct !== null || showAdmin;
-    if (isAnyModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  },[isCartOpen, isBrandDropdownOpen, selectedProduct, showAdmin]);
+    document.body.style.overflow = (isCartOpen || selectedProduct !== null || showAdmin) ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  },[isCartOpen, selectedProduct, showAdmin]);
 
   const categories: Category[] =['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
-  const brands: string[] = useMemo(() => {
-    const source = filterCategory === 'All' 
-      ? inventory 
-      : inventory.filter(p => p.category === filterCategory);
-    const unique = Array.from(new Set(source.map(p => p.brand))).sort();
-    return ['ALL', ...unique];
-  }, [filterCategory, inventory]);
+  const brands = useMemo(() => {
+    const source = filterCategory === 'All' ? inventory : inventory.filter(p => p.category === filterCategory);
+    return['ALL', ...Array.from(new Set(source.map(p => p.brand))).sort()];
+  },[filterCategory, inventory]);
 
-  const handleCategoryChange = (cat: Category) => {
-    setFilterCategory(cat);
-    setFilterBrand('ALL');
-  };
-
-  const handleViewAll = (cat: Category) => {
-    setFilterCategory(cat);
-    setFilterBrand('ALL');
-    setSearchTerm('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleViewBrand = (cat: Category, exactBrand: string) => {
-    setFilterCategory(cat);
-    setFilterBrand(exactBrand);
-    setSearchTerm('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // If the user is searching or filtering, we switch out of "Lookbook" mode
   const isFiltering = debouncedSearch !== '' || filterCategory !== 'All' || filterBrand !== 'ALL';
 
   const filteredProducts = useMemo(() => {
     return inventory.filter(product => {
-      const searchToUse = debouncedSearch.toLowerCase();
-      const matchesSearch =
-        product.name.toLowerCase().includes(searchToUse) ||
-        product.brand.toLowerCase().includes(searchToUse) ||
-        product.ids.some(id => id.toLowerCase().includes(searchToUse));
+      const s = debouncedSearch.toLowerCase();
+      const matchesSearch = product.name.toLowerCase().includes(s) || product.brand.toLowerCase().includes(s);
       const matchesBrand = filterBrand === 'ALL' || product.brand === filterBrand;
       const matchesCategory = filterCategory === 'All' || product.category === filterCategory;
-      
       return matchesSearch && matchesBrand && matchesCategory;
     });
-  }, [debouncedSearch, filterBrand, filterCategory, inventory]);
+  },[debouncedSearch, filterBrand, filterCategory, inventory]);
 
-  // Curated Sections for the Homepage
-  const latestAdded = useMemo(() => [...inventory].reverse().slice(0, 4), [inventory]);
-  
-  // Comprehensive Fragrance Breakdown
+  const latestAdded = useMemo(() =>[...inventory].reverse().slice(0, 4), [inventory]);
   const fragrances = useMemo(() => inventory.filter(p => p.category === 'Fragrance'), [inventory]);
-  
-  const azzaro = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('azzaro')), [fragrances]);
-  const valentino = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('valentino')), [fragrances]);
-  const creed = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('creed')), [fragrances]);
-  const ysl = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('yves saint laurent')), [fragrances]);
-  const armani = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('giorgio armani')), [fragrances]);
-  const versace = useMemo(() => fragrances.filter(p => p.brand.toLowerCase().includes('versace')), [fragrances]);
-
-  const mainBrands =['azzaro', 'valentino', 'creed', 'yves saint laurent', 'giorgio armani', 'versace'];
-  const otherFragrances = useMemo(() => fragrances.filter(p => !mainBrands.some(b => p.brand.toLowerCase().includes(b))), [fragrances, mainBrands]);
-
   const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
   const apparel = useMemo(() => inventory.filter(p => p.category === 'Apparel'), [inventory]);
 
-  const handleInquire = () => {
-    window.open(`https://instagram.com/${IG_HANDLE}`, '_blank');
-  };
-
   const addToCart = (product: Product, selectedSize?: string) => {
     setCart(prev => {
-      const existing = prev.find(item =>
-        item.ids[0] === product.ids[0] && item.selectedSize === selectedSize
-      );
+      const existing = prev.find(item => item.ids[0] === product.ids[0] && item.selectedSize === selectedSize);
       if (existing) {
-        return prev.map(item =>
-          item.ids[0] === product.ids[0] && item.selectedSize === selectedSize
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        return prev.map(item => item.ids[0] === product.ids[0] && item.selectedSize === selectedSize ? { ...item, quantity: item.quantity + 1 } : item);
       }
       return[...prev, { ...product, quantity: 1, selectedSize }];
     });
-    
-    const label = selectedSize ? `${product.name} (${selectedSize})` : product.name;
-    setToast(label);
+    setSelectedProduct(null);
+    setToast(selectedSize ? `${product.name} (${selectedSize}) added.` : `${product.name} added.`);
     setTimeout(() => setToast(null), 2500);
-    setIsCartOpen(true);
   };
 
-  const removeFromCart = (productId: string, selectedSize?: string) => {
-    setCart(prev => prev.filter(item =>
-      !(item.ids[0] === productId && item.selectedSize === selectedSize)
-    ));
-  };
-
-  const updateCartQuantity = (productId: string, delta: number, selectedSize?: string) => {
-    setCart(prev =>
-      prev
-        .map(item => {
-          if (item.ids[0] !== productId || item.selectedSize !== selectedSize) return item;
-          const newQty = item.quantity + delta;
-          if (newQty <= 0) return null;
-          if (newQty > item.stock) return item;
-          return { ...item, quantity: newQty };
-        })
-        .filter(Boolean) as CartItem[]
-    );
-  };
-
+  const removeFromCart = (id: string, size?: string) => setCart(prev => prev.filter(i => !(i.ids[0] === id && i.selectedSize === size)));
+  const updateCartQuantity = (id: string, delta: number, size?: string) => setCart(prev => prev.map(i => { if (i.ids[0] !== id || i.selectedSize !== size) return i; const q = i.quantity + delta; return q > 0 && q <= i.stock ? { ...i, quantity: q } : q <= 0 ? null : i; }).filter(Boolean) as CartItem[]);
+  
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  const handleDM = async () => {
+    const lines = cart.map(i => `• ${i.brand} - ${i.name} ${i.selectedSize ? `(Size ${i.selectedSize})` : ''} x${i.quantity} — $${i.price * i.quantity}`);
+    const msg = `Yo, I want to lock in this order for local meetup:\n\n${lines.join('\n')}\n\nTotal: $${cartTotal}`;
+    try { await navigator.clipboard.writeText(msg); } catch {}
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+      window.open(`https://ig.me/m/${IG_HANDLE}`, '_blank');
+    }, 1500);
+  };
 
   return (
-    <div className="min-h-screen bg-v-black text-v-white font-sans flex flex-col overflow-x-hidden relative">
+    <div className="min-h-screen bg-[#f4f4f5] text-[#18181b] flex flex-col relative font-sans">
       
+      {/* Dynamic Fonts & Base Styles Injection */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Space+Grotesk:wght@300;400;600;700&display=swap');
+        .font-grotesk { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'DM Mono', monospace; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes slideUp {
-          from { transform: translateY(100%); opacity: 0; }
-          to   { transform: translateY(0);    opacity: 1; }
-        }
-        .animate-slideUp { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        @keyframes ghostPulse {
-          0%, 100% { opacity: 0.02; transform: scale(1.5) translateZ(0); }
-          50%      { opacity: 0.08; transform: scale(1.5) translateZ(0); }
-        }
-        .animate-ghost { 
-          animation: ghostPulse 8s ease-in-out infinite; 
-          will-change: opacity; 
+        .bg-watermark {
+          background-image: url('${ENGRAVING_WATERMARK}');
+          background-repeat: repeat;
+          background-size: 300px;
+          opacity: 0.04;
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          z-index: 0;
         }
       `}</style>
 
-      {/* Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-v-black/95 border-b border-white/5 h-[80px] md:h-[88px] flex items-center">
-        <div className="max-w-[1800px] w-full mx-auto px-6 md:px-12 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img 
-              src={LOGO} 
-              alt="Wings of Fortune" 
-              className="h-12 md:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity duration-500 filter brightness-110 contrast-110" 
-              style={{ mixBlendMode: 'screen' }} 
-            />
-            <div className="hidden md:block h-8 w-[1px] bg-white/10" />
-            <span className="hidden md:block text-[10px] tracking-[0.4em] uppercase text-white/30 font-light">
-              Wasco, CA
-            </span>
-          </div>
+      {/* Esoteric Engraving Watermark Background */}
+      <div className="bg-watermark"></div>
 
-          <div className="flex items-center gap-5">
-            <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/30 hover:text-white transition-colors duration-300 group">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              <span className="hidden sm:block text-[10px] tracking-[0.3em] uppercase font-mono group-hover:text-v-red transition-colors">
-                @{IG_HANDLE}
-              </span>
-            </a>
-            <div className="w-[1px] h-5 bg-white/10" />
-            <button onClick={() => setIsCartOpen(true)} className="flex items-center gap-3 text-white/60 hover:text-white transition-all duration-300 group/cart">
-              <span className="hidden md:block text-[10px] tracking-[0.3em] uppercase font-medium opacity-0 group-hover/cart:opacity-100 transition-opacity">
-                bag
-              </span>
-              <div className="relative">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                {totalCartItems > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-v-red text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                    {totalCartItems}
-                  </span>
-                )}
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Top Nav */}
+      <nav className="fixed top-0 w-full bg-[#f4f4f5]/90 backdrop-blur-md border-b border-[#18181b]/10 z-40 h-[70px] flex items-center justify-between px-6 md:px-12">
+        <div className="font-grotesk font-bold text-xl md:text-2xl tracking-tighter uppercase">Wings of Fortune</div>
+        <button onClick={() => setIsCartOpen(true)} className="flex items-center gap-2 border border-[#18181b] px-4 py-1.5 hover:bg-[#18181b] hover:text-[#f4f4f5] transition-colors">
+          <span className="font-mono text-xs font-medium uppercase mt-0.5">Order Stack ({totalCartItems})</span>
+        </button>
+      </nav>
 
-      {/* Hero Section */}
-      <header className="relative z-30 pt-[80px] md:pt-[88px] overflow-hidden">
-        <Ticker />
-
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] pointer-events-none z-0 mix-blend-screen flex justify-center items-center">
-          <img src={LOGO} alt="Wings Watermark" className="w-full h-auto object-contain md:scale-125 filter grayscale contrast-125 animate-ghost" />
-        </div>
-
-        <div className="px-6 md:px-12 flex flex-col items-center gap-12 max-w-[1400px] mx-auto w-full relative z-10 mt-16 mb-16">
-          <div className="text-center space-y-8 max-w-5xl">
-            <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] serif italic tracking-tighter text-white leading-[0.85] font-light drop-shadow-2xl">
-              Wings of<br/>
-              <span className="block mt-2">Fortune</span>
-            </h1>
-            <div className="flex flex-col items-center gap-6 pt-4">
-              <p className="text-[11px] md:text-xs tracking-[0.5em] uppercase text-white/40 font-light font-mono">
-                661 / Wasco, CA
-              </p>
-              <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-v-red/50 to-transparent" />
-              <p className="text-sm md:text-base text-white/60 font-light max-w-xl leading-relaxed serif italic">
-                quick. cheap. no bs.
-              </p>
-            </div>
-          </div>
-        </div>
+      {/* Hero */}
+      <header className="pt-[140px] pb-12 px-6 md:px-12 relative z-10 flex flex-col items-center text-center">
+        <h1 className="font-grotesk font-bold text-6xl md:text-8xl lg:text-[9rem] tracking-tighter uppercase leading-[0.9]">
+          Wings of<br/>Fortune
+        </h1>
+        <p className="font-mono text-sm md:text-base mt-6 text-[#18181b]/60 uppercase tracking-widest">
+          The 661 Underground Archive
+        </p>
       </header>
 
-      {/* Sticky Filter Bar */}
-      <div className="sticky top-[80px] md:top-[88px] z-30 bg-v-black/95 backdrop-blur-md border-y border-white/10 py-0 transition-all w-full shadow-2xl">
-        <div className="max-w-[1800px] mx-auto px-6 md:px-12">
-          <div className="flex items-center overflow-x-auto hide-scrollbar touch-pan-x snap-x snap-mandatory h-14">
-
-            <div className="flex-shrink-0 snap-start relative flex items-center h-full border-r border-white/10 pr-4 mr-4">
-              <span className="text-[11px] text-v-red tracking-[0.3em] uppercase font-mono mr-2">Search</span>
-              <input 
-                type="text" 
-                value={searchTerm} 
-                onChange={e => setSearchTerm(e.target.value)} 
-                placeholder="//" 
-                className="w-[80px] focus:w-[140px] transition-all duration-500 bg-transparent border-b border-white/10 py-1 text-[11px] tracking-[0.2em] uppercase text-white placeholder-white/20 focus:outline-none focus:border-white/50 rounded-none font-mono" 
-              />
-              {searchTerm && (
-                <button onClick={() => setSearchTerm('')} className="absolute right-4 text-white/40 text-sm hover:text-white">✕</button>
-              )}
-            </div>
-
-            <div className="flex-shrink-0 snap-start h-full flex items-center border-r border-white/10 pr-4 mr-4">
-              <button onClick={() => setIsBrandDropdownOpen(true)} className={`flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full font-mono ${filterBrand !== 'ALL' ? 'text-v-red font-bold' : 'text-white/40 hover:text-white'}`}>
-                <span>{filterBrand === 'ALL' ? 'Brand' : filterBrand}</span>
-                <span className="text-[9px]">▼</span>
+      {/* Minimal Filter Bar */}
+      <div className="sticky top-[70px] z-30 bg-[#f4f4f5] border-y border-[#18181b]/10">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12 flex items-center overflow-x-auto hide-scrollbar h-14 gap-6 font-mono text-xs uppercase">
+          <div className="flex items-center gap-2 border-r border-[#18181b]/10 pr-6 flex-shrink-0">
+            <span className="text-[#18181b]/50">Search</span>
+            <input 
+              type="text" 
+              value={searchTerm} 
+              onChange={e => setSearchTerm(e.target.value)} 
+              placeholder="//" 
+              className="bg-transparent border-b border-[#18181b]/20 focus:border-[#18181b] outline-none w-24 focus:w-32 transition-all"
+            />
+          </div>
+          <div className="flex items-center gap-2 border-r border-[#18181b]/10 pr-6 flex-shrink-0">
+            <span className="text-[#18181b]/50">Brand</span>
+            <select value={filterBrand} onChange={e => setFilterBrand(e.target.value)} className="bg-transparent outline-none cursor-pointer font-bold">
+              {brands.map(b => <option key={b} value={b}>{b}</option>)}
+            </select>
+          </div>
+          <div className="flex items-center gap-6 flex-shrink-0">
+            {categories.map(cat => (
+              <button 
+                key={cat} 
+                onClick={() => handleCategoryChange(cat)} 
+                className={`${filterCategory === cat ? 'font-bold border-b-2 border-[#18181b]' : 'text-[#18181b]/50 hover:text-[#18181b]'}`}
+              >
+                {cat}
               </button>
-            </div>
-
-            <div className="flex items-center h-full gap-6">
-              {categories.map(cat => (
-                <button 
-                  key={cat} 
-                  onClick={() => handleCategoryChange(cat)} 
-                  className={`flex-shrink-0 snap-start text-[11px] tracking-[0.3em] uppercase transition-all duration-300 h-full flex items-center border-b-2 font-mono ${filterCategory === cat ? 'text-white border-white font-bold' : 'text-white/30 border-transparent hover:text-white/60'}`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <main className="flex-1 px-6 md:px-12 pt-10 pb-12 max-w-[1800px] mx-auto w-full relative z-[2]">
+      <main className="flex-1 px-6 md:px-12 pt-12 pb-24 max-w-[1800px] mx-auto w-full relative z-10">
         
         {isFiltering ? (
           <>
-            {/* Standard Filter View (For returning / searching users) */}
-            <div className="flex items-end justify-between mb-10 border-b border-white/10 pb-4">
-              <h2 className="serif italic text-3xl md:text-4xl text-white">
-                {filterCategory === 'All' ? 'Search Results' : filterCategory}
-                {filterBrand !== 'ALL' && <span className="text-white/40 text-xl md:text-2xl ml-3">/ {filterBrand}</span>}
-              </h2>
-              <p className="text-[11px] tracking-[0.3em] uppercase text-v-red font-mono mb-1">[{filteredProducts.length} {filteredProducts.length === 1 ? 'Item' : 'Items'}]
-              </p>
+            <div className="flex items-end gap-4 mb-8 border-b border-[#18181b]/10 pb-4">
+              <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">Search Results</h2>
+              <span className="font-mono text-xs mb-1">[{filteredProducts.length}]</span>
             </div>
-            <InventoryTable 
-              products={filteredProducts} 
-              onProductClick={setSelectedProduct} 
-              onAddToCart={addToCart} 
-            />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+              {filteredProducts.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
+            </div>
           </>
         ) : (
-          <div className="space-y-16 md:space-y-32">
+          <div className="space-y-24">
             
-            {/* Section 1: Latest Added */}
-            {latestAdded.length > 0 && (
-              <section className="mb-10">
-                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+            {/* Latest Added */}
+            <section>
+              <div className="flex items-end gap-4 mb-6 border-b border-[#18181b]/10 pb-4">
+                <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">Fresh Hits</h2>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {latestAdded.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
+              </div>
+            </section>
+
+            {/* MEET THE PLUG SECTION (Trust Builder) */}
+            <section className="bg-white border border-[#18181b]/10 p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center shadow-sm">
+              <div className="w-full md:w-1/3 aspect-square bg-[#e4e4e7] relative border border-[#18181b]/10 p-2 flex-shrink-0">
+                <div className="w-full h-full bg-gray-300 relative overflow-hidden">
+                  {/* Replace this img src with your actual photo! */}
+                  <img src={PLUG_PHOTO} alt="The Plug" className="w-full h-full object-cover filter grayscale" />
+                  <div className="absolute inset-0 flex items-center justify-center text-[#18181b]/30 font-mono text-sm uppercase text-center px-4 mix-blend-multiply">[ Insert Photo of you here ]
+                  </div>
+                </div>
+              </div>
+              <div className="w-full md:w-2/3 space-y-6">
+                <div>
+                  <h2 className="font-grotesk font-bold text-3xl md:text-5xl uppercase tracking-tight leading-none mb-2">Local to the 661.<br/>Hand-Delivered by Me.</h2>
+                  <p className="font-mono text-sm text-[#18181b]/60 uppercase tracking-wide">No sketchy links. No shipping fees. Real local business.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-[#18181b]/10">
                   <div>
-                    <h2 className="serif italic text-3xl md:text-4xl text-white">Latest Added</h2>
-                    <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mt-2">Newest items to hit the vault.</p>
+                    <h3 className="font-grotesk font-bold text-lg mb-1">1. Build Stack</h3>
+                    <p className="font-mono text-xs text-[#18181b]/70">Add the gear or scents you want to your order stack on this site.</p>
+                  </div>
+                  <div>
+                    <h3 className="font-grotesk font-bold text-lg mb-1">2. Send to DM</h3>
+                    <p className="font-mono text-xs text-[#18181b]/70">Hit checkout. It copies your order so you can paste it right into my Instagram DMs.</p>
+                  </div>
+                  <div>
+                    <h3 className="font-grotesk font-bold text-lg mb-1">3. Meet & Pay</h3>
+                    <p className="font-mono text-xs text-[#18181b]/70">We lock in a public meetup spot in the 661. You verify the items, you pay, you walk away with heat.</p>
                   </div>
                 </div>
-                <InventoryTable products={latestAdded} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-              </section>
-            )}
+              </div>
+            </section>
 
-            {/* Section 2: Fragrance Grails */}
+            {/* Fragrances */}
             {fragrances.length > 0 && (
-              <section className="relative pt-12 pb-24 border-t border-white/5 space-y-16 md:space-y-24">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0f1115] via-transparent to-transparent pointer-events-none -mx-6 md:-mx-12 z-0" />
-                
-                <div className="relative z-10 text-center space-y-4 mb-16">
-                  <h2 className="serif italic text-5xl md:text-7xl text-white drop-shadow-lg">The Fragrance Vault</h2>
-                  <p className="text-[11px] tracking-[0.4em] uppercase text-v-red font-mono">[{fragrances.length}+ Authentic Scents]</p>
+              <section>
+                <div className="flex items-end gap-4 mb-6 border-b border-[#18181b]/10 pb-4">
+                  <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">The Fragrance Vault</h2>
+                  <span className="font-mono text-xs mb-1">[{fragrances.length}]</span>
                 </div>
-
-                <div className="space-y-12 md:space-y-16 relative z-10">
-                  
-                  {/* Azzaro Sub-section (Amber / Gunmetal Vibe) */}
-                  {azzaro.length > 0 && (
-                    <div className="relative p-6 md:p-10 rounded-2xl border border-amber-900/20 overflow-hidden bg-amber-950/5">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(217,119,6,0.07)_0%,_transparent_60%)] pointer-events-none" />
-                      <div className="relative z-10">
-                        <div className="flex items-end justify-between mb-8 border-b border-amber-900/30 pb-4">
-                          <h3 className="serif italic text-3xl md:text-4xl text-amber-50">Azzaro</h3>
-                        </div>
-                        <InventoryTable products={azzaro.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-                        {azzaro.length > 4 && (
-                          <div className="mt-10 flex justify-center">
-                            <button 
-                              onClick={() => handleViewBrand('Fragrance', azzaro[0].brand)} 
-                              className="px-8 py-3 border border-amber-500/30 bg-amber-500/5 text-xs font-mono tracking-[0.3em] uppercase text-amber-100 hover:bg-amber-500/20 hover:border-amber-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(217,119,6,0.1)]"
-                            >
-                              View All {azzaro[0].brand} (+{azzaro.length - 4} Scents)
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Valentino Sub-section (Pink / Rose Vibe) */}
-                  {valentino.length > 0 && (
-                    <div className="relative p-6 md:p-10 rounded-2xl border border-pink-900/20 overflow-hidden bg-pink-950/5">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(236,72,153,0.07)_0%,_transparent_60%)] pointer-events-none" />
-                      <div className="relative z-10">
-                        <div className="flex items-end justify-between mb-8 border-b border-pink-900/30 pb-4">
-                          <h3 className="serif italic text-3xl md:text-4xl text-pink-50">Valentino</h3>
-                        </div>
-                        <InventoryTable products={valentino.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-                        {valentino.length > 4 && (
-                          <div className="mt-10 flex justify-center">
-                            <button 
-                              onClick={() => handleViewBrand('Fragrance', valentino[0].brand)} 
-                              className="px-8 py-3 border border-pink-500/30 bg-pink-500/5 text-xs font-mono tracking-[0.3em] uppercase text-pink-100 hover:bg-pink-500/20 hover:border-pink-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(236,72,153,0.1)]"
-                            >
-                              View All {valentino[0].brand} (+{valentino.length - 4} Scents)
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Creed Sub-section (Gold / Regal Vibe) */}
-                  {creed.length > 0 && (
-                    <div className="relative p-6 md:p-10 rounded-2xl border border-yellow-900/20 overflow-hidden bg-yellow-950/5">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(234,179,8,0.07)_0%,_transparent_60%)] pointer-events-none" />
-                      <div className="relative z-10">
-                        <div className="flex items-end justify-between mb-8 border-b border-yellow-900/30 pb-4">
-                          <h3 className="serif italic text-3xl md:text-4xl text-yellow-50">Creed</h3>
-                        </div>
-                        <InventoryTable products={creed.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-                        {creed.length > 4 && (
-                          <div className="mt-10 flex justify-center">
-                            <button 
-                              onClick={() => handleViewBrand('Fragrance', creed[0].brand)} 
-                              className="px-8 py-3 border border-yellow-500/30 bg-yellow-500/5 text-xs font-mono tracking-[0.3em] uppercase text-yellow-100 hover:bg-yellow-500/20 hover:border-yellow-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.1)]"
-                            >
-                              View All {creed[0].brand} (+{creed.length - 4} Scents)
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Yves Saint Laurent Sub-section (Purple / Deep Vibe) */}
-                  {ysl.length > 0 && (
-                    <div className="relative p-6 md:p-10 rounded-2xl border border-purple-900/20 overflow-hidden bg-purple-950/5">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(168,85,247,0.07)_0%,_transparent_60%)] pointer-events-none" />
-                      <div className="relative z-10">
-                        <div className="flex items-end justify-between mb-8 border-b border-purple-900/30 pb-4">
-                          <h3 className="serif italic text-3xl md:text-4xl text-purple-50">Yves Saint Laurent</h3>
-                        </div>
-                        <InventoryTable products={ysl.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-                        {ysl.length > 4 && (
-                          <div className="mt-10 flex justify-center">
-                            <button 
-                              onClick={() => handleViewBrand('Fragrance', ysl[0].brand)} 
-                              className="px-8 py-3 border border-purple-500/30 bg-purple-500/5 text-xs font-mono tracking-[0.3em] uppercase text-purple-100 hover:bg-purple-500/20 hover:border-purple-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.1)]"
-                            >
-                              View All {ysl[0].brand} (+{ysl.length - 4} Scents)
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Giorgio Armani Sub-section (Blue / Aquatic Vibe) */}
-                  {armani.length > 0 && (
-                    <div className="relative p-6 md:p-10 rounded-2xl border border-blue-900/20 overflow-hidden bg-blue-950/5">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(59,130,246,0.07)_0%,_transparent_60%)] pointer-events-none" />
-                      <div className="relative z-10">
-                        <div className="flex items-end justify-between mb-8 border-b border-blue-900/30 pb-4">
-                          <h3 className="serif italic text-3xl md:text-4xl text-blue-50">Giorgio Armani</h3>
-                        </div>
-                        <InventoryTable products={armani.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-                        {armani.length > 4 && (
-                          <div className="mt-10 flex justify-center">
-                            <button 
-                              onClick={() => handleViewBrand('Fragrance', armani[0].brand)} 
-                              className="px-8 py-3 border border-blue-500/30 bg-blue-500/5 text-xs font-mono tracking-[0.3em] uppercase text-blue-100 hover:bg-blue-500/20 hover:border-blue-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
-                            >
-                              View All {armani[0].brand} (+{armani.length - 4} Scents)
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Versace Sub-section (Emerald / Green Vibe) */}
-                  {versace.length > 0 && (
-                    <div className="relative p-6 md:p-10 rounded-2xl border border-emerald-900/20 overflow-hidden bg-emerald-950/5">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(16,185,129,0.07)_0%,_transparent_60%)] pointer-events-none" />
-                      <div className="relative z-10">
-                        <div className="flex items-end justify-between mb-8 border-b border-emerald-900/30 pb-4">
-                          <h3 className="serif italic text-3xl md:text-4xl text-emerald-50">Versace</h3>
-                        </div>
-                        <InventoryTable products={versace.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-                        {versace.length > 4 && (
-                          <div className="mt-10 flex justify-center">
-                            <button 
-                              onClick={() => handleViewBrand('Fragrance', versace[0].brand)} 
-                              className="px-8 py-3 border border-emerald-500/30 bg-emerald-500/5 text-xs font-mono tracking-[0.3em] uppercase text-emerald-100 hover:bg-emerald-500/20 hover:border-emerald-500/60 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
-                            >
-                              View All {versace[0].brand} (+{versace.length - 4} Scents)
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Other Fragrances (Fallback) */}
-                  {otherFragrances.length > 0 && (
-                    <div className="relative">
-                      <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
-                        <h3 className="serif italic text-3xl md:text-4xl text-white/80">More Fragrances</h3>
-                      </div>
-                      <InventoryTable products={otherFragrances.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-                      {otherFragrances.length > 4 && (
-                        <div className="mt-10 flex justify-center">
-                          <button onClick={() => handleViewAll('Fragrance')} className="px-8 py-3 border border-white/20 text-xs font-mono tracking-[0.3em] uppercase text-white/60 hover:text-white hover:bg-white/5 transition-all">
-                            View {otherFragrances.length - 4} More Fragrances
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex justify-center pt-10 relative z-10">
-                  <button onClick={() => handleViewAll('Fragrance')} className="px-8 py-4 border border-white/20 text-[11px] font-mono tracking-[0.3em] uppercase text-white/60 hover:text-white hover:border-white/50 hover:bg-white/5 transition-all">
-                    Explore All Fragrances
-                  </button>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                  {fragrances.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
                 </div>
               </section>
             )}
 
-            {/* Section 3: Sneakers (Refined, Brutalist, Architectural) */}
+            {/* Sneakers */}
             {sneakers.length > 0 && (
-              <section className="relative my-24 border-y border-white/10 bg-[#050505] overflow-hidden">
-                {/* Subtle cinematic lighting */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-white/[0.02] blur-[100px] rounded-full pointer-events-none" />
-                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-v-red/[0.03] blur-[120px] rounded-full pointer-events-none" />
-
-                {/* Structural lines */}
-                <div className="absolute top-0 left-6 md:left-12 bottom-0 w-[1px] bg-gradient-to-b from-white/10 via-white/5 to-transparent pointer-events-none hidden md:block" />
-                <div className="absolute top-0 right-6 md:right-12 bottom-0 w-[1px] bg-gradient-to-b from-white/10 via-white/5 to-transparent pointer-events-none hidden md:block" />
-
-                <div className="relative z-10 px-6 py-20 md:px-16 md:py-28 max-w-[1800px] mx-auto">
-                  {/* Header Area */}
-                  <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8 border-b border-white/10 pb-8">
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4">
-                        <span className="w-8 h-[1px] bg-v-red"></span>
-                        <span className="text-[10px] tracking-[0.5em] uppercase text-v-red font-mono font-bold">The Archive</span>
-                      </div>
-                      <h2 className="serif italic text-6xl md:text-8xl text-white tracking-tighter leading-none">
-                        Sneakers
-                      </h2>
-                    </div>
-                    <div className="md:text-right max-w-sm">
-                      <p className="text-[11px] tracking-[0.2em] uppercase text-white/40 font-mono leading-relaxed">
-                        Curated grails. Verified authentic. Zero compromises.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {/* Products */}
-                  <InventoryTable products={sneakers.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
-
-                  {/* Button */}
-                  {sneakers.length > 4 && (
-                    <div className="flex justify-center mt-16 pt-8">
-                      <button 
-                        onClick={() => handleViewAll('Sneakers')} 
-                        className="group flex flex-col items-center gap-4"
-                      >
-                        <div className="w-[1px] h-12 bg-gradient-to-b from-white/20 to-white/0 group-hover:from-v-red group-hover:to-v-red/0 transition-all duration-500" />
-                        <span className="text-[11px] tracking-[0.4em] uppercase font-mono text-white/70 border border-white/10 px-10 py-5 hover:bg-white hover:text-v-black hover:border-white transition-all duration-300">
-                          View All Grails (+{sneakers.length - 4})
-                        </span>
-                      </button>
-                    </div>
-                  )}
+              <section>
+                <div className="flex items-end gap-4 mb-6 border-b border-[#18181b]/10 pb-4">
+                  <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">Sneaker Archive</h2>
+                  <span className="font-mono text-xs mb-1">[{sneakers.length}]</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                  {sneakers.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
                 </div>
               </section>
             )}
 
-            {/* Section 4: Apparel (Clean, Monochromatic, High Contrast) */}
+            {/* Apparel */}
             {apparel.length > 0 && (
-              <section className="relative px-6 py-20 md:px-16 md:py-28 my-16 bg-[#030303] border border-white/5 rounded-3xl mx-0 md:mx-6 overflow-hidden group">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white/[0.015] blur-[80px] rounded-full pointer-events-none" />
-                
-                <div className="relative z-10 max-w-[1800px] mx-auto">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-white/10 pb-8 gap-6">
-                    <div>
-                      <h2 className="serif italic text-5xl md:text-6xl text-white/90">Apparel</h2>
-                      <p className="text-[11px] tracking-[0.3em] uppercase text-white/30 font-mono mt-4">Essential Fits. Zero BS.</p>
-                    </div>
-                    {apparel.length > 4 && (
-                      <button onClick={() => handleViewAll('Apparel')} className="px-6 py-3 border border-white/10 text-xs font-mono tracking-[0.3em] uppercase text-white/50 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all whitespace-nowrap">
-                        View All (+{apparel.length - 4})
-                      </button>
-                    )}
-                  </div>
-                  
-                  <InventoryTable products={apparel.slice(0, 4)} onProductClick={setSelectedProduct} onAddToCart={addToCart} />
+              <section>
+                <div className="flex items-end gap-4 mb-6 border-b border-[#18181b]/10 pb-4">
+                  <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">Essentials / Clothing</h2>
+                  <span className="font-mono text-xs mb-1">[{apparel.length}]</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                  {apparel.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
                 </div>
               </section>
             )}
 
           </div>
         )}
-
-        <footer className="mt-40 mb-20 py-24 border-t border-white/5 flex flex-col items-center gap-16">
-          <div className="text-center space-y-8">
-            <div className="mb-12 flex justify-center opacity-15 hover:opacity-30 transition-opacity duration-700">
-              <img src={LOGO} alt="Wings of Fortune" className="h-20 w-auto filter brightness-110 contrast-110" style={{ mixBlendMode: 'screen' }} />
-            </div>
-            <div className="space-y-4">
-              <p className="text-[10px] tracking-[0.5em] uppercase text-white/30 font-light">661 / Wasco, CA</p>
-              <p className="text-[11px] tracking-[0.2em] uppercase text-white/20 font-light">based in the valley.</p>
-            </div>
-          </div>
-
-          <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-4">
-            <span className="text-[11px] tracking-[0.4em] uppercase text-white/30 group-hover:text-white/60 transition-colors font-light">@{IG_HANDLE}</span>
-            <div className="h-16 w-[1px] bg-gradient-to-b from-white/10 via-white/20 to-transparent" />
-          </a>
-
-          <div className="flex gap-8 text-[9px] font-light text-white/10 uppercase tracking-[0.4em]">
-            <span>Est. 2025</span>
-            <span>•</span>
-            <span>private collection.</span>
-            <span>•</span>
-            <span className="cursor-default select-none" onClick={() => setShowAdmin(true)} style={{ WebkitTapHighlightColor: 'transparent' }}>661</span>
-          </div>
-        </footer>
       </main>
 
-      {/* Brand Modal */}
-      {isBrandDropdownOpen && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={() => setIsBrandDropdownOpen(false)} />
-          <div className="w-full sm:max-w-md bg-v-black border-t sm:border border-white/10 z-10 max-h-[85vh] flex flex-col transform animate-slideUp shadow-2xl rounded-none">
-            <div className="flex items-center justify-between p-6 border-b border-white/5 flex-shrink-0 bg-v-black">
-              <div>
-                <p className="text-[11px] text-v-red tracking-[0.4em] uppercase font-mono mb-2">Refine Search</p>
-                <h3 className="text-3xl serif italic text-white">Brand</h3>
-              </div>
-              <button onClick={() => setIsBrandDropdownOpen(false)} className="text-white/40 hover:text-v-red transition-colors text-xl font-light px-4 py-2 border border-white/10">✕</button>
+      <footer className="border-t border-[#18181b]/10 py-12 flex flex-col items-center gap-6 relative z-10">
+        <img src={LOGO} className="h-12 w-auto opacity-30 filter invert" />
+        <div className="text-center font-mono text-[10px] uppercase text-[#18181b]/50 space-y-2">
+          <p>661 / Wasco, CA • Local Drop-offs Only</p>
+          <p className="cursor-pointer hover:text-[#18181b]" onClick={() => setShowAdmin(true)}>Est. 2025 • Admin</p>
+        </div>
+      </footer>
+
+      {/* QUICK VIEW MODAL (Brutalist Ticket Style) */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
+          <div className="absolute inset-0 bg-[#18181b]/40 backdrop-blur-sm" onClick={() => setSelectedProduct(null)} />
+          <div className="bg-[#f4f4f5] border-2 border-[#18181b] w-full max-w-3xl flex flex-col md:flex-row relative z-10 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onClick={() => setSelectedProduct(null)} className="absolute top-4 right-4 z-20 font-mono text-xs border border-[#18181b] px-2 py-1 bg-white hover:bg-[#18181b] hover:text-white transition-colors">CLOSE [X]</button>
+            
+            <div className="w-full md:w-1/2 bg-white border-b md:border-b-0 md:border-r border-[#18181b] p-8 flex items-center justify-center">
+              <img src={selectedProduct.images?.[0] || selectedProduct.image} className={`max-w-full max-h-[40vh] md:max-h-[60vh] ${selectedProduct.category === 'Sneakers' ? 'object-contain' : 'object-cover'}`} />
             </div>
-            <div className="overflow-y-auto overscroll-contain px-0 py-0 hide-scrollbar pb-10 bg-v-black divide-y divide-white/5">
-              {brands.map(brand => {
-                const count = inventory.filter(p => p.brand === brand && (filterCategory === 'All' || p.category === filterCategory)).length;
-                return (
-                  <button 
-                    key={brand} 
-                    onClick={() => { setFilterBrand(brand); setIsBrandDropdownOpen(false); }} 
-                    className={`w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-200 group ${filterBrand === brand ? 'bg-white/5 border-l-2 border-v-red text-white' : 'text-white/50 hover:bg-white/[0.02] hover:text-white border-l-2 border-transparent'}`}
-                  >
-                    <div className="flex items-center gap-4">
-                      {/* Luxury Monogram Avatar */}
-                      <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] text-[10px] font-serif italic text-white/70 shadow-inner group-hover:border-white/30 transition-colors">
-                        {getBrandInitials(brand)}
-                      </div>
-                      <span className="text-xs tracking-[0.2em] uppercase font-mono group-hover:tracking-[0.3em] transition-all">
-                        {brand === 'ALL' ? 'All Items' : brand}
-                      </span>
-                    </div>
-                    {brand !== 'ALL' && <span className="text-[10px] font-mono text-white/20">[{count}]</span>}
-                  </button>
-                );
-              })}
+            
+            <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[#18181b]/50 mb-2">ID: {selectedProduct.ids[0]}</span>
+              <h2 className="font-grotesk font-bold text-3xl uppercase leading-none mb-1">{selectedProduct.brand}</h2>
+              <h3 className="font-grotesk text-xl uppercase text-[#18181b]/70 mb-4">{selectedProduct.name}</h3>
+              <p className="font-mono text-2xl mb-6">${selectedProduct.price}</p>
+              
+              <div className="font-mono text-xs space-y-2 border-y border-[#18181b]/10 py-4 mb-6">
+                <div className="flex justify-between"><span className="text-[#18181b]/50">Spec:</span><span>{selectedProduct.spec}</span></div>
+                <div className="flex justify-between"><span className="text-[#18181b]/50">Category:</span><span>{selectedProduct.category}</span></div>
+              </div>
+
+              {(selectedProduct.category === 'Apparel' || selectedProduct.category === 'Sneakers') ? (
+                <div className="mb-6">
+                  <p className="font-mono text-xs uppercase mb-2">Select Size:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {(selectedProduct.category === 'Sneakers' ?['7','8','9','10','11','12','13'] : ['S','M','L','XL']).map(s => (
+                      <button key={s} onClick={() => addToCart(selectedProduct, s)} className="border border-[#18181b] font-mono text-xs px-4 py-2 hover:bg-[#18181b] hover:text-white transition-colors">
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <button onClick={() => addToCart(selectedProduct)} className="bg-[#18181b] text-white font-grotesk font-bold uppercase py-4 w-full text-lg hover:bg-black transition-colors mb-4 mt-auto">
+                  Add to Stack
+                </button>
+              )}
             </div>
           </div>
         </div>
       )}
 
-      {selectedProduct && (
-        <ProductModal 
-          product={selectedProduct} 
-          onClose={() => setSelectedProduct(null)} 
-          onInquire={handleInquire} 
-          onAddToCart={addToCart} 
-        />
-      )}
-
-      <CartSidebar 
-        isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
-        cart={cart} 
-        onRemove={removeFromCart} 
-        onUpdateQty={updateCartQuantity} 
-        igHandle={IG_HANDLE} 
-      />
-
-      {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
-      
-      <Analytics />
-      
-      <div style={{ transition: 'opacity 0.5s, transform 0.5s' }} className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] pointer-events-none ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
-        <div className="bg-v-black border border-white/15 px-5 py-3 flex items-center gap-3 shadow-2xl shadow-black/60">
-          <span className="w-1.5 h-1.5 rounded-full bg-v-red flex-shrink-0" />
-          <p className="text-xs font-mono text-white/70 whitespace-nowrap">
-            <span className="text-white">{toast}</span> added.
-          </p>
+      {/* CART SIDEBAR */}
+      <div className={`fixed top-0 right-0 h-full w-full max-w-sm bg-white border-l border-[#18181b] z-[300] shadow-2xl transform transition-transform duration-300 flex flex-col ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="p-5 border-b border-[#18181b] flex justify-between items-center bg-[#f4f4f5]">
+          <h2 className="font-grotesk font-bold text-xl uppercase">Order Stack</h2>
+          <button onClick={() => setIsCartOpen(false)} className="font-mono text-xs border border-[#18181b] px-2 py-1 hover:bg-[#18181b] hover:text-white transition-colors">CLOSE</button>
         </div>
+        
+        <div className="bg-[#18181b] text-white p-3 text-center font-mono text-[10px] uppercase tracking-widest">
+          No credit card needed. Pay at drop-off.
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          {cart.length === 0 ? (
+            <p className="text-center font-mono text-xs text-[#18181b]/40 mt-10">Stack is empty.</p>
+          ) : (
+            cart.map((item, i) => (
+              <div key={i} className="flex gap-4 border border-[#18181b]/10 p-3 bg-[#f4f4f5]">
+                <img src={item.images?.[0] || item.image} className="w-16 h-16 object-cover border border-[#18181b]/10" />
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <p className="font-grotesk font-bold text-sm leading-tight uppercase">{item.brand}</p>
+                    <p className="font-mono text-[10px] uppercase text-[#18181b]/60 truncate">{item.name} {item.selectedSize && `(${item.selectedSize})`}</p>
+                  </div>
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="flex items-center gap-3 font-mono text-xs">
+                      <button onClick={() => updateCartQuantity(item.ids[0], -1, item.selectedSize)}>-</button>
+                      <span>{item.quantity}</span>
+                      <button onClick={() => updateCartQuantity(item.ids[0], 1, item.selectedSize)}>+</button>
+                    </div>
+                    <span className="font-mono font-bold text-sm">${item.price * item.quantity}</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {cart.length > 0 && (
+          <div className="p-5 border-t border-[#18181b] bg-[#f4f4f5]">
+            <div className="flex justify-between font-grotesk font-bold text-xl uppercase mb-4">
+              <span>Total</span><span>${cartTotal}</span>
+            </div>
+            <button 
+              onClick={handleDM} 
+              className={`w-full py-4 font-grotesk font-bold text-lg uppercase transition-all duration-300 flex items-center justify-center gap-2 ${copied ? 'bg-[#22c55e] text-white' : 'bg-[#0095f6] text-white hover:bg-[#0085db]'}`}
+            >
+              {copied ? 'Copied! Opening IG...' : 'Copy Order & Open IG'}
+            </button>
+            <p className="text-center font-mono text-[9px] text-[#18181b]/50 uppercase mt-3">This copies your order list so you can paste it in the DM.</p>
+          </div>
+        )}
       </div>
 
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#18181b] text-white px-6 py-3 font-mono text-xs uppercase tracking-widest z-[400] shadow-xl border border-[#f4f4f5]/20 animate-slideUp">
+          {toast}
+        </div>
+      )}
+      
+      {showAdmin && <AdminPanel onClose={() => { setShowAdmin(false); setInventory(getMergedInventory()); }} />}
+      <Analytics />
+    </div>
+  );
+};
+
+// Reusable Brutalist Product Card
+const ProductCard = ({ product, onClick }) => {
+  return (
+    <div onClick={onClick} className="flex flex-col cursor-pointer group h-full">
+      <div className="aspect-[4/5] bg-white border border-[#18181b]/10 relative p-4 flex items-center justify-center mb-3 group-hover:border-[#18181b] transition-colors">
+        <img src={product.images?.[0] || product.image} className={`w-full h-full ${product.category === 'Sneakers' ? 'object-contain' : 'object-cover'} mix-blend-multiply group-hover:scale-105 transition-transform duration-500`} />
+        <div className="absolute top-2 right-2 bg-white border border-[#18181b] px-2 py-1 font-mono text-xs font-bold shadow-sm">
+          ${product.price}
+        </div>
+      </div>
+      <div className="flex flex-col flex-1">
+        <p className="font-mono text-[10px] text-[#18181b]/50 uppercase tracking-widest">{product.brand}</p>
+        <h3 className="font-grotesk font-bold text-sm uppercase leading-tight mt-1 mb-2 line-clamp-2">{product.name}</h3>
+        <button className="mt-auto border border-[#18181b]/20 py-2 w-full font-mono text-[10px] uppercase font-bold text-[#18181b]/60 group-hover:bg-[#18181b] group-hover:text-white group-hover:border-[#18181b] transition-all">
+          {product.category === 'Fragrance' ? '+ View Specs' : '+ Select Size'}
+        </button>
+      </div>
     </div>
   );
 };
