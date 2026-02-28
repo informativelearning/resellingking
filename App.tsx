@@ -30,23 +30,19 @@ const App: React.FC = () => {
   const [inventory, setInventory] = useState<Product[]>([]);
   const [copied, setCopied] = useState(false);
 
-  // Debounce search input
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(searchTerm), 300);
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Persist cart
   useEffect(() => {
     try { localStorage.setItem('wof_cart', JSON.stringify(cart)); } catch {}
   },[cart]);
 
-  // Load inventory
   useEffect(() => {
     setInventory(getMergedInventory());
   }, [showAdmin]);
 
-  // Lock body scroll when modals open
   useEffect(() => {
     document.body.style.overflow = (isCartOpen || selectedProduct !== null || showAdmin) ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -71,7 +67,6 @@ const App: React.FC = () => {
     });
   },[debouncedSearch, filterBrand, filterCategory, inventory]);
 
-  // Sections for non-filtered view
   const newArrivals = useMemo(() => [...inventory].reverse().slice(0, 4), [inventory]);
   const fragrances = useMemo(() => inventory.filter(p => p.category === 'Fragrance'), [inventory]);
   const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
@@ -86,7 +81,7 @@ const App: React.FC = () => {
       return [...prev, { ...product, quantity: 1, selectedSize }];
     });
     setSelectedProduct(null);
-    setToast(selectedSize ? `${product.name} (${selectedSize}) added.` : `${product.name} added.`);
+    setToast(selectedSize ? `${product.name} (${selectedSize}) added to cart!` : `${product.name} added to cart!`);
     setTimeout(() => setToast(null), 2500);
   };
 
@@ -98,7 +93,7 @@ const App: React.FC = () => {
 
   const handleDM = async () => {
     const lines = cart.map(i => `• ${i.brand} - ${i.name} ${i.selectedSize ? `(Size ${i.selectedSize})` : ''} x${i.quantity} — $${i.price * i.quantity}`);
-    const msg = `Hi, I'd like to place an order for local meetup:\n\n${lines.join('\n')}\n\nTotal: $${cartTotal}`;
+    const msg = `Hey, I want to order:\n\n${lines.join('\n')}\n\nTotal: $${cartTotal}`;
     try { await navigator.clipboard.writeText(msg); } catch {}
     setCopied(true);
     setTimeout(() => {
@@ -121,18 +116,17 @@ const App: React.FC = () => {
       {/* Top Nav */}
       <nav className="fixed top-0 z-40 bg-[#0c0c0e]/80 backdrop-blur-xl h-20 flex items-center justify-between px-6 md:px-12 w-full shadow-[0_4px_40px_rgba(0,0,0,0.2)]">
         <div className="flex items-center gap-3">
-          {/* Logo Brand Image */}
           <img src={LOGO} alt="Wings of Fortune" className="h-10 md:h-12 w-auto object-contain filter invert opacity-90" />
         </div>
         <div className="flex items-center gap-6 md:gap-8">
           <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="hidden sm:flex items-center gap-2 text-[#a19f99] hover:text-[#e8e6e1] transition-colors text-[11px] font-sans tracking-widest uppercase">
-            Follow @{IG_HANDLE}
+            @{IG_HANDLE}
           </a>
           <button 
             onClick={() => setIsCartOpen(true)} 
             className="flex items-center gap-3 bg-[#161619] text-[#e8e6e1] px-5 py-2.5 rounded-full hover:bg-[#252529] transition-colors text-xs tracking-widest uppercase shadow-[0_2px_15px_rgba(0,0,0,0.2)]"
           >
-            <span>Archive</span>
+            <span>Cart</span>
             {totalCartItems > 0 && (
               <span className="bg-[#e8e6e1] text-[#0c0c0e] px-2 py-0.5 rounded-full text-[10px] font-medium leading-none">
                 {totalCartItems}
@@ -142,42 +136,41 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Subtle Art Fade */}
-      <header className="relative w-full pt-40 pb-24 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
-        {/* Subtle Background Art */}
+      {/* Slim Hero */}
+      <header className="relative w-full pt-32 pb-10 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
         <div 
           className="absolute inset-0 z-0 opacity-[0.07] mix-blend-screen pointer-events-none filter invert"
           style={{ backgroundImage: `url(${LOGO})`, backgroundPosition: 'center 20%', backgroundSize: 'cover' }}
         ></div>
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent via-[#0c0c0e]/60 to-[#0c0c0e] pointer-events-none"></div>
         
-        <h1 className="relative z-10 font-serif font-medium text-5xl md:text-7xl text-[#e8e6e1] tracking-wide drop-shadow-lg">
+        <h1 className="relative z-10 font-serif font-medium text-4xl md:text-6xl text-[#e8e6e1] tracking-wide drop-shadow-lg">
           Wings of Fortune
         </h1>
-        <p className="relative z-10 text-[11px] mt-6 text-[#a19f99] uppercase tracking-[0.3em] font-sans">
-          Curated Exoterica • 661 Local
+        <p className="relative z-10 text-[11px] mt-3 text-[#a19f99] uppercase tracking-[0.3em] font-sans">
+          661 Local Plug • Clothes, Sneakers & Colognes
         </p>
       </header>
 
-      {/* Soft Filter Bar */}
+      {/* Filter Bar */}
       <div className="bg-[#0c0c0e]/95 backdrop-blur-md sticky top-20 z-30 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-4 flex items-center gap-8 overflow-x-auto hide-scrollbar whitespace-nowrap text-xs tracking-widest font-sans text-[#a19f99]">
           <div className="flex items-center gap-3 pr-8 relative after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-4 after:bg-[#2a2a2e]">
-            <span className="uppercase">Seek</span>
+            <span className="uppercase">Search</span>
             <input 
               type="text" 
               value={searchTerm} 
               onChange={e => setSearchTerm(e.target.value)} 
-              placeholder="✦" 
+              placeholder="..." 
               className="bg-transparent outline-none w-20 focus:w-32 transition-all text-[#e8e6e1] placeholder-[#52525b]"
             />
           </div>
           <select 
             value={filterBrand} 
             onChange={e => setFilterBrand(e.target.value)} 
-            className="bg-transparent text-[#e8e6e1] outline-none cursor-pointer pr-8 uppercase appearance-none relative after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-4 after:bg-[#2a2a2e]"
+            className="bg-transparent text-[#e8e6e1] outline-none cursor-pointer pr-8 uppercase appearance-none"
           >
-            {brands.map(b => <option key={b} value={b} className="bg-[#0c0c0e]">{b === 'ALL' ? 'All Origins' : b}</option>)}
+            {brands.map(b => <option key={b} value={b} className="bg-[#0c0c0e]">{b === 'ALL' ? 'All Brands' : b}</option>)}
           </select>
           <div className="flex items-center gap-2">
             {categories.map(cat => (
@@ -193,27 +186,27 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <main className="max-w-[1800px] mx-auto px-6 md:px-12 pt-16 w-full">
         
         {isFiltering ? (
           <>
             <div className="flex items-baseline gap-4 mb-10">
-              <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Visions Found</h2>
-              <span className="text-[11px] text-[#a19f99] tracking-widest font-sans uppercase">[{filteredProducts.length} Relics]</span>
+              <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Results</h2>
+              <span className="text-[11px] text-[#a19f99] tracking-widest font-sans uppercase">[{filteredProducts.length} items]</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">
               {filteredProducts.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
             </div>
           </>
         ) : (
-          <div className="space-y-32">
+          <div className="space-y-24">
             
             {/* New Arrivals */}
             {newArrivals.length > 0 && (
               <section>
                 <div className="flex items-baseline justify-between mb-10">
-                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Recent Manifestations</h2>
+                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Just Dropped</h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-8">
                   {newArrivals.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
@@ -225,7 +218,7 @@ const App: React.FC = () => {
             {fragrances.length > 0 && (
               <section>
                 <div className="flex items-baseline gap-4 mb-10">
-                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Essences & Elixirs</h2>
+                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Colognes & Fragrances</h2>
                   <span className="text-[11px] text-[#a19f99] tracking-widest font-sans uppercase">[{fragrances.length}]</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">
@@ -238,7 +231,7 @@ const App: React.FC = () => {
             {sneakers.length > 0 && (
               <section>
                 <div className="flex items-baseline gap-4 mb-10">
-                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Footwear</h2>
+                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Sneakers</h2>
                   <span className="text-[11px] text-[#a19f99] tracking-widest font-sans uppercase">[{sneakers.length}]</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">
@@ -251,7 +244,7 @@ const App: React.FC = () => {
             {apparel.length > 0 && (
               <section>
                 <div className="flex items-baseline gap-4 mb-10">
-                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Garments</h2>
+                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Clothes</h2>
                   <span className="text-[11px] text-[#a19f99] tracking-widest font-sans uppercase">[{apparel.length}]</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">
@@ -263,8 +256,8 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Ethereal 'How to Order' Section */}
-        <section className="mt-40 pt-20 relative">
+        {/* How to Order Section */}
+        <section className="mt-32 pt-20 relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-[#52525b] to-transparent"></div>
           <div className="flex flex-col md:flex-row gap-16 max-w-5xl mx-auto items-center">
             <div className="w-full md:w-2/5 flex-shrink-0 relative">
@@ -272,25 +265,25 @@ const App: React.FC = () => {
               <img src={PLUG_PHOTO} alt="Local Delivery" className="w-full aspect-square object-cover grayscale opacity-80 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
             </div>
             <div className="w-full md:w-3/5 flex flex-col justify-center">
-              <h2 className="text-3xl font-serif italic text-[#e8e6e1] mb-4">The Ritual of Acquisition</h2>
+              <h2 className="text-3xl font-serif italic text-[#e8e6e1] mb-4">How It Works</h2>
               <p className="text-[#a19f99] text-sm mb-12 max-w-xl leading-relaxed font-sans">
-                Curated within the 661. Hand-delivered directly to you. No shipping fees, no hidden costs. A seamless exchange.
+                All local to the 661. We meet up and hand you your stuff — no shipping, no hassle.
               </p>
               <div className="space-y-6">
                 <div className="bg-[#161619]/40 p-6 rounded-xl shadow-inner backdrop-blur-sm">
-                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">I. Gather</span>
-                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">Add to Archive</h3>
-                  <p className="text-[#71717a] text-sm leading-relaxed">Select the relics you seek and add them to your personal collection bag.</p>
+                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">Step 1</span>
+                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">Add to Cart</h3>
+                  <p className="text-[#71717a] text-sm leading-relaxed">Pick what you want and add it to your cart.</p>
                 </div>
                 <div className="bg-[#161619]/40 p-6 rounded-xl shadow-inner backdrop-blur-sm">
-                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">II. Transmit</span>
-                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">Send your Decree</h3>
-                  <p className="text-[#71717a] text-sm leading-relaxed">Proceed to checkout to copy your list, then present it within our Instagram correspondence.</p>
+                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">Step 2</span>
+                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">Hit Checkout</h3>
+                  <p className="text-[#71717a] text-sm leading-relaxed">Your order gets copied automatically — then paste it in our Instagram DMs.</p>
                 </div>
                 <div className="bg-[#161619]/40 p-6 rounded-xl shadow-inner backdrop-blur-sm">
-                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">III. Manifest</span>
-                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">The Exchange</h3>
-                  <p className="text-[#71717a] text-sm leading-relaxed">We orchestrate a local gathering. Verify your artifacts and complete the offering in person.</p>
+                  <span className="text-[10px] text-[#a19f99] font-sans tracking-[0.2em] uppercase mb-2 block">Step 3</span>
+                  <h3 className="text-[#e8e6e1] text-lg font-serif italic mb-1">Meet Up & Pay</h3>
+                  <p className="text-[#71717a] text-sm leading-relaxed">We link up locally. Check your stuff out in person, then pay. Simple.</p>
                 </div>
               </div>
             </div>
@@ -301,7 +294,6 @@ const App: React.FC = () => {
 
       <footer className="pt-24 pb-12 mt-32 flex flex-col items-center relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-px bg-gradient-to-r from-transparent via-[#2a2a2e] to-transparent"></div>
-        {/* Footer Brand Stamp */}
         <img src={LOGO} alt="Wings of Fortune" className="w-24 md:w-32 h-auto opacity-[0.15] filter invert mb-10 pointer-events-none" />
         
         <div className="text-center text-[10px] font-sans uppercase tracking-[0.2em] text-[#71717a] space-y-5">
@@ -309,11 +301,11 @@ const App: React.FC = () => {
           <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="block hover:text-[#e8e6e1] transition-colors">
             Instagram: @{IG_HANDLE}
           </a>
-          <button onClick={() => setShowAdmin(true)} className="hover:text-[#e8e6e1] transition-colors pt-4">Archive Access</button>
+          <button onClick={() => setShowAdmin(true)} className="hover:text-[#e8e6e1] transition-colors pt-4">Admin</button>
         </div>
       </footer>
 
-      {/* DREAMY QUICK VIEW MODAL */}
+      {/* Product Quick View Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 bg-[#0c0c0e]/80 backdrop-blur-lg">
           <div className="bg-[#0c0c0e] w-full max-w-5xl flex flex-col md:flex-row relative shadow-[0_20px_80px_rgba(0,0,0,0.6)] rounded-2xl overflow-hidden max-h-[95vh]">
@@ -325,7 +317,6 @@ const App: React.FC = () => {
               ✕
             </button>
             
-            {/* Soft Warm-Stone Art Gallery Image Box */}
             <div className="w-full md:w-1/2 bg-[#e0dfdb] p-8 md:p-16 flex items-center justify-center min-h-[350px] relative">
               <div className="absolute inset-0 bg-gradient-to-t from-[#d5d4d0]/50 to-transparent pointer-events-none"></div>
               <img 
@@ -344,14 +335,14 @@ const App: React.FC = () => {
                 <div className="absolute top-0 left-0 w-12 h-px bg-[#3f3f46]"></div>
                 <p className="font-sans font-light">{selectedProduct.details?.description}</p>
                 <div className="mt-6 space-y-2 font-sans text-[11px] uppercase tracking-[0.15em] text-[#71717a]">
-                  <p><span className="text-[#e8e6e1]">Spec:</span> {selectedProduct.spec}</p>
-                  <p><span className="text-[#e8e6e1]">State:</span> {selectedProduct.condition}</p>
+                  <p><span className="text-[#e8e6e1]">Info:</span> {selectedProduct.spec}</p>
+                  <p><span className="text-[#e8e6e1]">Condition:</span> {selectedProduct.condition}</p>
                 </div>
               </div>
 
               {(selectedProduct.category === 'Apparel' || selectedProduct.category === 'Sneakers') ? (
                 <div className="mb-2 mt-auto">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#71717a] mb-4">Choose Dimensions</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#71717a] mb-4">Pick Your Size</p>
                   <div className="flex flex-wrap gap-3">
                     {(selectedProduct.category === 'Sneakers' ? ['7','8','9','10','11','12','13'] : ['S','M','L','XL']).map(s => (
                       <button 
@@ -369,7 +360,7 @@ const App: React.FC = () => {
                   onClick={() => addToCart(selectedProduct)} 
                   className="bg-[#e8e6e1] text-[#0c0c0e] font-sans uppercase tracking-widest py-4 rounded-full w-full text-xs hover:bg-[#d4d4d8] transition-colors mt-auto shadow-[0_5px_20px_rgba(232,230,225,0.15)]"
                 >
-                  Add to Archive
+                  Add to Cart
                 </button>
               )}
             </div>
@@ -377,23 +368,23 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* ETHEREAL CART SIDEBAR */}
+      {/* Cart Sidebar */}
       <div className={`fixed top-0 right-0 h-full w-full max-w-md bg-[#0c0c0e]/95 backdrop-blur-xl z-[300] shadow-[0_0_60px_rgba(0,0,0,0.5)] transform transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] flex flex-col ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-8 pb-6 flex justify-between items-center relative">
           <div className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-[#2a2a2e] to-transparent"></div>
-          <h2 className="font-serif italic text-2xl text-[#e8e6e1]">Archive ({totalCartItems})</h2>
+          <h2 className="font-serif italic text-2xl text-[#e8e6e1]">Cart ({totalCartItems})</h2>
           <button onClick={() => setIsCartOpen(false)} className="text-[#a19f99] hover:text-[#e8e6e1] w-8 h-8 flex items-center justify-center bg-[#161619] rounded-full transition-colors">✕</button>
         </div>
         
         <div className="px-8 py-4 text-[10px] text-[#a19f99] uppercase font-sans tracking-[0.2em]">
-          Tribute required only upon delivery.
+          Pay when we meet up. Cash only.
         </div>
 
         <div className="flex-1 overflow-y-auto px-8 py-4 space-y-8 hide-scrollbar">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-[#3f3f46] gap-6 opacity-60">
-              <img src={LOGO} alt="Empty Stack" className="w-24 h-auto filter invert mix-blend-screen opacity-50" />
-              <p className="text-xs uppercase tracking-[0.3em] font-sans">The Archive is empty.</p>
+              <img src={LOGO} alt="Empty Cart" className="w-24 h-auto filter invert mix-blend-screen opacity-50" />
+              <p className="text-xs uppercase tracking-[0.3em] font-sans">Your cart is empty.</p>
             </div>
           ) : (
             cart.map((item, i) => (
@@ -406,7 +397,7 @@ const App: React.FC = () => {
                   <div>
                     <p className="text-[10px] text-[#a19f99] uppercase tracking-[0.2em] mb-1 font-sans">{item.brand}</p>
                     <p className="font-serif text-[#e8e6e1] text-lg leading-tight line-clamp-2">{item.name}</p>
-                    {item.selectedSize && <p className="text-[11px] text-[#71717a] font-sans mt-2">Dim: {item.selectedSize}</p>}
+                    {item.selectedSize && <p className="text-[11px] text-[#71717a] font-sans mt-2">Size: {item.selectedSize}</p>}
                   </div>
                   <div className="flex justify-between items-center mt-4">
                     <div className="flex items-center gap-4 bg-[#161619] rounded-full px-3 py-1 shadow-inner">
@@ -426,19 +417,19 @@ const App: React.FC = () => {
           <div className="p-8 bg-[#0c0c0e]/90 backdrop-blur-md relative">
             <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-[#2a2a2e] to-transparent"></div>
             <div className="flex justify-between font-serif text-xl mb-8 text-[#e8e6e1] italic">
-              <span>Total Offering</span><span className="font-sans not-italic">${cartTotal}</span>
+              <span>Total</span><span className="font-sans not-italic">${cartTotal}</span>
             </div>
             <button 
               onClick={handleDM} 
               className={`w-full py-4 rounded-full uppercase font-sans text-xs tracking-widest transition-all duration-500 shadow-lg ${copied ? 'bg-[#161619] text-[#e8e6e1] scale-95' : 'bg-[#e8e6e1] text-[#0c0c0e] hover:bg-[#d4d4d8] hover:shadow-[0_5px_20px_rgba(232,230,225,0.2)]'}`}
             >
-              {copied ? 'Decree Copied...' : 'Finalize & Transmit'}
+              {copied ? 'Copied! Opening Instagram...' : 'Checkout & DM Us'}
             </button>
           </div>
         )}
       </div>
 
-      {/* Floating Dreamy Toast */}
+      {/* Toast */}
       {toast && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#e8e6e1] text-[#0c0c0e] px-8 py-4 rounded-full text-[11px] font-sans uppercase tracking-[0.2em] z-[400] shadow-[0_10px_40px_rgba(232,230,225,0.2)] animate-slideUp">
           {toast}
@@ -451,7 +442,7 @@ const App: React.FC = () => {
   );
 };
 
-// Dreamy Ethereal Product Card
+// Product Card
 const ProductCard = ({ product, onClick }: { product: Product, onClick: () => void }) => {
   return (
     <div className="flex flex-col group h-full cursor-pointer" onClick={onClick}>
@@ -460,12 +451,10 @@ const ProductCard = ({ product, onClick }: { product: Product, onClick: () => vo
       >
         <div className="absolute inset-0 bg-gradient-to-t from-[#d5d4d0]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
         
-        {/* SOFT CONDITION BADGE */}
         <div className="absolute top-3 left-3 bg-[#0c0c0e]/40 backdrop-blur-md text-[#e8e6e1] px-3 py-1 rounded-full font-sans text-[9px] uppercase tracking-[0.15em] z-10 shadow-sm border border-[#e8e6e1]/10">
-          State: {product.condition}
+          {product.condition}
         </div>
 
-        {/* SOFT PRICE BADGE */}
         <div className="absolute bottom-3 right-3 bg-[#e8e6e1]/90 backdrop-blur-md text-[#0c0c0e] px-3 py-1.5 rounded-full font-sans text-[11px] font-medium tracking-wide z-10 shadow-lg">
           ${product.price}
         </div>
@@ -485,7 +474,7 @@ const ProductCard = ({ product, onClick }: { product: Product, onClick: () => vo
         <button 
           className="mt-auto bg-[#161619] text-[#e8e6e1] py-3 rounded-full w-full text-[10px] font-sans uppercase tracking-[0.2em] group-hover:bg-[#e8e6e1] group-hover:text-[#0c0c0e] transition-all duration-500 shadow-sm"
         >
-          {product.category === 'Fragrance' ? 'Acquire' : 'View Details'}
+          {product.category === 'Fragrance' ? 'Get It' : 'View Details'}
         </button>
       </div>
     </div>
