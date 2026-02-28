@@ -1,27 +1,26 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { Product, Category, CartItem } from './types';
 import AdminPanel, { getMergedInventory } from './components/AdminPanel';
+import { Product, Category, CartItem } from './types';
 
+// Assets
+const LOGO = '/images/wingsofofrtuning.png'; // Use a small, clean version of your logo
+const PLUG_PHOTO = '/images/plug-photo.jpg'; // Upload a normal, friendly photo of yourself here
 const IG_HANDLE = '661ro_resellz';
-
-// Replace this with a picture of yourself for the "Meet the Plug" section!
-const PLUG_PHOTO = '/images/plug-photo.jpg'; 
-const ENGRAVING_WATERMARK = '/images/corner-wing.png';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const[filterBrand, setFilterBrand] = useState('ALL');
+  const[debouncedSearch, setDebouncedSearch] = useState('');
+  const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState<Category>('All');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const[selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('wof_cart');
-      return saved ? JSON.parse(saved) :[];
+      return saved ? JSON.parse(saved) : [];
     } catch { 
-      return []; 
+      return[]; 
     }
   });
 
@@ -29,32 +28,36 @@ const App: React.FC = () => {
   const [showAdmin, setShowAdmin] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
-  const[copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false);
 
+  // Debounce search input for performance
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(searchTerm), 300);
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
+  // Persist cart to local storage
   useEffect(() => {
     try { localStorage.setItem('wof_cart', JSON.stringify(cart)); } catch {}
   }, [cart]);
 
+  // Load inventory
   useEffect(() => {
     setInventory(getMergedInventory());
   }, [showAdmin]);
 
+  // Lock body scroll when modals are open
   useEffect(() => {
     document.body.style.overflow = (isCartOpen || selectedProduct !== null || showAdmin) ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
-  },[isCartOpen, selectedProduct, showAdmin]);
+  }, [isCartOpen, selectedProduct, showAdmin]);
 
-  const categories: Category[] =['All', 'Fragrance', 'Apparel', 'Sneakers'];
+  const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
   const brands = useMemo(() => {
     const source = filterCategory === 'All' ? inventory : inventory.filter(p => p.category === filterCategory);
     return['ALL', ...Array.from(new Set(source.map(p => p.brand))).sort()];
-  },[filterCategory, inventory]);
+  }, [filterCategory, inventory]);
 
   const isFiltering = debouncedSearch !== '' || filterCategory !== 'All' || filterBrand !== 'ALL';
 
@@ -68,10 +71,11 @@ const App: React.FC = () => {
     });
   },[debouncedSearch, filterBrand, filterCategory, inventory]);
 
-  const latestAdded = useMemo(() =>[...inventory].reverse().slice(0, 4), [inventory]);
+  // Sections for non-filtered view
+  const latestAdded = useMemo(() => [...inventory].reverse().slice(0, 4), [inventory]);
   const fragrances = useMemo(() => inventory.filter(p => p.category === 'Fragrance'), [inventory]);
   const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
-  const apparel = useMemo(() => inventory.filter(p => p.category === 'Apparel'), [inventory]);
+  const apparel = useMemo(() => inventory.filter(p => p.category === 'Apparel'),[inventory]);
 
   const addToCart = (product: Product, selectedSize?: string) => {
     setCart(prev => {
@@ -79,7 +83,7 @@ const App: React.FC = () => {
       if (existing) {
         return prev.map(item => item.ids[0] === product.ids[0] && item.selectedSize === selectedSize ? { ...item, quantity: item.quantity + 1 } : item);
       }
-      return[...prev, { ...product, quantity: 1, selectedSize }];
+      return [...prev, { ...product, quantity: 1, selectedSize }];
     });
     setSelectedProduct(null);
     setToast(selectedSize ? `${product.name} (${selectedSize}) added.` : `${product.name} added.`);
@@ -94,7 +98,7 @@ const App: React.FC = () => {
 
   const handleDM = async () => {
     const lines = cart.map(i => `• ${i.brand} - ${i.name} ${i.selectedSize ? `(Size ${i.selectedSize})` : ''} x${i.quantity} — $${i.price * i.quantity}`);
-    const msg = `Yo, I want to lock in this order for local meetup:\n\n${lines.join('\n')}\n\nTotal: $${cartTotal}`;
+    const msg = `Hi, I'd like to place an order for local meetup:\n\n${lines.join('\n')}\n\nTotal: $${cartTotal}`;
     try { await navigator.clipboard.writeText(msg); } catch {}
     setCopied(true);
     setTimeout(() => {
@@ -104,73 +108,53 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f4f5] text-[#18181b] flex flex-col relative font-sans">
+    <div className="min-h-screen bg-[#f4f4f5] text-black font-sans pb-20">
       
-      {/* Dynamic Fonts & Base Styles Injection */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Space+Grotesk:wght@300;400;600;700&display=swap');
-        .font-grotesk { font-family: 'Space Grotesk', sans-serif; }
-        .font-mono { font-family: 'DM Mono', monospace; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .bg-watermark {
-          background-image: url('${ENGRAVING_WATERMARK}');
-          background-repeat: repeat;
-          background-size: 300px;
-          opacity: 0.04;
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          z-index: 0;
-        }
-      `}</style>
-
-      {/* Esoteric Engraving Watermark Background */}
-      <div className="bg-watermark"></div>
-
       {/* Top Nav */}
-      <nav className="fixed top-0 w-full bg-[#f4f4f5]/90 backdrop-blur-md border-b border-[#18181b]/10 z-40 h-[70px] flex items-center justify-between px-6 md:px-12">
-        <div className="font-grotesk font-bold text-xl md:text-2xl tracking-tighter uppercase">Wings of Fortune</div>
-        <button onClick={() => setIsCartOpen(true)} className="flex items-center gap-2 border border-[#18181b] px-4 py-1.5 hover:bg-[#18181b] hover:text-[#f4f4f5] transition-colors">
-          <span className="font-mono text-xs font-medium uppercase mt-0.5">Order Stack ({totalCartItems})</span>
+      <nav className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm h-16 flex items-center justify-between px-4 md:px-8 w-full">
+        <div className="flex items-center gap-3">
+          <img src={LOGO} alt="Wings of Fortune" className="h-8 w-auto object-contain" />
+          <span className="font-bold text-lg tracking-tight hidden sm:block">WINGS OF FORTUNE</span>
+        </div>
+        <button 
+          onClick={() => setIsCartOpen(true)} 
+          className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors text-sm font-medium"
+        >
+          <span>Bag</span>
+          {totalCartItems > 0 && (
+            <span className="bg-white text-black px-1.5 py-0.5 rounded-full text-xs font-bold leading-none">
+              {totalCartItems}
+            </span>
+          )}
         </button>
       </nav>
 
-      {/* Hero */}
-      <header className="pt-[140px] pb-12 px-6 md:px-12 relative z-10 flex flex-col items-center text-center">
-        <h1 className="font-grotesk font-bold text-6xl md:text-8xl lg:text-[9rem] tracking-tighter uppercase leading-[0.9]">
-          Wings of<br/>Fortune
-        </h1>
-        <p className="font-mono text-sm md:text-base mt-6 text-[#18181b]/60 uppercase tracking-widest">
-          The 661 Underground Archive
-        </p>
-      </header>
-
-      {/* Minimal Filter Bar */}
-      <div className="sticky top-[70px] z-30 bg-[#f4f4f5] border-y border-[#18181b]/10">
-        <div className="max-w-[1800px] mx-auto px-6 md:px-12 flex items-center overflow-x-auto hide-scrollbar h-14 gap-6 font-mono text-xs uppercase">
-          <div className="flex items-center gap-2 border-r border-[#18181b]/10 pr-6 flex-shrink-0">
-            <span className="text-[#18181b]/50">Search</span>
+      {/* Filter Bar */}
+      <div className="bg-white border-b border-gray-200 sticky top-16 z-30 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center gap-4 overflow-x-auto hide-scrollbar whitespace-nowrap text-sm">
+          <div className="flex items-center gap-2 pr-4 border-r border-gray-200">
+            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <input 
               type="text" 
               value={searchTerm} 
               onChange={e => setSearchTerm(e.target.value)} 
-              placeholder="//" 
-              className="bg-transparent border-b border-[#18181b]/20 focus:border-[#18181b] outline-none w-24 focus:w-32 transition-all"
+              placeholder="Search..." 
+              className="bg-transparent outline-none w-24 focus:w-40 transition-all text-sm"
             />
           </div>
-          <div className="flex items-center gap-2 border-r border-[#18181b]/10 pr-6 flex-shrink-0">
-            <span className="text-[#18181b]/50">Brand</span>
-            <select value={filterBrand} onChange={e => setFilterBrand(e.target.value)} className="bg-transparent outline-none cursor-pointer font-bold">
-              {brands.map(b => <option key={b} value={b}>{b}</option>)}
-            </select>
-          </div>
-          <div className="flex items-center gap-6 flex-shrink-0">
+          <select 
+            value={filterBrand} 
+            onChange={e => setFilterBrand(e.target.value)} 
+            className="bg-transparent font-medium outline-none cursor-pointer pr-4 border-r border-gray-200"
+          >
+            {brands.map(b => <option key={b} value={b}>{b === 'ALL' ? 'All Brands' : b}</option>)}
+          </select>
+          <div className="flex items-center gap-4">
             {categories.map(cat => (
               <button 
                 key={cat} 
-                onClick={() => handleCategoryChange(cat)} 
-                className={`${filterCategory === cat ? 'font-bold border-b-2 border-[#18181b]' : 'text-[#18181b]/50 hover:text-[#18181b]'}`}
+                onClick={() => { setFilterCategory(cat); setFilterBrand('ALL'); }} 
+                className={`${filterCategory === cat ? 'font-bold text-black' : 'text-gray-500 hover:text-black'} transition-colors`}
               >
                 {cat}
               </button>
@@ -179,69 +163,35 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <main className="flex-1 px-6 md:px-12 pt-12 pb-24 max-w-[1800px] mx-auto w-full relative z-10">
+      {/* Main Content Area */}
+      <main className="max-w-7xl mx-auto px-4 md:px-8 pt-8 w-full">
         
         {isFiltering ? (
           <>
-            <div className="flex items-end gap-4 mb-8 border-b border-[#18181b]/10 pb-4">
-              <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">Search Results</h2>
-              <span className="font-mono text-xs mb-1">[{filteredProducts.length}]</span>
-            </div>
+            <h2 className="text-2xl font-bold mb-6">Search Results <span className="text-gray-400 text-base font-normal">({filteredProducts.length})</span></h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               {filteredProducts.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
             </div>
           </>
         ) : (
-          <div className="space-y-24">
+          <div className="space-y-16">
             
-            {/* Latest Added */}
-            <section>
-              <div className="flex items-end gap-4 mb-6 border-b border-[#18181b]/10 pb-4">
-                <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">Fresh Hits</h2>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                {latestAdded.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
-              </div>
-            </section>
-
-            {/* MEET THE PLUG SECTION (Trust Builder) */}
-            <section className="bg-white border border-[#18181b]/10 p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center shadow-sm">
-              <div className="w-full md:w-1/3 aspect-square bg-[#e4e4e7] relative border border-[#18181b]/10 p-2 flex-shrink-0">
-                <div className="w-full h-full bg-gray-300 relative overflow-hidden">
-                  {/* Replace this img src with your actual photo! */}
-                  <img src={PLUG_PHOTO} alt="The Plug" className="w-full h-full object-cover filter grayscale" />
-                  <div className="absolute inset-0 flex items-center justify-center text-[#18181b]/30 font-mono text-sm uppercase text-center px-4 mix-blend-multiply">[ Insert Photo of you here ]
-                  </div>
+            {/* New Arrivals */}
+            {latestAdded.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-6">New Arrivals</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                  {latestAdded.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
                 </div>
-              </div>
-              <div className="w-full md:w-2/3 space-y-6">
-                <div>
-                  <h2 className="font-grotesk font-bold text-3xl md:text-5xl uppercase tracking-tight leading-none mb-2">Local to the 661.<br/>Hand-Delivered by Me.</h2>
-                  <p className="font-mono text-sm text-[#18181b]/60 uppercase tracking-wide">No sketchy links. No shipping fees. Real local business.</p>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-[#18181b]/10">
-                  <div>
-                    <h3 className="font-grotesk font-bold text-lg mb-1">1. Build Stack</h3>
-                    <p className="font-mono text-xs text-[#18181b]/70">Add the gear or scents you want to your order stack on this site.</p>
-                  </div>
-                  <div>
-                    <h3 className="font-grotesk font-bold text-lg mb-1">2. Send to DM</h3>
-                    <p className="font-mono text-xs text-[#18181b]/70">Hit checkout. It copies your order so you can paste it right into my Instagram DMs.</p>
-                  </div>
-                  <div>
-                    <h3 className="font-grotesk font-bold text-lg mb-1">3. Meet & Pay</h3>
-                    <p className="font-mono text-xs text-[#18181b]/70">We lock in a public meetup spot in the 661. You verify the items, you pay, you walk away with heat.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
+              </section>
+            )}
 
             {/* Fragrances */}
             {fragrances.length > 0 && (
               <section>
-                <div className="flex items-end gap-4 mb-6 border-b border-[#18181b]/10 pb-4">
-                  <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">The Fragrance Vault</h2>
-                  <span className="font-mono text-xs mb-1">[{fragrances.length}]</span>
+                <div className="flex items-baseline justify-between mb-6">
+                  <h2 className="text-2xl font-bold">Fragrances</h2>
+                  <span className="text-gray-500 text-sm">{fragrances.length} Items</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                   {fragrances.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
@@ -252,9 +202,9 @@ const App: React.FC = () => {
             {/* Sneakers */}
             {sneakers.length > 0 && (
               <section>
-                <div className="flex items-end gap-4 mb-6 border-b border-[#18181b]/10 pb-4">
-                  <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">Sneaker Archive</h2>
-                  <span className="font-mono text-xs mb-1">[{sneakers.length}]</span>
+                <div className="flex items-baseline justify-between mb-6">
+                  <h2 className="text-2xl font-bold">Sneakers</h2>
+                  <span className="text-gray-500 text-sm">{sneakers.length} Items</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                   {sneakers.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
@@ -265,9 +215,9 @@ const App: React.FC = () => {
             {/* Apparel */}
             {apparel.length > 0 && (
               <section>
-                <div className="flex items-end gap-4 mb-6 border-b border-[#18181b]/10 pb-4">
-                  <h2 className="font-grotesk font-bold text-3xl uppercase tracking-tight">Essentials / Clothing</h2>
-                  <span className="font-mono text-xs mb-1">[{apparel.length}]</span>
+                <div className="flex items-baseline justify-between mb-6">
+                  <h2 className="text-2xl font-bold">Apparel</h2>
+                  <span className="text-gray-500 text-sm">{apparel.length} Items</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                   {apparel.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
@@ -277,52 +227,96 @@ const App: React.FC = () => {
 
           </div>
         )}
+
+        {/* How It Works / Meet the Plug Section */}
+        <section className="mt-20 bg-white border border-gray-200 rounded-xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-8 shadow-sm">
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
+            {/* Standard Profile Picture - No heavy filters */}
+            <img src={PLUG_PHOTO} alt="Local Plug" className="w-full h-full object-cover" />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-2xl font-bold mb-2">How to Order</h2>
+            <p className="text-gray-600 text-sm mb-6 max-w-2xl">
+              Local to the 661. Hand-delivered straight to you. No shipping fees, no hidden costs.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-bold text-sm mb-1">1. Add to Bag</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">Browse the menu and add the items you want to your bag.</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-bold text-sm mb-1">2. Send to IG</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">Hit checkout to copy your order and paste it in my Instagram DMs.</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-bold text-sm mb-1">3. Meet & Pay</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">We'll arrange a safe, local meetup. Verify the items and pay at drop-off.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
 
-      <footer className="border-t border-[#18181b]/10 py-12 flex flex-col items-center gap-6 relative z-10">
-        <img src={LOGO} className="h-12 w-auto opacity-30 filter invert" />
-        <div className="text-center font-mono text-[10px] uppercase text-[#18181b]/50 space-y-2">
-          <p>661 / Wasco, CA • Local Drop-offs Only</p>
-          <p className="cursor-pointer hover:text-[#18181b]" onClick={() => setShowAdmin(true)}>Est. 2025 • Admin</p>
-        </div>
+      <footer className="text-center py-8 text-xs text-gray-400 mt-auto">
+        <p>Wings of Fortune © 2025 • 661 Local</p>
+        <button onClick={() => setShowAdmin(true)} className="mt-2 hover:text-gray-600">Admin Login</button>
       </footer>
 
-      {/* QUICK VIEW MODAL (Brutalist Ticket Style) */}
+      {/* QUICK VIEW MODAL (Clean, standard e-commerce style) */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
-          <div className="absolute inset-0 bg-[#18181b]/40 backdrop-blur-sm" onClick={() => setSelectedProduct(null)} />
-          <div className="bg-[#f4f4f5] border-2 border-[#18181b] w-full max-w-3xl flex flex-col md:flex-row relative z-10 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setSelectedProduct(null)} className="absolute top-4 right-4 z-20 font-mono text-xs border border-[#18181b] px-2 py-1 bg-white hover:bg-[#18181b] hover:text-white transition-colors">CLOSE [X]</button>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-xl w-full max-w-3xl flex flex-col md:flex-row relative shadow-2xl overflow-hidden max-h-[90vh]">
             
-            <div className="w-full md:w-1/2 bg-white border-b md:border-b-0 md:border-r border-[#18181b] p-8 flex items-center justify-center">
-              <img src={selectedProduct.images?.[0] || selectedProduct.image} className={`max-w-full max-h-[40vh] md:max-h-[60vh] ${selectedProduct.category === 'Sneakers' ? 'object-contain' : 'object-cover'}`} />
+            <button 
+              onClick={() => setSelectedProduct(null)} 
+              className="absolute top-4 right-4 z-20 bg-white shadow-md rounded-full w-8 h-8 flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-50"
+            >
+              ✕
+            </button>
+            
+            <div className="w-full md:w-1/2 bg-gray-50 p-8 flex items-center justify-center min-h-[300px]">
+              <img 
+                src={selectedProduct.images?.[0] || selectedProduct.image} 
+                alt={selectedProduct.name}
+                className={`max-w-full max-h-[40vh] md:max-h-[60vh] ${selectedProduct.category === 'Sneakers' ? 'object-contain' : 'object-cover mix-blend-multiply'}`} 
+              />
             </div>
             
-            <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-[#18181b]/50 mb-2">ID: {selectedProduct.ids[0]}</span>
-              <h2 className="font-grotesk font-bold text-3xl uppercase leading-none mb-1">{selectedProduct.brand}</h2>
-              <h3 className="font-grotesk text-xl uppercase text-[#18181b]/70 mb-4">{selectedProduct.name}</h3>
-              <p className="font-mono text-2xl mb-6">${selectedProduct.price}</p>
+            <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col overflow-y-auto">
+              <span className="text-[10px] uppercase font-bold text-gray-500 mb-1">{selectedProduct.brand}</span>
+              <h2 className="text-2xl font-bold leading-tight text-black mb-2">{selectedProduct.name}</h2>
+              <p className="text-xl font-medium mb-4">${selectedProduct.price}</p>
               
-              <div className="font-mono text-xs space-y-2 border-y border-[#18181b]/10 py-4 mb-6">
-                <div className="flex justify-between"><span className="text-[#18181b]/50">Spec:</span><span>{selectedProduct.spec}</span></div>
-                <div className="flex justify-between"><span className="text-[#18181b]/50">Category:</span><span>{selectedProduct.category}</span></div>
+              <div className="text-sm text-gray-600 mb-6 leading-relaxed">
+                <p>{selectedProduct.details?.description}</p>
+                <p className="mt-2"><span className="font-semibold text-black">Spec:</span> {selectedProduct.spec}</p>
+                <p><span className="font-semibold text-black">Condition:</span> {selectedProduct.condition}</p>
               </div>
 
               {(selectedProduct.category === 'Apparel' || selectedProduct.category === 'Sneakers') ? (
-                <div className="mb-6">
-                  <p className="font-mono text-xs uppercase mb-2">Select Size:</p>
+                <div className="mb-6 mt-auto">
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm font-semibold">Select Size</p>
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     {(selectedProduct.category === 'Sneakers' ?['7','8','9','10','11','12','13'] : ['S','M','L','XL']).map(s => (
-                      <button key={s} onClick={() => addToCart(selectedProduct, s)} className="border border-[#18181b] font-mono text-xs px-4 py-2 hover:bg-[#18181b] hover:text-white transition-colors">
+                      <button 
+                        key={s} 
+                        onClick={() => addToCart(selectedProduct, s)} 
+                        className="border border-gray-300 rounded-md text-sm font-medium px-4 py-2 hover:border-black hover:bg-black hover:text-white transition-colors flex-1 text-center"
+                      >
                         {s}
                       </button>
                     ))}
                   </div>
                 </div>
               ) : (
-                <button onClick={() => addToCart(selectedProduct)} className="bg-[#18181b] text-white font-grotesk font-bold uppercase py-4 w-full text-lg hover:bg-black transition-colors mb-4 mt-auto">
-                  Add to Stack
+                <button 
+                  onClick={() => addToCart(selectedProduct)} 
+                  className="bg-black text-white font-bold py-3.5 rounded-lg w-full text-base hover:bg-gray-800 transition-colors mt-auto"
+                >
+                  Add to Bag
                 </button>
               )}
             </div>
@@ -331,35 +325,40 @@ const App: React.FC = () => {
       )}
 
       {/* CART SIDEBAR */}
-      <div className={`fixed top-0 right-0 h-full w-full max-w-sm bg-white border-l border-[#18181b] z-[300] shadow-2xl transform transition-transform duration-300 flex flex-col ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="p-5 border-b border-[#18181b] flex justify-between items-center bg-[#f4f4f5]">
-          <h2 className="font-grotesk font-bold text-xl uppercase">Order Stack</h2>
-          <button onClick={() => setIsCartOpen(false)} className="font-mono text-xs border border-[#18181b] px-2 py-1 hover:bg-[#18181b] hover:text-white transition-colors">CLOSE</button>
+      <div className={`fixed top-0 right-0 h-full w-full max-w-sm bg-white border-l border-gray-200 z-[300] shadow-2xl transform transition-transform duration-300 flex flex-col ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
+          <h2 className="font-bold text-lg">Your Bag ({totalCartItems})</h2>
+          <button onClick={() => setIsCartOpen(false)} className="text-gray-500 hover:text-black p-2">✕</button>
         </div>
         
-        <div className="bg-[#18181b] text-white p-3 text-center font-mono text-[10px] uppercase tracking-widest">
+        <div className="bg-gray-100 text-gray-800 p-2.5 text-center text-xs font-medium">
           No credit card needed. Pay at drop-off.
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {cart.length === 0 ? (
-            <p className="text-center font-mono text-xs text-[#18181b]/40 mt-10">Stack is empty.</p>
+            <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-4 mt-10">
+              <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+              <p className="text-sm">Your bag is empty.</p>
+            </div>
           ) : (
             cart.map((item, i) => (
-              <div key={i} className="flex gap-4 border border-[#18181b]/10 p-3 bg-[#f4f4f5]">
-                <img src={item.images?.[0] || item.image} className="w-16 h-16 object-cover border border-[#18181b]/10" />
-                <div className="flex-1 flex flex-col justify-between">
+              <div key={i} className="flex gap-4 p-2 bg-white rounded-lg border border-gray-100">
+                <div className="w-20 h-20 bg-gray-50 rounded-md flex items-center justify-center flex-shrink-0 p-1">
+                  <img src={item.images?.[0] || item.image} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
+                </div>
+                <div className="flex-1 flex flex-col justify-between py-1">
                   <div>
-                    <p className="font-grotesk font-bold text-sm leading-tight uppercase">{item.brand}</p>
-                    <p className="font-mono text-[10px] uppercase text-[#18181b]/60 truncate">{item.name} {item.selectedSize && `(${item.selectedSize})`}</p>
+                    <p className="font-bold text-sm leading-tight line-clamp-2">{item.name}</p>
+                    <p className="text-xs text-gray-500 mt-1">{item.brand} {item.selectedSize && `• Size: ${item.selectedSize}`}</p>
                   </div>
                   <div className="flex justify-between items-center mt-2">
-                    <div className="flex items-center gap-3 font-mono text-xs">
-                      <button onClick={() => updateCartQuantity(item.ids[0], -1, item.selectedSize)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => updateCartQuantity(item.ids[0], 1, item.selectedSize)}>+</button>
+                    <div className="flex items-center gap-3 bg-gray-100 rounded-md px-2 py-1">
+                      <button onClick={() => updateCartQuantity(item.ids[0], -1, item.selectedSize)} className="text-gray-600 hover:text-black px-1">−</button>
+                      <span className="text-xs font-medium w-4 text-center">{item.quantity}</span>
+                      <button onClick={() => updateCartQuantity(item.ids[0], 1, item.selectedSize)} className="text-gray-600 hover:text-black px-1">+</button>
                     </div>
-                    <span className="font-mono font-bold text-sm">${item.price * item.quantity}</span>
+                    <span className="font-bold text-sm">${item.price * item.quantity}</span>
                   </div>
                 </div>
               </div>
@@ -368,23 +367,24 @@ const App: React.FC = () => {
         </div>
 
         {cart.length > 0 && (
-          <div className="p-5 border-t border-[#18181b] bg-[#f4f4f5]">
-            <div className="flex justify-between font-grotesk font-bold text-xl uppercase mb-4">
+          <div className="p-4 border-t border-gray-200 bg-white">
+            <div className="flex justify-between font-bold text-lg mb-4">
               <span>Total</span><span>${cartTotal}</span>
             </div>
             <button 
               onClick={handleDM} 
-              className={`w-full py-4 font-grotesk font-bold text-lg uppercase transition-all duration-300 flex items-center justify-center gap-2 ${copied ? 'bg-[#22c55e] text-white' : 'bg-[#0095f6] text-white hover:bg-[#0085db]'}`}
+              className={`w-full py-3.5 rounded-lg font-bold text-base transition-all duration-300 flex items-center justify-center gap-2 ${copied ? 'bg-green-500 text-white' : 'bg-[#0095f6] text-white hover:bg-[#0085db]'}`}
             >
               {copied ? 'Copied! Opening IG...' : 'Copy Order & Open IG'}
             </button>
-            <p className="text-center font-mono text-[9px] text-[#18181b]/50 uppercase mt-3">This copies your order list so you can paste it in the DM.</p>
+            <p className="text-center text-[10px] text-gray-500 mt-3 px-4">Clicking this will copy your order details so you can easily paste them in the DM.</p>
           </div>
         )}
       </div>
 
+      {/* Notification Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#18181b] text-white px-6 py-3 font-mono text-xs uppercase tracking-widest z-[400] shadow-xl border border-[#f4f4f5]/20 animate-slideUp">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full text-sm font-medium z-[400] shadow-xl animate-slideUp">
           {toast}
         </div>
       )}
@@ -395,21 +395,36 @@ const App: React.FC = () => {
   );
 };
 
-// Reusable Brutalist Product Card
-const ProductCard = ({ product, onClick }) => {
+// Reusable, Clean Product Card
+const ProductCard = ({ product, onClick }: { product: Product, onClick: () => void }) => {
   return (
-    <div onClick={onClick} className="flex flex-col cursor-pointer group h-full">
-      <div className="aspect-[4/5] bg-white border border-[#18181b]/10 relative p-4 flex items-center justify-center mb-3 group-hover:border-[#18181b] transition-colors">
-        <img src={product.images?.[0] || product.image} className={`w-full h-full ${product.category === 'Sneakers' ? 'object-contain' : 'object-cover'} mix-blend-multiply group-hover:scale-105 transition-transform duration-500`} />
-        <div className="absolute top-2 right-2 bg-white border border-[#18181b] px-2 py-1 font-mono text-xs font-bold shadow-sm">
+    <div className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full">
+      <div 
+        className="aspect-[4/5] bg-gray-50 relative p-4 flex items-center justify-center cursor-pointer group"
+        onClick={onClick}
+      >
+        <img 
+          src={product.images?.[0] || product.image} 
+          alt={product.name}
+          className={`w-full h-full ${product.category === 'Sneakers' ? 'object-contain' : 'object-cover mix-blend-multiply'} group-hover:scale-105 transition-transform duration-300`} 
+        />
+        <div className="absolute top-3 right-3 bg-white px-2 py-1 rounded-md text-xs font-bold shadow-sm border border-gray-100">
           ${product.price}
         </div>
       </div>
-      <div className="flex flex-col flex-1">
-        <p className="font-mono text-[10px] text-[#18181b]/50 uppercase tracking-widest">{product.brand}</p>
-        <h3 className="font-grotesk font-bold text-sm uppercase leading-tight mt-1 mb-2 line-clamp-2">{product.name}</h3>
-        <button className="mt-auto border border-[#18181b]/20 py-2 w-full font-mono text-[10px] uppercase font-bold text-[#18181b]/60 group-hover:bg-[#18181b] group-hover:text-white group-hover:border-[#18181b] transition-all">
-          {product.category === 'Fragrance' ? '+ View Specs' : '+ Select Size'}
+      <div className="p-4 flex flex-col flex-1">
+        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">{product.brand}</p>
+        <h3 
+          className="font-semibold text-sm leading-snug mb-4 line-clamp-2 cursor-pointer hover:text-gray-600 transition-colors" 
+          onClick={onClick}
+        >
+          {product.name}
+        </h3>
+        <button 
+          onClick={onClick}
+          className="mt-auto bg-gray-100 text-black py-2 w-full text-xs font-semibold rounded-md hover:bg-gray-200 transition-colors"
+        >
+          View / Add
         </button>
       </div>
     </div>
