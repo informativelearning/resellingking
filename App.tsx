@@ -209,7 +209,7 @@ const App: React.FC = () => {
             {newArrivals.length > 0 && (
               <section>
                 <div className="flex items-baseline justify-between mb-10">
-                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Just Dropped</h2>
+                  <h2 className="text-2xl md:text-3xl font-serif text-[#e8e6e1] italic">Just Added</h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-8">
                   {newArrivals.map(p => <ProductCard key={p.ids[0]} product={p} onClick={() => setSelectedProduct(p)} />)}
