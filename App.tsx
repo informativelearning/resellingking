@@ -4,15 +4,15 @@ import AdminPanel, { getMergedInventory } from './components/AdminPanel';
 import { Product, Category, CartItem } from './types';
 
 // Assets
-const LOGO = '/images/wingsofofrtuning.png'; // Faded esoteric background art
+const LOGO = '/images/wingsofofrtuning.png'; 
 const PLUG_PHOTO = '/images/plug-photo.jpg'; // Sharp square profile photo
 const IG_HANDLE = '661ro_resellz';
 
 const App: React.FC = () => {
-  const[searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [filterBrand, setFilterBrand] = useState('ALL');
-  const[filterCategory, setFilterCategory] = useState<Category>('All');
+  const[filterBrand, setFilterBrand] = useState('ALL');
+  const [filterCategory, setFilterCategory] = useState<Category>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -20,23 +20,23 @@ const App: React.FC = () => {
       const saved = localStorage.getItem('wof_cart');
       return saved ? JSON.parse(saved) : [];
     } catch { 
-      return[]; 
+      return []; 
     }
   });
 
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const[showAdmin, setShowAdmin] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const[isCartOpen, setIsCartOpen] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+  const[toast, setToast] = useState<string | null>(null);
   const [inventory, setInventory] = useState<Product[]>([]);
-  const[copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  // Debounce search input for performance
+  // Debounce search input
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(searchTerm), 300);
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Persist cart to local storage
+  // Persist cart
   useEffect(() => {
     try { localStorage.setItem('wof_cart', JSON.stringify(cart)); } catch {}
   },[cart]);
@@ -46,13 +46,13 @@ const App: React.FC = () => {
     setInventory(getMergedInventory());
   }, [showAdmin]);
 
-  // Lock body scroll when modals are open
+  // Lock body scroll when modals open
   useEffect(() => {
     document.body.style.overflow = (isCartOpen || selectedProduct !== null || showAdmin) ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
-  },[isCartOpen, selectedProduct, showAdmin]);
+  }, [isCartOpen, selectedProduct, showAdmin]);
 
-  const categories: Category[] =['All', 'Fragrance', 'Apparel', 'Sneakers'];
+  const categories: Category[] = ['All', 'Fragrance', 'Apparel', 'Sneakers'];
 
   const brands = useMemo(() => {
     const source = filterCategory === 'All' ? inventory : inventory.filter(p => p.category === filterCategory);
@@ -69,12 +69,12 @@ const App: React.FC = () => {
       const matchesCategory = filterCategory === 'All' || product.category === filterCategory;
       return matchesSearch && matchesBrand && matchesCategory;
     });
-  }, [debouncedSearch, filterBrand, filterCategory, inventory]);
+  },[debouncedSearch, filterBrand, filterCategory, inventory]);
 
   // Sections for non-filtered view
   const newArrivals = useMemo(() => [...inventory].reverse().slice(0, 4), [inventory]);
   const fragrances = useMemo(() => inventory.filter(p => p.category === 'Fragrance'), [inventory]);
-  const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'),[inventory]);
+  const sneakers = useMemo(() => inventory.filter(p => p.category === 'Sneakers'), [inventory]);
   const apparel = useMemo(() => inventory.filter(p => p.category === 'Apparel'), [inventory]);
 
   const addToCart = (product: Product, selectedSize?: string) => {
@@ -83,7 +83,7 @@ const App: React.FC = () => {
       if (existing) {
         return prev.map(item => item.ids[0] === product.ids[0] && item.selectedSize === selectedSize ? { ...item, quantity: item.quantity + 1 } : item);
       }
-      return [...prev, { ...product, quantity: 1, selectedSize }];
+      return[...prev, { ...product, quantity: 1, selectedSize }];
     });
     setSelectedProduct(null);
     setToast(selectedSize ? `${product.name} (${selectedSize}) added.` : `${product.name} added.`);
@@ -110,32 +110,45 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-[#ededed] font-sans pb-20 selection:bg-white selection:text-black">
       
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Space+Grotesk:wght@300;400;600;700&display=swap');
+        .font-grotesk { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'DM Mono', monospace; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+
       {/* Top Nav */}
-      <nav className="sticky top-0 z-40 bg-[#050505]/95 backdrop-blur-md border-b border-[#27272a] h-16 flex items-center justify-between px-4 md:px-8 w-full">
+      <nav className="fixed top-0 z-40 bg-[#050505]/95 backdrop-blur-md border-b border-[#27272a] h-16 flex items-center justify-between px-4 md:px-8 w-full">
         <div className="flex items-center gap-3">
-          <span className="font-bold text-lg tracking-tight uppercase text-white">Wings of Fortune</span>
+          {/* Logo Brand Image */}
+          <img src={LOGO} alt="Wings of Fortune" className="h-8 md:h-10 w-auto object-contain filter invert" />
         </div>
-        <button 
-          onClick={() => setIsCartOpen(true)} 
-          className="flex items-center gap-2 border border-[#27272a] bg-[#050505] text-[#ededed] px-4 py-2 hover:bg-white hover:text-black transition-colors text-xs font-bold uppercase tracking-widest"
-        >
-          <span>Bag</span>
-          {totalCartItems > 0 && (
-            <span className="bg-white text-black px-1.5 py-0.5 text-[10px] font-bold leading-none">
-              {totalCartItems}
-            </span>
-          )}
-        </button>
+        <div className="flex items-center gap-4 md:gap-6">
+          <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="hidden sm:flex items-center gap-2 text-[#71717a] hover:text-white transition-colors text-[10px] font-mono uppercase tracking-widest">
+            Follow @{IG_HANDLE}
+          </a>
+          <button 
+            onClick={() => setIsCartOpen(true)} 
+            className="flex items-center gap-2 border border-[#27272a] bg-[#050505] text-[#ededed] px-4 py-2 hover:bg-white hover:text-black transition-colors text-xs font-bold uppercase tracking-widest"
+          >
+            <span>Bag</span>
+            {totalCartItems > 0 && (
+              <span className="bg-white text-black px-1.5 py-0.5 text-[10px] font-bold leading-none">
+                {totalCartItems}
+              </span>
+            )}
+          </button>
+        </div>
       </nav>
 
       {/* Hero Section with Subtle Art Fade */}
-      <header className="relative w-full pt-20 pb-16 px-4 flex flex-col items-center justify-center text-center border-b border-[#27272a] overflow-hidden">
+      <header className="relative w-full pt-28 pb-16 px-4 flex flex-col items-center justify-center text-center border-b border-[#27272a] overflow-hidden">
         {/* Subtle Background Art */}
         <div 
-          className="absolute inset-0 z-0 opacity-10 mix-blend-screen pointer-events-none"
+          className="absolute inset-0 z-0 opacity-10 mix-blend-screen pointer-events-none filter invert"
           style={{ backgroundImage: `url(${LOGO})`, backgroundPosition: 'center top', backgroundSize: 'cover' }}
         ></div>
-        {/* Gradient fade to black */}
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent via-[#050505]/80 to-[#050505] pointer-events-none"></div>
         
         <h1 className="relative z-10 font-bold text-5xl md:text-7xl uppercase tracking-tighter text-white">
@@ -285,9 +298,17 @@ const App: React.FC = () => {
 
       </main>
 
-      <footer className="border-t border-[#27272a] text-center pt-12 pb-6 text-[10px] font-mono uppercase tracking-widest text-[#71717a] mt-24">
-        <p>Wings of Fortune © 2025 • 661 Local</p>
-        <button onClick={() => setShowAdmin(true)} className="mt-4 hover:text-white transition-colors">Admin Login</button>
+      <footer className="border-t border-[#27272a] pt-16 pb-12 mt-24 flex flex-col items-center">
+        {/* Footer Brand Stamp */}
+        <img src={LOGO} alt="Wings of Fortune" className="w-24 md:w-32 h-auto opacity-20 filter invert mb-8 pointer-events-none" />
+        
+        <div className="text-center text-[10px] font-mono uppercase tracking-widest text-[#71717a] space-y-4">
+          <p>Wings of Fortune © 2026 • 661 Local</p>
+          <a href={`https://instagram.com/${IG_HANDLE}`} target="_blank" rel="noopener noreferrer" className="block hover:text-[#ededed] transition-colors">
+            Instagram: @{IG_HANDLE}
+          </a>
+          <button onClick={() => setShowAdmin(true)} className="hover:text-[#ededed] transition-colors">Admin Login</button>
+        </div>
       </footer>
 
       {/* QUICK VIEW MODAL (Brutalist Architecture) */}
@@ -365,8 +386,9 @@ const App: React.FC = () => {
 
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-[#3f3f46] gap-4">
-              <p className="text-xs uppercase tracking-widest font-mono">Bag is empty.</p>
+            <div className="flex flex-col items-center justify-center h-full text-[#3f3f46] gap-6">
+              <img src={LOGO} alt="Empty Stack" className="w-24 h-auto opacity-20 filter invert mix-blend-screen" />
+              <p className="text-xs uppercase tracking-widest font-mono">Stack is empty.</p>
             </div>
           ) : (
             cart.map((item, i) => (
@@ -409,7 +431,6 @@ const App: React.FC = () => {
         )}
       </div>
 
-      {/* Notification Toast */}
       {toast && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black border border-[#27272a] px-6 py-3 text-[10px] font-bold uppercase tracking-widest z-[400] animate-slideUp">
           {toast}
@@ -430,15 +451,23 @@ const ProductCard = ({ product, onClick }: { product: Product, onClick: () => vo
         onClick={onClick}
         className="aspect-[4/5] bg-[#f4f4f5] relative p-6 flex items-center justify-center cursor-pointer border border-[#27272a] group-hover:border-white transition-colors"
       >
+        {/* CONDITION BADGE */}
+        <div className="absolute top-0 left-0 bg-[#050505] text-[#ededed] px-3 py-1.5 font-mono text-[9px] font-bold border-b border-r border-[#27272a] tracking-widest z-10">
+          COND: {product.condition}
+        </div>
+
+        {/* PRICE BADGE */}
+        <div className="absolute top-0 right-0 bg-[#050505] text-[#ededed] px-3 py-1.5 font-mono text-xs font-bold border-b border-l border-[#27272a] z-10">
+          ${product.price}
+        </div>
+
         <img 
           src={product.images?.[0] || product.image} 
           alt={product.name}
           className={`w-full h-full ${product.category === 'Sneakers' ? 'object-contain' : 'object-cover'} mix-blend-multiply transition-transform duration-700 group-hover:scale-105`} 
         />
-        <div className="absolute top-0 right-0 bg-black text-white px-3 py-1.5 font-mono text-xs font-bold border-b border-l border-[#27272a]">
-          ${product.price}
-        </div>
       </div>
+      
       <div className="pt-4 flex flex-col flex-1">
         <p className="text-[10px] text-[#71717a] font-bold uppercase tracking-[0.2em] mb-1">{product.brand}</p>
         <h3 
